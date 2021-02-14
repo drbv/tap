@@ -4,7 +4,7 @@
   "private": true,
   "main": "dist/index.js",
   "scripts": {
-    "server": "ts-node tap-server/src/server.ts",
+    "server": "nodemon tap-server/src/server.ts",
     "client": "npm start --prefix tap-ui",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
