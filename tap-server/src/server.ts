@@ -1,11 +1,21 @@
 import express from 'express';
-import { userRouter } from './routes';
+import {userRouter} from './routes';
+import {Database} from "./database";
 
-const app = express();
-app.use(express.json());
 
-app.use('/users', userRouter);
+Database.then(async (db) => {
 
-app.listen(5000, () => {
-    console.log(`Server is listening on port 5000`);
+    const {app, server} = await db.server({
+        startServer: false,
+        cors: true
+    });
+    const mainApp = express();
+
+    // mainApp.use(express.json());
+
+    // configure CORS, other middlewares...
+    mainApp.use('/db', app);
+    mainApp.use('/users', userRouter);
+    mainApp.use('/', (req, res) => res.send('hello'));
+    mainApp.listen(5000, () => console.log(`Server listening on port 5000`));
 });
