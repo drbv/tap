@@ -1,0 +1,11 @@
+{
+    "port": 5000,
+    "version": "VERSIONNUMBER",
+    "urls": [
+        "https://drbv.de/cms/images/Download/TurnierProgramm/BW-Start-Daten.txt",
+        "https://drbv.de/cms/images/Download/TurnierProgramm/DRBV-Akrotabelle-12P.txt",
+        "https://drbv.de/cms/images/Download/TurnierProgramm/Formationen.txt",
+        "https://drbv.de/cms/images/Download/TurnierProgramm/RR-Start-Daten-Paare.txt",
+        "https://drbv.de/cms/images/Download/TurnierProgramm/WR-TL-Start-Daten.txt"
+    ]
+}

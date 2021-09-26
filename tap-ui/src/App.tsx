@@ -1,27 +1,34 @@
 import React from 'react';
-import 'fontsource-roboto';
-import logo from './logo.svg';
-import './App.css';
+import Button from '@material-ui/core/Button';
+import getClientDb from "./Database";
+
+function sync() {
+    getClientDb().then(clientDB => {
+        clientDB.acros.syncCouchDB({
+            remote: 'http://localhost:5000/db/acros',
+        });
+        clientDB.officials.syncCouchDB({
+            remote: 'http://localhost:5000/db/officials'
+        });
+        clientDB.teams.syncCouchDB({
+            remote: 'http://localhost:5000/db/teams'
+        });
+        clientDB.athletes.syncCouchDB({
+            remote: 'http://localhost:5000/db/athletes'
+        });
+    });
+}
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    getClientDb().then(async clientDB => {
+        console.log('db init')
+    });
+
+    return (
+        <Button variant="outlined" color="primary" onClick={() => sync()}>
+            SYNC
+        </Button>
+    );
 }
 
 export default App;
