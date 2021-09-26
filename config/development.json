@@ -1,0 +1,28 @@
+{
+    "port": 5000,
+    "version": "VERSIONNUMBER",
+    "urls": [
+        {
+            "url": "https://drbv.de/cms/images/Download/TurnierProgramm/BW-Start-Daten.txt",
+            "schema": "activity-portal-import-bw"
+        },
+        {
+            "url": "https://drbv.de/cms/images/Download/TurnierProgramm/DRBV-Akrotabelle-12P.txt",
+            "schema": "activity-portal-import-acro"
+        },
+        {
+            "url": "https://drbv.de/cms/images/Download/TurnierProgramm/Formationen.txt",
+            "schema": "activity-portal-import-f"
+        },
+        {
+            "url": "https://drbv.de/cms/images/Download/TurnierProgramm/RR-Start-Daten-Paare.txt",
+            "schema": "activity-portal-import-rr"
+        },
+        {
+            "url": "https://drbv.de/cms/images/Download/TurnierProgramm/WR-TL-Start-Daten.txt",
+            "schema": "activity-portal-import-wr-tl"
+        }
+    ],
+    "tournament_url": "https://drbv.de/cms/images/Download/TurnierProgramm/startlisten/",
+    "tournament_url_suffix": "_Anmeldung.txt"
+}

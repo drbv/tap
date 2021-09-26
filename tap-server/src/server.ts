@@ -1,9 +1,11 @@
 import express from 'express';
 import {userRouter} from './routes';
 import {Database} from "./database";
+import {ActivityPortalService} from "./services/activity-portal.service"
+import config from "config";
 
 
-Database.then(async (db) => {
+Database.get().then(async db => {
 
     const {app, server} = await db.server({
         startServer: false,
@@ -11,11 +13,25 @@ Database.then(async (db) => {
     });
     const mainApp = express();
 
-    // mainApp.use(express.json());
-
     // configure CORS, other middlewares...
     mainApp.use('/db', app);
     mainApp.use('/users', userRouter);
-    mainApp.use('/', (req, res) => res.send('hello'));
-    mainApp.listen(5000, () => console.log(`Server listening on port 5000`));
+    mainApp.use('/import', (req, res) => {
+        const activityPortalService = new ActivityPortalService();
+        activityPortalService.fetchDataFromPortal();
+    });
+    mainApp.use('/query', async (req, res) => {
+        const o = await db.items.find().exec();
+        console.log('o ', o);
+
+        const r = await db.items.findByIds(["1"]);
+        console.log('r ', r);
+    });
+    mainApp.use('/', (req, res) => {
+        res.send('hello');
+    });
+
+    const port = config.get('port');
+    console.log('port: ', port);
+    mainApp.listen(port, () => console.log(`Server listening on port ${port}`));
 });

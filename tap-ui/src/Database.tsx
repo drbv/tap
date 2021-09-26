@@ -4,6 +4,10 @@ import {RxDBLeaderElectionPlugin} from 'rxdb/plugins/leader-election';
 import {RxDBReplicationCouchDBPlugin} from 'rxdb/plugins/replication-couchdb';
 import pouchdb_adapter_http from 'pouchdb-adapter-http';
 import pouchdb_adapter_websql from 'pouchdb-adapter-websql';
+import {AthleteSchema} from "../../shared/schemas/athlete.schema";
+import {TeamSchema} from "../../shared/schemas/team.schema";
+import {OfficialSchema} from "../../shared/schemas/official.schema";
+import {AcroSchema} from "../../shared/schemas/acro.schema";
 
 addRxPlugin(RxDBReplicationCouchDBPlugin);
 addRxPlugin(RxDBNoValidatePlugin);
@@ -11,47 +15,30 @@ addRxPlugin(RxDBLeaderElectionPlugin);
 addPouchPlugin(pouchdb_adapter_http);
 addPouchPlugin(pouchdb_adapter_websql);
 
-async function initClientDb() {
+async function getClientDb() {
 
-    const clientDB = await createRxDatabase({
+    const db = await createRxDatabase({
         name: './client-db',
         storage: getRxStoragePouch('websql'),
         ignoreDuplicate: true,
     });
 
-    //TODO use shared code
-    const mySchema = {
-        title: 'Schema for users',
-        description: 'Database schema for storing user information',
-        version: 0,
-        primaryKey: 'id',
-        type: 'object',
-        properties: {
-            id: {
-                type: 'string',
-                primary: true,
-            },
-            name: {
-                type: 'string',
-            },
-            key: {
-                type: 'string',
-            },
-            role: {
-                type: 'string',
-            },
+    await db.addCollections({
+        athletes: {
+            schema: AthleteSchema
         },
-        required: ['id', 'name', 'key', 'role'],
-    };
-
-// create a collection
-    await clientDB.addCollections({
-        items: {
-            schema: mySchema
-        }
+        teams: {
+            schema: TeamSchema
+        },
+        officials: {
+            schema: OfficialSchema
+        },
+        acros: {
+            schema: AcroSchema
+        },
     });
 
-    return clientDB;
+    return db;
 }
 
-export default initClientDb;
+export default getClientDb;
