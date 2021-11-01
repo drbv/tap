@@ -16,6 +16,9 @@ function sync() {
         clientDB.athletes.syncCouchDB({
             remote: 'http://localhost:5000/db/athletes'
         });
+        clientDB.appointments.syncCouchDB({
+            remote: 'http://localhost:5000/db/appointments'
+        });
     });
 }
 

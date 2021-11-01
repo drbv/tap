@@ -14,6 +14,7 @@ import {AthleteSchema} from "../../shared/schemas/athlete.schema";
 import {OfficialSchema} from "../../shared/schemas/official.schema";
 import {TeamSchema} from "../../shared/schemas/team.schema";
 import {AcroSchema} from "../../shared/schemas/acro.schema";
+import {AppointmentSchema} from "../../shared/schemas/appointment.schema";
 
 
 addRxPlugin(RxDBServerPlugin);
@@ -56,6 +57,9 @@ export class Database {
                 },
                 acros: {
                     schema: AcroSchema
+                },
+                appointments: {
+                    schema: AppointmentSchema
                 },
             });
 

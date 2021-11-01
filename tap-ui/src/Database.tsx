@@ -8,6 +8,7 @@ import {AthleteSchema} from "../../shared/schemas/athlete.schema";
 import {TeamSchema} from "../../shared/schemas/team.schema";
 import {OfficialSchema} from "../../shared/schemas/official.schema";
 import {AcroSchema} from "../../shared/schemas/acro.schema";
+import {AppointmentSchema} from "shared/schemas/appointment.schema";
 
 addRxPlugin(RxDBReplicationCouchDBPlugin);
 addRxPlugin(RxDBNoValidatePlugin);
@@ -35,6 +36,9 @@ async function getClientDb() {
         },
         acros: {
             schema: AcroSchema
+        },
+        appointments: {
+            schema: AppointmentSchema
         },
     });
 
