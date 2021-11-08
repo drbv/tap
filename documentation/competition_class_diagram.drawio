@@ -1,1 +1,61 @@
-<mxfile host="app.diagrams.net" modified="2021-11-08T12:27:44.469Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36" version="15.7.0" etag="yUsx-p-FpRFNbBtJr35K" type="github"><diagram id="3HaTClVTUHiUehQN3nwS" name="Page-1">3Zldb5swFIZ/TS4nAQbHvWw+2q5StW7ZtN0afAJWASPjNMl+/Uxi8iFTqZMcgbiKec+xsR8fHXycCZoXu0dJq+xFMMgngcd2E7SYBIGPkad/GmVvFA+HRyWVnBntLKz4X2gdjbrhDOorRyVErnh1LSaiLCFRVxqVUmyv3dYiv35rRVOwhFVCc1v9zZnKjiqJvLP+BDzN2jf7nrEUtHU2Qp1RJrYXElpO0FwKoY6tYjeHvKHXcjn2e/jAepqYhFJ9psPjH1yLB/48e3t5/xXeL+7Z6vsXM8o7zTdmwXNRVKC4EqWZttq3LKTYlAya4fwJmm0zrmBV0aSxbvX2ay1TRW7Ma57nc5ELeeiLGAWyTrReKyne4MKCEwLxWlvMVEAq2H24Rv9ETscciAKU3GsX0yE0rPfXj9vzzk2x0bKLXWv9qAmW9DTwmaduGKT/gTew8L5SqXjCK05LVTslHHuAAHcR9oB4hNyEsB/YiE/aJWJyK8TIQvyT65FprJk6DWAvAQi68EY48qfgBm/gDY1vaPH9AfUmV07hrteAk87swKZ3sWbiBC7CQ4MbWXC/yZSWvKaKi5Lq/liTRrNY6lbatBZUUbfoSQLd6GMShZEj9FEwNPTYQu82XURAWNiFlQQxwtgNVkyGhnVqp2OgxQi+dF2HiU60NztMEAvt84alMAK26LNhezO2dxbbe1bwcgRsQ69vtm0pdwF3pnMCyBHAJb3DtSu4Hw1Ft5Hbz+G3/5Tr2wXcE1DHhVs/cPvPub5duq3U4eA7Br4DyLt26bZs2gfETgn3U74NID3Y9durhFqvZyyMB5Al7EJtuauEHMMFxAByhF2vtRfAhwD2vi7ccu7ltuGWmUI/nu/wD7aLv0LQ8h8=</diagram></mxfile>
+<mxfile host="app.diagrams.net" modified="2021-11-08T12:35:26.702Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36" etag="Sa41IThtBtxwM6u3ejib" version="15.7.0" type="github">
+  <diagram id="3HaTClVTUHiUehQN3nwS" name="Page-1">
+    <mxGraphModel dx="1630" dy="1064" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-1" value="Competiton" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="760" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-2" value="Participiants" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;" parent="1" vertex="1">
+          <mxGeometry x="40" y="120" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-3" value="Timetable" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d0cee2;strokeColor=#56517e;" parent="1" vertex="1">
+          <mxGeometry x="200" y="120" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-4" value="Result" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="360" y="120" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-5" value="Organisational&lt;br&gt;Data" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="520" y="120" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-6" value="Round&lt;br&gt;Controller" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="680" y="120" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-7" value="Teams" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;" parent="1" vertex="1">
+          <mxGeometry x="40" y="240" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-8" value="Judges" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;" parent="1" vertex="1">
+          <mxGeometry x="40" y="320" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-9" value="Admins" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;" parent="1" vertex="1">
+          <mxGeometry x="40" y="400" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-10" value="Beamer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#b0e3e6;strokeColor=#0e8088;" parent="1" vertex="1">
+          <mxGeometry x="40" y="480" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-11" value="Rounds" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d0cee2;strokeColor=#56517e;" parent="1" vertex="1">
+          <mxGeometry x="200" y="240" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-12" value="Heats" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d0cee2;strokeColor=#56517e;" parent="1" vertex="1">
+          <mxGeometry x="200" y="320" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-13" value="Stations" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d0cee2;strokeColor=#56517e;" parent="1" vertex="1">
+          <mxGeometry x="200" y="400" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-14" value="Evaluation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="360" y="240" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-15" value="Presentation" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="360" y="320" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-16" value="Export" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="360" y="400" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="GX6soFiJBkMvU4ADAdSQ-17" value="Competition ID" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="520" y="240" width="120" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
