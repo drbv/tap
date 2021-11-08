@@ -4,18 +4,6 @@ import getClientDb from "./Database";
 
 function sync() {
     getClientDb().then(clientDB => {
-        clientDB.acros.syncCouchDB({
-            remote: 'http://localhost:5000/db/acros',
-        });
-        clientDB.officials.syncCouchDB({
-            remote: 'http://localhost:5000/db/officials'
-        });
-        clientDB.teams.syncCouchDB({
-            remote: 'http://localhost:5000/db/teams'
-        });
-        clientDB.athletes.syncCouchDB({
-            remote: 'http://localhost:5000/db/athletes'
-        });
         clientDB.appointments.syncCouchDB({
             remote: 'http://localhost:5000/db/appointments'
         });
