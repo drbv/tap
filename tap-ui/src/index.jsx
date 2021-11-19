@@ -1,0 +1,153 @@
+import React, { lazy } from 'react'
+import ReactDOM from 'react-dom'
+import { createTheme, MuiThemeProvider } from '@material-ui/core'
+import Provider from './components/Provider'
+import App from './components/App'
+import blue from '@material-ui/core/es/colors/blue'
+import red from '@material-ui/core/colors/red'
+import {
+    AccountTree,
+    Apps,
+    Home,
+    PeopleAlt,
+    AccountBox,
+    Airplay,
+    PlaylistAddCheck,
+    Description,
+} from '@material-ui/icons'
+import { green, yellow } from '@material-ui/core/colors'
+
+const Users = lazy(() => import('./pages/users/Users'))
+const Couples = lazy(() => import('./pages/couples/Couples'))
+const Rounds = lazy(() => import('./pages/rounds/Rounds'))
+const Results = lazy(() => import('./pages/results/Results'))
+const Evaluations = lazy(() => import('./pages/evaluations/Evaluations'))
+const Dashboard = lazy(() => import('./pages/dashboard/Dashboard'))
+const Beamer = lazy(() => import('./pages/beamer/Beamer'))
+const Current = lazy(() => import('./pages/current/Current'))
+
+/**
+ * A theme with custom primary and secondary color.
+ */
+const theme = createTheme({
+    palette: {
+        primary: {
+            light: blue[300],
+            main: blue[500],
+            dark: blue[700],
+        },
+        red: {
+            light: red[300],
+            main: red[500],
+            dark: red[700],
+        },
+        green: {
+            light: green[300],
+            main: green[500],
+            dark: green[700],
+        },
+        secondary: {
+            light: red[300],
+            main: red[500],
+            dark: red[700],
+        },
+    },
+    typography: {
+        useNextVariants: true,
+    },
+    transitions: {
+        duration: {
+            enteringScreen: 500,
+            leavingScreen: 500,
+        },
+    },
+    overrides: {
+        MUIDataTable: {
+            responsiveScroll: {
+                maxHeight: '100%',
+            },
+        },
+    },
+})
+
+const Routes = [
+    /*{
+    name: 'Dashboard',
+    path: '/',
+    exact: true,
+    component: <Dashboard />,
+    icon: <Home />,
+  },
+  {
+    name: 'Beameransicht',
+    path: '/beamer',
+    exact: true,
+    component: <Beamer />,
+    icon: <Airplay />,
+  },*/
+    {
+        name: 'Laufende Runden',
+        path: '/current',
+        exact: true,
+        component: <Current />,
+        admin: false,
+        icon: <Apps />,
+    },
+    {
+        name: 'Ergebnisse',
+        path: '/results',
+        exact: true,
+        component: <Results />,
+        admin: false,
+        icon: <Description />,
+    },
+    {
+        name: 'Teilnehmerliste',
+        path: '/couple',
+        exact: true,
+        component: <Couples />,
+        admin: true,
+        icon: <PeopleAlt />,
+    },
+    {
+        name: 'Rundeneinstellungen',
+        path: '/round',
+        exact: true,
+        component: <Rounds />,
+        admin: true,
+        icon: <AccountTree />,
+    },
+    {
+        name: 'Wertungsbögen',
+        path: '/evaluations',
+        exact: true,
+        component: <Evaluations />,
+        admin: true,
+        icon: <PlaylistAddCheck />,
+    },
+    {
+        name: 'Nutzerverwaltung',
+        path: '/user',
+        exact: true,
+        component: <Users />,
+        admin: true,
+        icon: <AccountBox />,
+    },
+]
+
+function ReactIsInDevelomentMode() {
+    return '_self' in React.createElement('div')
+}
+
+ReactDOM.render(
+    <MuiThemeProvider theme={theme}>
+        <React.StrictMode>
+            <Provider>
+                <App routes={Routes} />
+            </Provider>
+        </React.StrictMode>
+    </MuiThemeProvider>,
+    document.getElementById('root')
+)
+
+if (ReactIsInDevelomentMode()) module.hot.accept()

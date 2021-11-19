@@ -76,7 +76,7 @@ export class ActivityPortalService {
 
     private async fetchData<T>(url: string): Promise<T[]> {
 
-        const streamHttp = await new Promise((resolve, reject) =>
+        const streamHttp = await new Promise<any>((resolve, reject) =>
             https.get(url, (res) => {
                 res.setEncoding('latin1')
                 resolve(res);
@@ -106,7 +106,7 @@ export class ActivityPortalService {
                 complete(results: ParseResult<T>) {
                     resolve(results.data);
                 },
-                error(error: ParseError) {
+                error(error) {
                     reject(error.message);
                 }
             });
