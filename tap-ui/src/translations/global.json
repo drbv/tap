@@ -1,0 +1,312 @@
+{
+  "menu": {
+    "appName": ["Care-Assistant", "Care-Assistant"],
+    "passreset": ["Set your password", "Passwort setzen"],
+    "current": ["Current", "Aktuell"],
+    "catalog": ["Catalogs", "Pflegekataloge"],
+    "products": ["Products", "Produkte"],
+    "admin": ["Administration", "Administration"],
+    "services": ["Transactions", "Zahlungsbelege"],
+    "user_profile": ["My account", "Mein Account"],
+    "language": ["Language", "Sprache"],
+    "german": ["German", "Deutsch"],
+    "englisch": ["English", "Englisch"],
+    "service": ["Service Account", "System Benutzer"],
+    "sAdmin": ["System Admin", "System Admin"],
+    "human": ["Human", "Benutzer"],
+    "logout": ["Back to Controlboard", "Zurück zum Controlboard"],
+    "add_order": ["New Order", "Neuer Auftrag"],
+    "help": ["Help", "Hilfe"],
+    "bronze": ["Bronze", "Bronze"],
+    "silber": ["Silver", "Silber"],
+    "gold": ["Gold", "Gold"]
+  },
+  "table": {
+    "error": ["Error", "Fehler"],
+    "filter": {
+      "all": ["All", "Alle"],
+      "title": ["Filters", "Filter"],
+      "reset": ["Reset", "Zurücksetzen"]
+    },
+    "toolbar": {
+      "print": ["Print", "Drucken"],
+      "print_pdf": ["Print As PDF", "PDF drucken"],
+      "refresh": ["Refresh", "Aktualisieren"],
+      "refreshSuccess": [
+        "The table was refreshed successfully!",
+        "Die Tabelle wurde aktualisiert!"
+      ],
+      "search": ["Search", "Suche"],
+      "download_csv": ["Download CSV", "CSV herunterladen"],
+      "view_columns": ["View Columns", "Spalten anzeigen"],
+      "filter_table": ["Filter Table", "Tabelle filtern"]
+    },
+    "viewColumns": {
+      "title": ["Show Columns", "Spalten anzeigen"],
+      "title_aria": ["Show/Hide Columns", "Spalten anzeigen/ausblenden"]
+    },
+    "body": {
+      "no_match": [
+        "Sorry, no matching records found",
+        "Keine passenden Ergebnisse gefunden"
+      ],
+      "tooltip": ["Sort", "Sortieren"]
+    },
+    "pagination": {
+      "next": ["Next Page", "Nächste Seite"],
+      "previous": ["Previous Page", "Vorherige Seite"],
+      "rows_per_page": ["Results:", "Ergebnisse:"],
+      "pagination": ["of", "von"]
+    }
+  },
+  "mail": {
+    "templates": {
+      "button": ["Mail Templates", "E-Mail Muster"]
+    },
+    "otp": {
+      "subject": [
+        "Invitation to create a personal motivational portrait",
+        "Einladung zur Erstellung eines persönlichen Motivations-Portraits"
+      ],
+      "body": [
+        "Dear ${name},\n\nYou have purchased the creation of a personal motivational portrait.\n\nPlease use the following link:\n\n ${profilingLink}\nBest regards.",
+        "Sehr geehrte(r) ${name},\n\nSie haben die Erstellung eines persönlichen Motivations-Portraits erworben.\n\nBitte nutzen Sie folgenden Link:\n\n ${profilingLink}\n\nMit freundlichen Grüßen"
+      ],
+      "prompt": [
+        "One time user successfully created. ${name} will need to visit this link to do his profiling: \n ${profilingLink}",
+        "Einmalbenutzer erfolgreich angelegt. ${name} muss diesen Link nutzen um das Profiling durchzuführen: \n ${profilingLink}"
+      ]
+    },
+    "passReset": {
+      "subject": [
+        "Reset your password for the Sense.ai.tion profiler",
+        "Setzen Sie Ihr Passwort für den Sense.ai.tion Profiler zurück"
+      ],
+      "body": [
+        "Dear ${name},\nyou've requested to reset your password for the Sense.ai.tion Profiler. You can do so by visiting this link: \n\n ${link}\nBest regards",
+        "Sehr geehrte(r) ${name},\n\nSie haben beantragt, Ihr Passwort für den Sense.ai.tion Profiler zurückzusetzen. Sie können dies tun, indem Sie diesen Link besuchen: \n\n ${link}\n\nMit freundlichen Grüßen"
+      ]
+    },
+    "subject": [
+      "Access to sense.AI.tion MatchLytics was granted",
+      "Zugang zum sense.AI.tion MatchLytics wurde gewährt"
+    ],
+    "body": [
+      "Dear ${name}, \n You are receiving this email because you have been granted access to the sense.AI.tion MatchLytics portal. For security reasons, you must change your initial password via this link: \n\n ${passResetLink} \n\n You will be redirected to Firebase, a Product by Google which we use for User Authentication. \n Then visit https://job.senseaition.com and sign in with your email and new password. Once you are logged in, you can add social log-ins in your profile settings.\nBest regards",
+      "Sehr geehrte(r) ${name}, \n Sie erhalten diese E-Mail, weil Ihnen Zugriff zum sense.AI.tion MatchLytics Portal gewährt wurde. Aus Sicherheitsgründen müssen Sie Ihr initiales Passwort über diesen Link ändern: \n\n ${passResetLink} \n\n Sie werden zu Firebase weitergeleitet, einem Produkt von Google, welches wir zur Nutzer-Authentifizierung nutzen. \n Besuchen Sie anschließend https://job.senseaition.com und melden sich mit Ihrer E-Mail und Ihrem neuen Passwort an. Sobald Sie angemeldet sind, können Sie Social Log-ins in Ihren Profil-Einstellungen hinzufügen.\n\nMit freundlichen Grüßen"
+    ],
+    "prompt": [
+      "User successfully created. ${name} will need to visit this link to reset his password: \n ${passResetLink}",
+      "Nutzer erfolgreich angelegt. ${name} muss diesen Link nutzen um sein Passwort zurückzusetzen: \n ${passResetLink}"
+    ]
+  },
+  "success": {
+    "customer_option_update_ok": [
+      "The data has been successfully updated.",
+      "Die Daten wurden erfolgreich aktualisiert."
+    ]
+  },
+  "error": {
+    "button_secret_missing": [
+      "Please enter a PayPal button secret in the \"Administration\"-tab.",
+      "Bitte hinterlegen Sie ein PayPal-Button-Secret im \"Administration\"-Tab."
+    ],
+    "chooseProduct": [
+      "Please choose a product from the dropdown in the header.",
+      "Bitte wählen Sie ein Produkt im Header aus."
+    ],
+    "general": [
+      "An error occured. Please try again later!",
+      "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut!"
+    ],
+    "clipboard": ["Copied to clipboard!", "In die Zwischenablage kopiert!"],
+    "internal_server_error": [
+      "Something went wrong. Please check your input and contect us if the problem persists.",
+      "Anfrage fehlgeschlagen. Bitte überprüfen Sie Ihre Eingabe und kontaktieren Sie uns, wenn das Problem weiterhin besteht."
+    ],
+    "bad_gateway": [
+      "gateway not responsive! Please try again later.",
+      "Schnittstelle nicht erreichbar. Bitte versuchen Sie es später erneut!"
+    ],
+    "service_unavailable": [
+      "The service is temporarily unavailable. Please wait and try again later!",
+      "Der Service ist vorübergehend nicht erreichbar. Bitte versuchen Sie es später erneut."
+    ],
+    "bad_request": [
+      "Bad request. Please check your input!",
+      "Anfrage gescheitert. BItte überprüfen Sie ihre Eingabedaten."
+    ],
+    "unauthorized": [
+      "You are not authorized anymore to perform this action! Please log back in.",
+      "Sie sind nicht mehr berechtigt diese Aktion auszuführen. Bitte loggen Sie sich erneut ein."
+    ],
+    "not_found": [
+      "The ressource could not be found.",
+      "Die Ressource konnte nicht gefunden werden."
+    ],
+    "request_timeout": [
+      "The Request timed out. Try again later please!",
+      "Es wurde eine Zeitbegrenzung überschritten. Bitte versuchen Sie es später erneut."
+    ],
+    "too_many_requests": [
+      "Quota exceeded. Contact us to increase your quota.",
+      "Sie haben Ihr Auftragskontingent vorübergehend ausgereizt. Kontaktieren Sie uns um dieses zu erhöhen."
+    ],
+    "firebase_too_many_requests": [
+      "Too many failed login attempts. Please try again later.",
+      "Zu viele fehlgeschlagene Loginanfragen. Versuchen Sie es später erneut."
+    ],
+    "firebase_wrong_password": [
+      "You entered a wrong password or the user could not be found.",
+      "Das Passwort ist falsch oder der Nutzer ist nicht vorhanden."
+    ],
+    "firebase_invalid_password": [
+      "The password you entered was invalid. It must be at least 6 chracters long.",
+      "Das Passwort ist ungültig. Es muss mindestens 6 Zeichen lang sein."
+    ],
+    "firebase_invalid_email": [
+      "You've entered an invalid email address.",
+      "Sie haben eine ungültige Email angegeben."
+    ],
+    "firebase_user_not_found": [
+      "There is no existing user record corresponding to the provided email.",
+      "Es ist kein Nutzer mit dieser Email registriert."
+    ],
+    "firebase_email_already_exists": [
+      "The provided email is already in use by an existing user.",
+      "Es ist bereits ein Nutzer mit dieser Email registriert."
+    ],
+    "firebase_uid_already_exists": [
+      "The provided id is already in use by an existing user.",
+      "Es ist bereits ein Nutzer mit dieser ID registriert."
+    ],
+    "auth/invalid-action-code": [
+      "The action code is invalid. This can happen if the code is malformed, expired, or has already been used. Contact the administrator, please.",
+      "Der Code zum Zurücksetzen des Passworts in der URL ist ungültig. Das kann daran liegen, dass er falsch, abgelaufen oder bereits genutzt wurde. Kontaktieren Sie Bitte den Administrator."
+    ],
+    "login_error": ["Error during login request", "Fehler beim Login-Request"],
+    "featuregate_missing": [
+      "You are not authenticated to use this app.",
+      "Sie sind nicht berechtigt diese App zu nutzen."
+    ],
+    "service_error": [
+      "Error loading Service's",
+      "Fehler beim Laden der Service's"
+    ],
+    "workflow_error": [
+      "Error loading Workflow's",
+      "Fehler beim Laden der Workflow's"
+    ],
+    "projects_error": [
+      "Error loading projects",
+      "Fehler beim Laden der Projekte"
+    ],
+    "products_error": [
+      "Error loading products",
+      "Fehler beim Laden der Produkte"
+    ],
+    "product_create_error": [
+      "Error creating product",
+      "Fehler beim Anlegen des Produktes"
+    ],
+    "baseproducts_error": [
+      "Error loading base products",
+      "Fehler beim Laden der Basisprodukte"
+    ],
+    "login_ok": [
+      "The app works online now. Login successful.",
+      "Die App arbeitet jetzt Online. Login erfolgreich."
+    ],
+    "user_update_error": [
+      "Error updating the user",
+      "Fehler beim Updaten des Users"
+    ],
+    "user_update_ok": [
+      "Update the user successfully",
+      "Aktualisierung des Benutzers erfolgreich"
+    ],
+    "version_match": [
+      "The web interface version does not match the APP version.",
+      "Die Version der Webschnittstelle stimmt nicht mit der APP-Version überein."
+    ],
+    "500": ["Error while placing Order", "Fehler beim Erstellen des Auftrags"],
+    "order_not_found_error": [
+      "Error. This order could not be found.",
+      "Dieser Auftrag konnte nicht gefunden werden."
+    ],
+    "offline": [
+      "You are offline. Data might not be up to date.",
+      "Sie sind offline. Die Daten könnten veraltet sein."
+    ]
+  },
+  "misc": {
+    "date_format": ["MMM Do YYYY h:mm:ss a", "DD.MM.YYYY HH:mm:ss"],
+    "transaction_date_format": ["MMM Do YYYY", "DD.MM.YYYY"],
+    "sentry_info": [
+      "Allow the collection of error messages and usage statistics",
+      "Erlaube das Erfassen von Fehlermeldungen und Nutzungsstatistiken"
+    ]
+  },
+  "login": {
+    "loginHeader": ["Sign up with", "Anmelden mit"],
+    "senseaitionLogin": ["Sense.AI.tion account", "Sense.AI.tion-Konto"],
+    "googleLogin": ["Google account", "Google-Konto"],
+    "appleLogin": ["Apple account", "Apple-Konto"],
+    "microsoftLogin": ["Microsoft account", "Microsoft-Konto"]
+  },
+  "audio": {
+    "close": ["Close", "Schließen"],
+    "file": ["File", "Datei"]
+  },
+  "info": {
+    "title": ["Softwareversion", "Softwareversion"],
+    "license": ["License", "Lizenz"],
+    "software": ["Software", "Software"],
+    "credits": [
+      "The sense.Ai.tion App is using Open-source software: ",
+      "Die sense.Ai.tion App verwendet Open-Source-Software: "
+    ],
+    "version": [
+      "Your software version is: ${version}",
+      "Ihre Softwareversion ist: ${version}"
+    ],
+    "copyright": [
+      "Copyright ${year} sense.Ai.tion GmbH",
+      "Copyright ${year} sense.Ai.tion GmbH"
+    ],
+    "rights": ["All rights reserved.", "Alle Rechte vorbehalten."],
+    "close": ["Close", "Schließen"]
+  },
+  "help": {
+    "title": ["Help for: ", "Hilfe für: "],
+    "close": ["Close", "Schließen"],
+    "noHelp": [
+      "There is no help available for this menu.",
+      "Es ist keine Hilfe für dieses Menü verfügbar."
+    ],
+    "userHelp": [
+      "This menu provides an overview of the users stored in the system. The \"New user\" button at the top of the page opens a dialog that allows to create new users and send them a corresponding link to complete the registration. The number of search results is defined by the footer of the table. No more than 250 results can be displayed. Please use the magnifying glass icon to search users by name. By clicking on a row of the table, selected data of users can be changed.",
+      "Dieses Menü bietet eine Übersicht über die im System hinterlegten Nutzer. Der \"Neue Benutzer\"- Knopf am oberen Ende der Seite öffnet einen Dialog, der es ermöglicht, neue Nutzer anzulegen und diesen einen entsprechenden Link zu schicken, um die Registrierung abzuschließen. Die Anzahl der Suchergebnisse wird über die Fußzeile der Tabelle definiert. Es können nicht mehr als 250 Ergebnisse angezeigt werden. Bitte nutzen Sie das Lupen-Symbol, um Nutzer anhand des Namens zu suchen. Durch einen Klick auf eine Zeile der Tabelle können ausgewählte Daten der Nutzer geändert werden."
+    ],
+    "currentHelp": [
+      "The \"Current\"-menu provides an overview of all currently existing products. Information about the current products and their sales can be viewed. Clicking on the \"Products\"-button redirects to the sales of this product.",
+      "Das \"Aktuell\"-Menü bietet eine Übersicht über alle aktuell angelegten Produkte. Es können Informationen über die aktuellen Produkte und deren Verkäufe eingesehen werden. Der Klick auf den \"Verkäufe\"-Knopf leitet zu den Verkäufen dieses Produkts weiter."
+    ],
+    "administrationHelp": [
+      "The \"Administration\" menu contains the PayPal settings for the app. The PayPal app ID, the PayPal app secret and the PayPal button secret can be updated here.",
+      "Das \"Administration\"-Menü enthält die PayPal-Einstellungen für die App. Die PayPal-App-ID, der PayPal-App-Secret und das PayPal-Button-Secret können hier aktualisiert werden."
+    ],
+    "transactionsHelp": [
+      "The \"Transactions\" menu contains the receipts of the sales of the products. Information such as invoice number, time stamp, customer, product and amount are displayed in an overview. The receipt can be downloaded for each entry in this menu.",
+      "Das \"Zahlungsbelege\"-Menü enthält die Belege über die Verkäufe der Produkte. Informationen wie Rechnungsnummer, Zeitstempel, Kunde, Produkt und Betrag werden in einer Übersicht angezeigt. Zu jedem Eintrag in diesem Menü lässt sich die Quittung herunterladen."
+    ],
+    "productsHelp": [
+      "The \"Products\" menu contains an overview of the available products. In this menu, existing products can be configured and archived and new products can be added.",
+      "Das \"Produkte\"-Menü enthält eine Übersicht der vorhandenen Produkte. In diesem Menü lassen sich vorhandene Produkte konfigurieren und archivieren sowie neue Produkte hinzufügen."
+    ],
+    "salesHelp": [
+      "The \"Sales\" menu gives an overview of the sales. The customers name, email address, and date of sale are displayed. Further information can be displayed for each sale.",
+      "Das \"Verkäufe\"-Menü gibt eine Übersicht über die Verkäufe. Name des Kunden, seine E-Mail-Adresse und das Datum des Verkaufs werden angezeigt. Zu jedem Verkauf lassen sich weitere Informationen anzeigen."
+    ]
+  }
+}

@@ -1,3 +1,11 @@
+# node
 /tap-ui/node_modules/
 /node_modules/
 /.idea/
+/dist/*
+
+# RxDb-files
+db-rxdb-*
+pouch__all_dbs__
+_replicator
+_users
