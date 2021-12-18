@@ -24,30 +24,30 @@ export class Database {
         CollectionsOfDatabase &
         RxDatabaseGenerated<CollectionsOfDatabase>
 
-    private static dbList = new Map<string, RxDatabase>()
+    private static dbList = new Map<string, RxDatabase>();
 
     public static async get(name = 'base'): Promise<RxDatabase> {
         // get database from dbList by name
-        var db = this.dbList.get(name)
+        const db = this.dbList.get(name);
         if (db != null) {
             // return db if exist
-            return db
+            return db;
         }
 
         // if not exist -> create database
-        var base = name == 'base'
-        return this.createDatabase(name, base)
+        const base = name === 'base';
+        return this.createDatabase(name, base);
     }
 
     private static async createDatabase(name = 'base', base = false) {
-        var db: RxDatabase = await createRxDatabase({
+        const db: RxDatabase = await createRxDatabase({
             name: './db' + name,
             storage: getRxStoragePouch('websql'),
             ignoreDuplicate: true,
-        })
+        });
 
-        await db.waitForLeadership()
-        console.log('isLeader now')
+        await db.waitForLeadership();
+        console.log('isLeader now');
 
         try {
             if (base) {
@@ -67,7 +67,7 @@ export class Database {
                     appointments: {
                         schema: AppointmentSchema,
                     },
-                })
+                });
             } else {
                 await db.addCollections({
                     athletes: {
@@ -85,15 +85,15 @@ export class Database {
                     appointments: {
                         schema: AppointmentSchema,
                     },
-                })
+                });
             }
         } catch (e) {
-            console.log('error: ', e)
+            console.log('error: ', e);
         }
 
-        this.dbList.set(name, db)
+        this.dbList.set(name, db);
 
-        console.log(name + ' initialized.')
-        return db
+        console.log(name + ' initialized.');
+        return db;
     }
 }

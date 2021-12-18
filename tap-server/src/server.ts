@@ -11,17 +11,17 @@ Database.get().then(async (db) => {
     const mainApp = express()
 
     // configure CORS, other middlewares...
-    mainApp.use('/db', app)
+    mainApp.use('/db', app);
     mainApp.use('/import', (req, res) => {
         const activityPortalService = new ActivityPortalService()
         activityPortalService.fetchDataFromPortal()
-        res.send('importing')
+        res.send('importing');
     })
     mainApp.use('/', (req, res) => {
-        res.send('hello')
+        res.send('hello');
     })
 
-    const port = config.get('port')
-    console.log('port: ', port)
-    mainApp.listen(port, () => console.log(`Server listening on port ${port}`))
+    const port = config.get('port');
+    console.log('port: ', port);
+    mainApp.listen(port, () => console.log(`Server listening on port ${port}`));
 })
