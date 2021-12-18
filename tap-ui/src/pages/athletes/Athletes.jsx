@@ -14,8 +14,8 @@ import withStyles from '@material-ui/core/es/styles/withStyles'
 import { isRxDatabase, isRxCollection } from 'rxdb'
 
 import withProps from '../../components/HOC'
-import * as Database from '../../Database'
-import CoupleDialog from './CoupleDialog'
+import { getCollection, closeCollection } from '../../Database'
+import CoupleDialog from './AthleteDialog'
 
 const styles = (theme) => ({
     root: {
@@ -34,34 +34,32 @@ const styles = (theme) => ({
     },
 })
 
-class Couples extends Component {
+class Athletes extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
             newCoupleOpen: false,
             coupleToEdit: null,
-            couples: null,
+            Athletes: null,
         }
 
         this.subs = []
     }
 
     async componentDidMount() {
-        this.setState({ db: await Database.getClientDb() })
-
-        const sub = await this.state.db.couples
-            .find()
-            .$.subscribe((couples) => {
-                if (!couples) {
-                    return
-                }
-                console.log('reload couples-list ')
-                console.dir(couples)
-                this.setState({
-                    couples,
-                })
+        let collection = await getCollection('athletes')
+        let sub = await collection.find().$.subscribe((Athletes) => {
+            if (!Athletes) {
+                return
+            }
+            console.log('reload Athletes-list ')
+            console.dir(Athletes)
+            this.setState({
+                Athletes,
             })
+        })
+
         this.subs.push(sub)
     }
 
@@ -70,11 +68,12 @@ class Couples extends Component {
         this.subs.forEach((sub) => sub.unsubscribe())
     }
 
-    async deleteCouple(id) {
-        await this.state.db.couples
+    async deleteCouple(rfid) {
+        let collection = await getCollection('athletes')
+        collection
             .findOne({
                 selector: {
-                    id: id,
+                    rfid: rfid,
                 },
             })
             .remove()
@@ -82,7 +81,7 @@ class Couples extends Component {
 
     render() {
         const { classes } = this.props
-        const { couples, newCoupleOpen, coupleToEdit } = this.state
+        const { Athletes, newCoupleOpen, coupleToEdit } = this.state
 
         return (
             <div>
@@ -98,14 +97,6 @@ class Couples extends Component {
                     >
                         Tanzpaar hinzufügen
                     </Button>
-                    <Button
-                        className={classes.newCoupleButton}
-                        color="inherit"
-                        variant="outlined"
-                        color="primary"
-                    >
-                        Tanzpaare importieren
-                    </Button>
                 </Paper>
                 <CoupleDialog
                     open={newCoupleOpen}
@@ -117,75 +108,75 @@ class Couples extends Component {
                         })
                     }
                 />
-                {couples != null ? (
+                {Athletes != null ? (
                     <MUIDataTable
                         className={classes.table}
-                        data={couples}
+                        data={Athletes}
                         columns={[
                             {
-                                name: 'id',
+                                name: 'rfid',
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: 'class',
+                                name: 'book_id',
                                 options: {
                                     filter: true,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'number',
+                                name: 'pre_name',
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'nameOneFirst',
+                                name: 'family_name',
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'nameOneSecond',
+                                name: 'birth_year',
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'nameTwoFirst',
+                                name: 'sex',
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'nameTwoSecond',
+                                name: 'club_id',
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'clubNumber',
+                                name: 'club_name_short',
                                 options: {
                                     excluded: true,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'clubName',
+                                name: 'organization',
                                 options: {
                                     excluded: true,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'coupleNumber',
+                                name: 'sport',
                                 options: {
                                     sort: true,
                                 },
@@ -202,7 +193,7 @@ class Couples extends Component {
                                         if (tableMeta.rowData != null) {
                                             return (
                                                 <div>
-                                                    <Tooltip title="Bearbeiten">
+                                                    {/*<Tooltip title="Bearbeiten">
                                                         <span>
                                                             <IconButton
                                                                 onClick={() => {
@@ -247,7 +238,7 @@ class Couples extends Component {
                                                                 <Edit />
                                                             </IconButton>
                                                         </span>
-                                                    </Tooltip>
+                                                    </Tooltip>*/}
                                                     <Tooltip title="Entfernen">
                                                         <span>
                                                             <IconButton
@@ -286,12 +277,12 @@ class Couples extends Component {
 }
 
 // Specifies the default values for props:
-Couples.defaultProps = {
+Athletes.defaultProps = {
     routes: {
         routes: [
             {
                 name: 'default',
-                path: '/couples',
+                path: '/Athletes',
                 exact: true,
                 component: <LinearProgress />,
                 admin: false,
@@ -303,5 +294,5 @@ Couples.defaultProps = {
 }
 
 export default withStyles(styles, { withTheme: true })(
-    withRouter(withProps(Couples))
+    withRouter(withProps(Athletes))
 )
