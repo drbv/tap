@@ -1,0 +1,9 @@
+{
+  "login": {
+    "login_header": ["Please login", "Bitte Anmelden"],
+    "login_text": [
+      "Please log in with your Google Account to use our services.",
+      "Bitte melden Sie sich mit Ihren Google Account an, um unsere Dienste nutzen zu können."
+    ]
+  }
+}
