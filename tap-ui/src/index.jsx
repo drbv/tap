@@ -71,13 +71,14 @@ const theme = createTheme({
 })
 
 const Routes = [
-    /*{
-    name: 'Dashboard',
-    path: '/',
-    exact: true,
-    component: <Dashboard />,
-    icon: <Home />,
-  },
+    {
+        name: 'Dashboard',
+        path: '/',
+        exact: true,
+        component: <Dashboard />,
+        icon: <Home />,
+    },
+    /*
   {
     name: 'Beameransicht',
     path: '/beamer',

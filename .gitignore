@@ -5,7 +5,7 @@
 /dist/*
 
 # RxDb-files
-db-rxdb-*
+*-rxdb-*
 pouch__all_dbs__
 _replicator
 _users
