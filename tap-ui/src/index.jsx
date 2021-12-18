@@ -14,8 +14,10 @@ import {
     Airplay,
     PlaylistAddCheck,
     Description,
+    AccountBalance,
 } from '@material-ui/icons'
 import { green, yellow } from '@material-ui/core/colors'
+import BaseData from './pages/baseData/BaseData'
 
 const Users = lazy(() => import('./pages/users/Users'))
 const Athletes = lazy(() => import('./pages/athletes/Athletes'))
@@ -71,21 +73,20 @@ const theme = createTheme({
 })
 
 const Routes = [
-    {
+    /*{
         name: 'Dashboard',
         path: '/',
         exact: true,
         component: <Dashboard />,
         icon: <Home />,
     },
-    /*
   {
     name: 'Beameransicht',
     path: '/beamer',
     exact: true,
     component: <Beamer />,
     icon: <Airplay />,
-  },*/
+  },
     {
         name: 'Laufende Runden',
         path: '/current',
@@ -133,6 +134,15 @@ const Routes = [
         component: <Users />,
         admin: true,
         icon: <AccountBox />,
+    },
+    */
+    {
+        name: 'Aktivenportal-Daten',
+        path: '/base',
+        exact: true,
+        component: <BaseData />,
+        admin: true,
+        icon: <AccountBalance />,
     },
 ]
 
