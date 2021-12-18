@@ -69,6 +69,13 @@ export const AppointmentSchema = {
         begin_evening_event: {
             type: 'string',
         },
+        isActive: {
+            type: 'boolean',
+        },
+        createState: {
+            type: 'string',
+            enum: ['TO_CREATE', 'CREATED']
+        }
     },
     required: ['appointment_id', 'date', 'club_id', 'club_name_short', 'competition_name', 'location'],
 }
