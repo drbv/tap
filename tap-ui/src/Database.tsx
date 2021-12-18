@@ -3,6 +3,7 @@ import {
     addRxPlugin,
     createRxDatabase,
     getRxStoragePouch,
+    RxDatabase,
 } from 'rxdb'
 import { RxDBNoValidatePlugin } from 'rxdb/plugins/no-validate'
 import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election'
@@ -31,9 +32,44 @@ addRxPlugin(RxDBLeaderElectionPlugin)
 addPouchPlugin(pouchdb_adapter_http)
 addPouchPlugin(pouchdb_adapter_websql)
 
-var dbPromise: any = null
+let dbPromise: any = null
+const activeSyncs = new Map()
 
-async function getClientDb() {
+export async function getCollection(collection: string) {
+    var clientDB = await getClientDb()
+    var rxCollection: any = clientDB[collection]
+
+    // check if there is already a alive replicationState
+    if (((repState = activeSyncs.get(collection)), repState != null)) {
+        if (repState.alive) {
+            return rxCollection
+        }
+    }
+
+    // sync local collection with server
+    var repState = rxCollection.syncCouchDB({
+        remote: 'http://localhost:5000/db/' + collection,
+        options: {
+            live: true,
+            retry: true,
+        },
+    })
+
+    // save repState to be able to close sync
+    activeSyncs.set(collection, repState)
+
+    return rxCollection
+}
+
+export async function closeCollection(collection: string) {
+    var repState = activeSyncs.get(collection)
+    if (repState) {
+        await repState.cancel()
+        activeSyncs.delete(collection)
+    }
+}
+
+async function _create() {
     const db = await createRxDatabase({
         name: './client-db',
         storage: getRxStoragePouch('websql'),
@@ -76,9 +112,6 @@ async function getClientDb() {
         subrounds: {
             schema: subRoundSchema,
         },
-        couples: {
-            schema: coupleSchema,
-        },
         results: {
             schema: resultSchema,
         },
@@ -94,4 +127,7 @@ async function getClientDb() {
     return db
 }
 
-export default getClientDb
+export async function getClientDb() {
+    if (!dbPromise) dbPromise = await _create()
+    return dbPromise
+}

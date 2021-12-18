@@ -18,7 +18,7 @@ import {
 import { green, yellow } from '@material-ui/core/colors'
 
 const Users = lazy(() => import('./pages/users/Users'))
-const Couples = lazy(() => import('./pages/couples/Couples'))
+const Athletes = lazy(() => import('./pages/athletes/Athletes'))
 const Rounds = lazy(() => import('./pages/rounds/Rounds'))
 const Results = lazy(() => import('./pages/results/Results'))
 const Evaluations = lazy(() => import('./pages/evaluations/Evaluations'))
@@ -103,9 +103,9 @@ const Routes = [
     },
     {
         name: 'Teilnehmerliste',
-        path: '/couple',
+        path: '/athletes',
         exact: true,
-        component: <Couples />,
+        component: <Athletes />,
         admin: true,
         icon: <PeopleAlt />,
     },

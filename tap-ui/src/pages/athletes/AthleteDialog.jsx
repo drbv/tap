@@ -30,7 +30,7 @@ const styles = (theme) => ({
     },
 })
 
-class CoupleDialog extends React.Component {
+class AthleteDialog extends React.Component {
     constructor(props) {
         super(props)
 
@@ -327,7 +327,7 @@ class CoupleDialog extends React.Component {
     }
 }
 
-CoupleDialog.propTypes = {
+AthleteDialog.propTypes = {
     /**
      * dialog open or closed
      */
@@ -338,4 +338,4 @@ CoupleDialog.propTypes = {
     handleClose: PropTypes.func.isRequired,
 }
 
-export default withStyles(styles, { withTheme: true })(CoupleDialog)
+export default withStyles(styles, { withTheme: true })(AthleteDialog)
