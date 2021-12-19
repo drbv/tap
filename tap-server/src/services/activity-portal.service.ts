@@ -7,7 +7,7 @@ import {Database} from '../database'
 import {StartDataBwData} from '../../../shared/models/start-data-bw-data.model'
 import {StartDataRrData} from '../../../shared/models/start-data-rr-data.model'
 import {RxDatabaseBase} from 'rxdb/dist/types/rx-database'
-import {CollectionsOfDatabase, RxDatabaseGenerated} from 'rxdb'
+import {CollectionsOfDatabase, RxCollection, RxDatabase, RxDatabaseGenerated} from 'rxdb'
 import {StartDataWrTlData} from '../../../shared/models/start-data-wr-tl-data.model'
 import {
     BwLicense,
@@ -86,10 +86,12 @@ export class ActivityPortalService {
             console.error('cannot access database');
         }
 
+        const database = await Database.createDatabase(id);
+
         const url = `https://drbv.de/cms/images/Download/TurnierProgramm/startlisten/${id}_Anmeldung.txt`;
 
         const csvData = await this.fetchData<CompetitionData>(url);
-        await this.importActiveDb(id, csvData);
+        await this.importActiveDb(database, csvData);
     }
 
     private async fetchData<T>(url: string): Promise<T[]> {
@@ -467,15 +469,15 @@ export class ActivityPortalService {
         console.log('updated imported appointments');
     }
 
-    private async importActiveDb(id: string, csvData: CompetitionData[]) {
-        if (id === null) {
-            console.log("invalid id");
+    private async importActiveDb(database: RxDatabase, csvData: CompetitionData[]) {
+        if (database === null) {
+            console.log("invalid collection");
             return;
         }
         for (const row of csvData) {
             try {
                 // TODO find db with id
-                await this.db.collections[id].upsert({
+                await database.competition.upsert({
                     appointment_id: row.Turniernr.toString(),
                     series: row.Cup_Serie,
                     league: row.Startkl,

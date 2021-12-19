@@ -15,6 +15,7 @@ import { OfficialSchema } from '../../shared/schemas/official.schema'
 import { TeamSchema } from '../../shared/schemas/team.schema'
 import { AcroSchema } from '../../shared/schemas/acro.schema'
 import { AppointmentSchema } from '../../shared/schemas/appointment.schema'
+import {CompetitionSchema} from "../../shared/schemas/competition.schema";
 
 addRxPlugin(RxDBServerPlugin)
 addPouchPlugin(pouchdb_adapter_node_websql)
@@ -39,7 +40,7 @@ export class Database {
         return this.createDatabase(name, base);
     }
 
-    static async createDatabase(name = 'base', base = false) {
+    static async createDatabase(name = 'base', base = false): Promise<RxDatabase> {
         const db: RxDatabase = await createRxDatabase({
             name: './db' + name,
             storage: getRxStoragePouch('websql'),
@@ -70,20 +71,9 @@ export class Database {
                 });
             } else {
                 await db.addCollections({
-                    athletes: {
-                        schema: AthleteSchema,
-                    },
-                    teams: {
-                        schema: TeamSchema,
-                    },
-                    officials: {
-                        schema: OfficialSchema,
-                    },
-                    acros: {
-                        schema: AcroSchema,
-                    },
-                    appointments: {
-                        schema: AppointmentSchema,
+                // TODO add missing collections
+                    competition: {
+                        schema: CompetitionSchema,
                     },
                 });
             }
