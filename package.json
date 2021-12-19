@@ -22,7 +22,6 @@
         "rxdb": "^10.0.3",
         "rxjs": "^7.3.0",
         "ts-node": "^10.2.1",
-        "sqlite3": "^5.0.2",
         "websql": "^2.0.3"
     },
     "devDependencies": {
