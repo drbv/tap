@@ -14,15 +14,17 @@ Database.get().then(async (db) => {
     // configure CORS, other middlewares...
     mainApp.use('/db', app);
     mainApp.use('/import', (req, res) => {
-        const activityPortalService = new ActivityPortalService()
-        activityPortalService.fetchDataFromPortal()
+        const activityPortalService = new ActivityPortalService();
+        activityPortalService.fetchDataFromPortal();
         res.send('importing');
     })
-    mainApp.use('activate', (req, res) => {
-        if(!req.query.param) {
+    mainApp.use('/activate', async (req, res) => {
+        if (!req.query.id) {
             res.status(400).send('Required query params missing');
         }
-        const id = req.body.param
+        const id = req.query.id as string;
+        const activityPortalService = new ActivityPortalService();
+        await activityPortalService.fetchAppointmentDataFromPortal(id);
         res.send('Database with id ' + id + ' created.');
     });
     mainApp.use('/', (req, res) => {

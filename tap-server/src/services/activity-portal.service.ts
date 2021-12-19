@@ -1,19 +1,14 @@
 import config from 'config'
-import Papa, {ParseError, ParseResult} from 'papaparse'
-import * as https from 'https'
+import Papa, {NODE_STREAM_INPUT, ParseResult} from 'papaparse'
 import {UrlConfig} from '../interfaces/url-config.interface'
 import {Constants} from '../models/constants.model'
 import {Database} from '../database'
 import {StartDataBwData} from '../../../shared/models/start-data-bw-data.model'
 import {StartDataRrData} from '../../../shared/models/start-data-rr-data.model'
 import {RxDatabaseBase} from 'rxdb/dist/types/rx-database'
-import {CollectionsOfDatabase, RxCollection, RxDatabase, RxDatabaseGenerated} from 'rxdb'
+import {CollectionsOfDatabase, RxDatabase, RxDatabaseGenerated} from 'rxdb'
 import {StartDataWrTlData} from '../../../shared/models/start-data-wr-tl-data.model'
-import {
-    BwLicense,
-    License,
-    RrLicense,
-} from '../../../shared/interfaces/license.interface'
+import {BwLicense, License, RrLicense,} from '../../../shared/interfaces/license.interface'
 import {Offical} from '../../../shared/interfaces/offical.interface'
 import {Team} from '../../../shared/interfaces/team.interface'
 import {TeamMember} from '../../../shared/interfaces/team-member.interface'
@@ -21,6 +16,7 @@ import {FormationData} from '../../../shared/models/formation-data.model'
 import {DrbvAcroData} from '../../../shared/models/drbv-acro-data.model'
 import {StartDataAppointmentData} from '../../../shared/models/start-data-appointment-data.model'
 import {CompetitionData} from "../../../shared/models/competition-data.model";
+import * as https from "https";
 
 export class ActivityPortalService {
     private db: RxDatabaseBase<any, any> & CollectionsOfDatabase & RxDatabaseGenerated<CollectionsOfDatabase>;
@@ -95,16 +91,65 @@ export class ActivityPortalService {
     }
 
     private async fetchData<T>(url: string): Promise<T[]> {
-        const streamHttp = await new Promise<any>((resolve, reject) =>
-            https.get(url, (res) => {
-                res.setEncoding('latin1')
+
+        const csvData = await new Promise<any>((resolve, reject) =>
+            this.getData(url).then((res) => {
+                console.log(res);
                 resolve(res);
             })
         );
 
-        return new Promise((resolve, reject) => {
-            Papa.parse(streamHttp, {
+        return new Promise<T[]>((resolve, reject) => {
+
+            const parseStream = Papa.parse<T>(csvData, {
                 header: true,
+                fastMode: true,
+                worker: false,
+                dynamicTyping: true,
+                transformHeader(header: string, index?: number): string {
+                    if (header === 'Nr#') {
+                        return 'Nr';
+                    }
+                    if (header === 'e-mail') {
+                        return 'email';
+                    }
+                    if (header === 'Straße') {
+                        return 'Strasse';
+                    }
+                    if (header === 'Einschränkungen') {
+                        return 'Einschraenkungen';
+                    }
+                    return header;
+                },
+            });
+
+            console.log('nuss: ', parseStream);
+            resolve(parseStream.data);
+        });
+
+            /*const Readable = require('stream').Readable;
+            const s = new Readable();
+            s.push(csvData);
+            s.push(null);
+
+            s.pipe(parseStream);
+
+            const data: T[] = [];
+            parseStream.on("data", chunk => {
+                data.push(chunk);
+            });
+
+            parseStream.on("finish", () => {
+                console.log(data);
+                console.log(data.length);
+                resolve(data);
+            });
+
+        });*/
+            /*Papa.parse(csvData, {
+                header: true,
+                worker: false,
+                encoding: 'latin1',
                 dynamicTyping: true,
                 transformHeader(header: string, index?: number): string {
                     if (header === 'Nr#') {
@@ -124,11 +169,39 @@ export class ActivityPortalService {
                 complete(results: ParseResult<T>) {
                     resolve(results.data);
                 },
-                error(error) {
-                    reject(error.message);
+                error() {
+                    reject();
+                }
+            });*/
+
+    }
+
+    private get(url: string, resolve: any, reject: any) {
+        https.get(url, (res) => {
+            // if any other status codes are returned, those needed to be added here
+            if(res.statusCode === 301 || res.statusCode === 302) {
+                return this.get(res.headers.location, resolve, reject)
+            }
+
+            res.setEncoding('latin1');
+
+            let body: string = '';
+            res.on("data", (chunk) => {
+                body+= chunk;
+            });
+
+            res.on("end", () => {
+                try {
+                    resolve(body);
+                } catch (err) {
+                    reject(err);
                 }
             });
         });
+    }
+
+    private async getData(url: string) {
+        return new Promise((resolve, reject) => this.get(url, resolve, reject));
     }
 
     private async importBwData(csvData: StartDataBwData[]) {
@@ -476,9 +549,8 @@ export class ActivityPortalService {
         }
         for (const row of csvData) {
             try {
-                // TODO find db with id
                 await database.competition.upsert({
-                    appointment_id: row.Turniernr.toString(),
+                    appointment_id: row.Turniernr,
                     series: row.Cup_Serie,
                     league: row.Startkl,
                     club_id: row.Verein_nr,
