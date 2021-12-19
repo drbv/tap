@@ -126,54 +126,6 @@ export class ActivityPortalService {
             console.log('nuss: ', parseStream);
             resolve(parseStream.data);
         });
-
-            /*const Readable = require('stream').Readable;
-            const s = new Readable();
-            s.push(csvData);
-            s.push(null);
-
-            s.pipe(parseStream);
-
-            const data: T[] = [];
-            parseStream.on("data", chunk => {
-                data.push(chunk);
-            });
-
-            parseStream.on("finish", () => {
-                console.log(data);
-                console.log(data.length);
-                resolve(data);
-            });
-
-        });*/
-            /*Papa.parse(csvData, {
-                header: true,
-                worker: false,
-                encoding: 'latin1',
-                dynamicTyping: true,
-                transformHeader(header: string, index?: number): string {
-                    if (header === 'Nr#') {
-                        return 'Nr';
-                    }
-                    if (header === 'e-mail') {
-                        return 'email';
-                    }
-                    if (header === 'Straße') {
-                        return 'Strasse';
-                    }
-                    if (header === 'Einschränkungen') {
-                        return 'Einschraenkungen';
-                    }
-                    return header;
-                },
-                complete(results: ParseResult<T>) {
-                    resolve(results.data);
-                },
-                error() {
-                    reject();
-                }
-            });*/
-
     }
 
     private get(url: string, resolve: any, reject: any) {
