@@ -95,19 +95,15 @@ class UserDialog extends React.Component {
                             value={localUser.name}
                             required={true}
                             onChange={(e) => {
-                                this.setState((prevState) => {
-                                    let localUser = Object.assign(
-                                        {},
-                                        prevState.localUser
-                                    ) // creating copy of state variable
-                                    localUser.name = e.target.value // update the name property, assign a new value
-                                    return { localUser } // return new object
+                                let localUserCopy = localUser
+                                localUserCopy.name = e.target.value
+                                this.setState({
+                                    localUser: localUserCopy,
                                 })
                             }}
                             helperText="Name des Nutzers"
                             label="Name"
                             type="text"
-                            autoComplete="name"
                             fullWidth
                             className={classes.inputContent}
                         />
@@ -155,13 +151,10 @@ class UserDialog extends React.Component {
                                 value={this.state.localUser.key}
                                 multiline={true}
                                 onChange={(e) => {
-                                    this.setState((prevState) => {
-                                        let localUser = Object.assign(
-                                            {},
-                                            prevState.localUser
-                                        ) // creating copy of state variable
-                                        localUser.key = e.target.value // update the name property, assign a new value
-                                        return { localUser } // return new object
+                                    let localUserCopy = localUser
+                                    localUserCopy.key = e.target.value
+                                    this.setState({
+                                        localUser: localUserCopy,
                                     })
                                 }}
                                 helperText="Passwort zum Anmelden"
