@@ -67,29 +67,57 @@ class TeamData extends Component {
                         data={Teams}
                         columns={[
                             {
-                                name: 'appointment_id',
+                                name: 'book_id',
                                 options: {
                                     filter: false,
                                 },
-                                name: 'location',
+                            },
+                            {
+                                name: 'team_name',
                                 options: {
                                     filter: false,
-                                    sort: true,
                                 },
-                                name: 'isActive',
+                            },
+                            {
+                                name: 'club_id',
                                 options: {
                                     filter: false,
-                                    sort: true,
                                 },
-                                name: 'createState',
+                            },
+                            {
+                                name: 'club_name_short',
                                 options: {
                                     filter: false,
-                                    sort: true,
+                                },
+                            },
+                            {
+                                name: 'organization',
+                                options: {
+                                    filter: false,
+                                },
+                            },
+                            {
+                                name: 'sport',
+                                options: {
+                                    filter: false,
+                                },
+                            },
+                            {
+                                name: 'league',
+                                options: {
+                                    filter: false,
+                                },
+                            },
+                            {
+                                name: 'members',
+                                options: {
+                                    filter: false,
                                 },
                             },
                         ]}
                         options={{
                             responsive: 'scrollFullHeight',
+                            selectableRows: 'none',
                             rowsPerPageOptions: [50, 100, 250],
                         }}
                     ></MUIDataTable>

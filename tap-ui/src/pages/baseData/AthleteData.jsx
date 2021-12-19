@@ -67,29 +67,69 @@ class AthleteData extends Component {
                         data={Athletes}
                         columns={[
                             {
-                                name: 'appointment_id',
+                                name: 'rfid',
                                 options: {
                                     filter: false,
                                 },
-                                name: 'location',
+                            },
+                            {
+                                name: 'book_id',
                                 options: {
                                     filter: false,
-                                    sort: true,
                                 },
-                                name: 'isActive',
+                            },
+                            {
+                                name: 'pre_name',
                                 options: {
                                     filter: false,
-                                    sort: true,
                                 },
-                                name: 'createState',
+                            },
+                            {
+                                name: 'family_name',
                                 options: {
                                     filter: false,
-                                    sort: true,
+                                },
+                            },
+                            {
+                                name: 'birth_year',
+                                options: {
+                                    filter: false,
+                                },
+                            },
+                            {
+                                name: 'sex',
+                                options: {
+                                    filter: false,
+                                },
+                            },
+                            {
+                                name: 'club_id',
+                                options: {
+                                    filter: false,
+                                },
+                            },
+                            {
+                                name: 'club_name_short',
+                                options: {
+                                    filter: false,
+                                },
+                            },
+                            {
+                                name: 'organization',
+                                options: {
+                                    filter: false,
+                                },
+                            },
+                            {
+                                name: 'sport',
+                                options: {
+                                    filter: false,
                                 },
                             },
                         ]}
                         options={{
                             responsive: 'scrollFullHeight',
+                            selectableRows: 'none',
                             rowsPerPageOptions: [50, 100, 250],
                         }}
                     ></MUIDataTable>
