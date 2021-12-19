@@ -67,29 +67,57 @@ class OfficialData extends Component {
                         data={Officials}
                         columns={[
                             {
-                                name: 'appointment_id',
+                                name: 'id',
                                 options: {
                                     filter: false,
                                 },
-                                name: 'location',
+                            },
+                            {
+                                name: 'rfid',
                                 options: {
                                     filter: false,
-                                    sort: true,
                                 },
-                                name: 'isActive',
+                            },
+                            {
+                                name: 'pre_name',
                                 options: {
                                     filter: false,
-                                    sort: true,
                                 },
-                                name: 'createState',
+                            },
+                            {
+                                name: 'family_name',
                                 options: {
                                     filter: false,
-                                    sort: true,
+                                },
+                            },
+                            {
+                                name: 'club_id',
+                                options: {
+                                    filter: false,
+                                },
+                            },
+                            {
+                                name: 'licence',
+                                options: {
+                                    filter: false,
+                                },
+                            },
+                            {
+                                name: 'email',
+                                options: {
+                                    filter: false,
+                                },
+                            },
+                            {
+                                name: 'organization',
+                                options: {
+                                    filter: false,
                                 },
                             },
                         ]}
                         options={{
                             responsive: 'scrollFullHeight',
+                            selectableRows: 'none',
                             rowsPerPageOptions: [50, 100, 250],
                         }}
                     ></MUIDataTable>

@@ -68,29 +68,54 @@ class AcroData extends Component {
                         data={Acros}
                         columns={[
                             {
-                                name: 'appointment_id',
+                                name: 'id',
                                 options: {
                                     filter: false,
                                 },
-                                name: 'location',
+                            },
+                            {
+                                // Akrobatik
+                                name: 'acro_short_text',
                                 options: {
                                     filter: false,
-                                    sort: true,
                                 },
-                                name: 'isActive',
+                            },
+                            {
+                                // Langtext
+                                name: 'acro_long_text',
                                 options: {
                                     filter: false,
-                                    sort: true,
                                 },
-                                name: 'createState',
+                            },
+                            {
+                                // Einstufung
+                                name: 'rating',
                                 options: {
                                     filter: false,
-                                    sort: true,
+                                },
+                            },
+                            {
+                                name: 'points',
+                                options: {
+                                    filter: false,
+                                },
+                            },
+                            {
+                                name: 'group',
+                                options: {
+                                    filter: false,
+                                },
+                            },
+                            {
+                                name: 'notice',
+                                options: {
+                                    filter: false,
                                 },
                             },
                         ]}
                         options={{
                             responsive: 'scrollFullHeight',
+                            selectableRows: 'none',
                             rowsPerPageOptions: [50, 100, 250],
                         }}
                     ></MUIDataTable>

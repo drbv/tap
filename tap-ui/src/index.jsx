@@ -126,7 +126,7 @@ const Routes = [
         component: <Evaluations />,
         admin: true,
         icon: <PlaylistAddCheck />,
-    },
+    },*/
     {
         name: 'Nutzerverwaltung',
         path: '/user',
@@ -135,7 +135,6 @@ const Routes = [
         admin: true,
         icon: <AccountBox />,
     },
-    */
     {
         name: 'Aktivenportal-Daten',
         path: '/base',
