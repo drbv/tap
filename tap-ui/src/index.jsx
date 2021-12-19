@@ -15,10 +15,12 @@ import {
     PlaylistAddCheck,
     Description,
     AccountBalance,
-} from '@material-ui/icons'
+    ModelTraining,
+} from '@mui/icons-material'
 import { green, yellow } from '@material-ui/core/colors'
-import BaseData from './pages/baseData/BaseData'
 
+const BaseData = lazy(() => import('./pages/baseData/BaseData'))
+const Conditions = lazy(() => import('./pages/conditions/Conditions'))
 const Users = lazy(() => import('./pages/users/Users'))
 const Athletes = lazy(() => import('./pages/athletes/Athletes'))
 const Rounds = lazy(() => import('./pages/rounds/Rounds'))
@@ -86,7 +88,7 @@ const Routes = [
     exact: true,
     component: <Beamer />,
     icon: <Airplay />,
-  },
+  },ModelTraining
     {
         name: 'Laufende Runden',
         path: '/current',
@@ -128,20 +130,28 @@ const Routes = [
         icon: <PlaylistAddCheck />,
     },*/
     {
-        name: 'Nutzerverwaltung',
-        path: '/user',
-        exact: true,
-        component: <Users />,
-        admin: true,
-        icon: <AccountBox />,
-    },
-    {
         name: 'Aktivenportal-Daten',
         path: '/base',
         exact: true,
         component: <BaseData />,
         admin: true,
         icon: <AccountBalance />,
+    },
+    {
+        name: 'Turniereinstellungen',
+        path: '/conditions',
+        exact: true,
+        component: <Conditions />,
+        admin: true,
+        icon: <ModelTraining />,
+    },
+    {
+        name: 'Nutzerverwaltung',
+        path: '/user',
+        exact: true,
+        component: <Users />,
+        admin: true,
+        icon: <AccountBox />,
     },
 ]
 

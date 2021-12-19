@@ -3,11 +3,7 @@ import { Route, withRouter } from 'react-router-dom'
 
 import { withStyles, Tabs, Tab, Typography, Paper } from '@material-ui/core'
 
-const AcroData = lazy(() => import('./AcroData'))
-const AthleteData = lazy(() => import('./AthleteData'))
-const AppointmentData = lazy(() => import('./AppointmentData'))
-const OfficialData = lazy(() => import('./OfficialData'))
-const TeamData = lazy(() => import('./TeamData'))
+const Competition = lazy(() => import('./Competition'))
 
 const styles = (theme) => ({
     root: {
@@ -43,21 +39,20 @@ function TabPanel(props) {
     )
 }
 
-class BaseData extends Component {
+class Conditions extends Component {
     constructor(props) {
         super(props)
         this.state = {
             tab: 0,
         }
     }
-
     render() {
         const { classes } = this.props
         return (
             <div>
                 <Route
                     exact
-                    path="/base"
+                    path="/conditions"
                     render={() => {
                         return (
                             <div>
@@ -78,23 +73,24 @@ class BaseData extends Component {
                                                     color="textPrimary"
                                                     display="initial"
                                                 >
-                                                    Akrobatiken
+                                                    1: Turnierauswahl
                                                 </Typography>
                                             }
                                             {...a11yProps(0)}
                                         />
                                         <Tab
+                                            disabled
                                             label={
                                                 <Typography
                                                     className={classes.tablabel}
                                                     color="textPrimary"
                                                 >
-                                                    Turniere
+                                                    2: Wertungsvorschriften
                                                 </Typography>
                                             }
                                             {...a11yProps(1)}
                                         />
-                                        <Tab
+                                        {/*<Tab
                                             label={
                                                 <Typography
                                                     className={classes.tablabel}
@@ -126,24 +122,24 @@ class BaseData extends Component {
                                                 </Typography>
                                             }
                                             {...a11yProps(4)}
-                                        />
+                                        />*/}
                                     </Tabs>
                                 </Paper>
                                 <TabPanel value={this.state.tab} index={0}>
-                                    <AcroData />
+                                    <Competition />
                                 </TabPanel>
-                                <TabPanel value={this.state.tab} index={1}>
-                                    <AppointmentData />
-                                </TabPanel>
-                                <TabPanel value={this.state.tab} index={2}>
-                                    <AthleteData />
-                                </TabPanel>
-                                <TabPanel value={this.state.tab} index={3}>
-                                    <OfficialData />
-                                </TabPanel>
-                                <TabPanel value={this.state.tab} index={4}>
-                                    <TeamData />
-                                </TabPanel>
+                                {/*<TabPanel value={this.state.tab} index={1}>
+                    <AppointmentData />
+                </TabPanel>
+                <TabPanel value={this.state.tab} index={2}>
+                    <AthleteData />
+                </TabPanel>
+                <TabPanel value={this.state.tab} index={3}>
+                    <OfficialData />
+                </TabPanel>
+                <TabPanel value={this.state.tab} index={4}>
+                    <TeamData />
+                </TabPanel>*/}
                             </div>
                         )
                     }}
@@ -153,4 +149,4 @@ class BaseData extends Component {
     }
 }
 
-export default withStyles(styles)(withRouter(BaseData))
+export default withStyles(styles)(withRouter(Conditions))
