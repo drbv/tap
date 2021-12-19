@@ -39,7 +39,7 @@ export class Database {
         return this.createDatabase(name, base);
     }
 
-    private static async createDatabase(name = 'base', base = false) {
+    static async createDatabase(name = 'base', base = false) {
         const db: RxDatabase = await createRxDatabase({
             name: './db' + name,
             storage: getRxStoragePouch('websql'),
