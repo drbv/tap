@@ -4,6 +4,7 @@ import { Route, withRouter } from 'react-router-dom'
 import { withStyles, Tabs, Tab, Typography, Paper } from '@material-ui/core'
 
 const Competition = lazy(() => import('./Competition'))
+const Evaluations = lazy(() => import('./Evaluations'))
 
 const styles = (theme) => ({
     root: {
@@ -79,7 +80,6 @@ class Conditions extends Component {
                                             {...a11yProps(0)}
                                         />
                                         <Tab
-                                            disabled
                                             label={
                                                 <Typography
                                                     className={classes.tablabel}
@@ -128,10 +128,10 @@ class Conditions extends Component {
                                 <TabPanel value={this.state.tab} index={0}>
                                     <Competition />
                                 </TabPanel>
-                                {/*<TabPanel value={this.state.tab} index={1}>
-                    <AppointmentData />
-                </TabPanel>
-                <TabPanel value={this.state.tab} index={2}>
+                                <TabPanel value={this.state.tab} index={1}>
+                                    <Evaluations />
+                                </TabPanel>
+                                {/*<TabPanel value={this.state.tab} index={2}>
                     <AthleteData />
                 </TabPanel>
                 <TabPanel value={this.state.tab} index={3}>

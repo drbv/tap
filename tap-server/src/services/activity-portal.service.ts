@@ -140,7 +140,6 @@ export class ActivityPortalService {
                 },
             })
 
-            console.log('nuss: ', parseStream)
             resolve(parseStream.data)
         })
     }
