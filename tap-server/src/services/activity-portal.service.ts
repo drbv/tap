@@ -1,106 +1,123 @@
 import config from 'config'
-import Papa, {NODE_STREAM_INPUT, ParseResult} from 'papaparse'
-import {UrlConfig} from '../interfaces/url-config.interface'
-import {Constants} from '../models/constants.model'
-import {Database} from '../database'
-import {StartDataBwData} from '../../../shared/models/start-data-bw-data.model'
-import {StartDataRrData} from '../../../shared/models/start-data-rr-data.model'
-import {RxDatabaseBase} from 'rxdb/dist/types/rx-database'
-import {CollectionsOfDatabase, RxDatabase, RxDatabaseGenerated} from 'rxdb'
-import {StartDataWrTlData} from '../../../shared/models/start-data-wr-tl-data.model'
-import {BwLicense, License, RrLicense,} from '../../../shared/interfaces/license.interface'
-import {Offical} from '../../../shared/interfaces/offical.interface'
-import {Team} from '../../../shared/interfaces/team.interface'
-import {TeamMember} from '../../../shared/interfaces/team-member.interface'
-import {FormationData} from '../../../shared/models/formation-data.model'
-import {DrbvAcroData} from '../../../shared/models/drbv-acro-data.model'
-import {StartDataAppointmentData} from '../../../shared/models/start-data-appointment-data.model'
-import {CompetitionData} from "../../../shared/models/competition-data.model";
-import * as https from "https";
+import Papa, { NODE_STREAM_INPUT, ParseResult } from 'papaparse'
+import { UrlConfig } from '../interfaces/url-config.interface'
+import { Constants } from '../models/constants.model'
+import { Database } from '../database'
+import { StartDataBwData } from '../../../shared/models/start-data-bw-data.model'
+import { StartDataRrData } from '../../../shared/models/start-data-rr-data.model'
+import { RxDatabaseBase } from 'rxdb/dist/types/rx-database'
+import { CollectionsOfDatabase, RxDatabase, RxDatabaseGenerated } from 'rxdb'
+import { StartDataWrTlData } from '../../../shared/models/start-data-wr-tl-data.model'
+import {
+    BwLicense,
+    License,
+    RrLicense,
+} from '../../../shared/interfaces/license.interface'
+import { Offical } from '../../../shared/interfaces/offical.interface'
+import { Team } from '../../../shared/interfaces/team.interface'
+import { TeamMember } from '../../../shared/interfaces/team-member.interface'
+import { FormationData } from '../../../shared/models/formation-data.model'
+import { DrbvAcroData } from '../../../shared/models/drbv-acro-data.model'
+import { StartDataAppointmentData } from '../../../shared/models/start-data-appointment-data.model'
+import { CompetitionData } from '../../../shared/models/competition-data.model'
+import * as https from 'https'
 
 export class ActivityPortalService {
-    private db: RxDatabaseBase<any, any> & CollectionsOfDatabase & RxDatabaseGenerated<CollectionsOfDatabase>;
+    private db: RxDatabaseBase<any, any> &
+        CollectionsOfDatabase &
+        RxDatabaseGenerated<CollectionsOfDatabase>
 
     public async fetchDataFromPortal(): Promise<void> {
-        const urlConfigs: UrlConfig[] = config.get('urls');
+        const urlConfigs: UrlConfig[] = config.get('urls')
 
-        this.db = await Database.get();
+        this.db = await Database.get()
 
         if (this.db === null) {
-            console.error('cannot access database');
+            console.error('cannot access database')
         }
 
         for (const urlConfig of urlConfigs) {
             try {
                 switch (urlConfig.schema) {
                     case Constants.ACTIVITY_PORTAL_IMPORT_BW: {
-                        const csvData = await this.fetchData<StartDataBwData>(urlConfig.url);
-                        await this.importBwData(csvData);
-                        break;
+                        const csvData = await this.fetchData<StartDataBwData>(
+                            urlConfig.url
+                        )
+                        await this.importBwData(csvData)
+                        break
                     }
                     case Constants.ACTIVITY_PORTAL_IMPORT_RR: {
-                        const csvData = await this.fetchData<StartDataRrData>(urlConfig.url);
-                        await this.importRrData(csvData);
-                        break;
+                        const csvData = await this.fetchData<StartDataRrData>(
+                            urlConfig.url
+                        )
+                        await this.importRrData(csvData)
+                        break
                     }
 
                     case Constants.ACTIVITY_PORTAL_IMPORT_F: {
-                        const csvData = await this.fetchData<FormationData>(urlConfig.url);
-                        await this.importFormationData(csvData);
-                        break;
+                        const csvData = await this.fetchData<FormationData>(
+                            urlConfig.url
+                        )
+                        await this.importFormationData(csvData)
+                        break
                     }
                     case Constants.ACTIVITY_PORTAL_IMPORT_WR_TL: {
-                        const csvData = await this.fetchData<StartDataWrTlData>(urlConfig.url);
-                        await this.importWrTlData(csvData);
-                        break;
+                        const csvData = await this.fetchData<StartDataWrTlData>(
+                            urlConfig.url
+                        )
+                        await this.importWrTlData(csvData)
+                        break
                     }
                     case Constants.ACTIVITY_PORTAL_IMPORT_ACRO: {
-                        const csvData = await this.fetchData<DrbvAcroData>(urlConfig.url);
-                        await this.importAcroData(csvData);
-                        break;
+                        const csvData = await this.fetchData<DrbvAcroData>(
+                            urlConfig.url
+                        )
+                        await this.importAcroData(csvData)
+                        break
                     }
                     case Constants.ACTIVITY_PORTAL_IMPORT_APPOINTMENTS: {
-                        const csvData = await this.fetchData<StartDataAppointmentData>(urlConfig.url);
-                        await this.importAppointmentData(csvData);
-                        break;
+                        const csvData =
+                            await this.fetchData<StartDataAppointmentData>(
+                                urlConfig.url
+                            )
+                        await this.importAppointmentData(csvData)
+                        break
                     }
 
                     default: {
-                        break;
+                        break
                     }
                 }
             } catch (e) {
-                console.error(e);
+                console.error(e)
             }
         }
     }
 
     public async fetchAppointmentDataFromPortal(id: string): Promise<void> {
-        this.db = await Database.get();
+        this.db = await Database.get()
 
         if (this.db === null) {
-            console.error('cannot access database');
+            console.error('cannot access database')
         }
 
-        const database = await Database.createDatabase(id);
+        const database = await Database.createDatabase(id)
 
-        const url = `https://drbv.de/cms/images/Download/TurnierProgramm/startlisten/${id}_Anmeldung.txt`;
+        const url = `https://drbv.de/cms/images/Download/TurnierProgramm/startlisten/${id}_Anmeldung.txt`
 
-        const csvData = await this.fetchData<CompetitionData>(url);
-        await this.importActiveDb(database, csvData);
+        const csvData = await this.fetchData<CompetitionData>(url)
+        await this.importActiveDb(database, csvData)
     }
 
     private async fetchData<T>(url: string): Promise<T[]> {
-
         const csvData = await new Promise<any>((resolve, reject) =>
             this.getData(url).then((res) => {
-                console.log(res);
-                resolve(res);
+                console.log(res)
+                resolve(res)
             })
-        );
+        )
 
         return new Promise<T[]>((resolve, reject) => {
-
             const parseStream = Papa.parse<T>(csvData, {
                 header: true,
                 fastMode: true,
@@ -108,112 +125,67 @@ export class ActivityPortalService {
                 dynamicTyping: true,
                 transformHeader(header: string, index?: number): string {
                     if (header === 'Nr#') {
-                        return 'Nr';
+                        return 'Nr'
                     }
                     if (header === 'e-mail') {
-                        return 'email';
+                        return 'email'
                     }
                     if (header === 'Straße') {
-                        return 'Strasse';
+                        return 'Strasse'
                     }
                     if (header === 'Einschränkungen') {
-                        return 'Einschraenkungen';
+                        return 'Einschraenkungen'
                     }
-                    return header;
+                    return header
                 },
-            });
+            })
 
-            console.log('nuss: ', parseStream);
-            resolve(parseStream.data);
-        });
-
-            /*const Readable = require('stream').Readable;
-            const s = new Readable();
-            s.push(csvData);
-            s.push(null);
-
-            s.pipe(parseStream);
-
-            const data: T[] = [];
-            parseStream.on("data", chunk => {
-                data.push(chunk);
-            });
-
-            parseStream.on("finish", () => {
-                console.log(data);
-                console.log(data.length);
-                resolve(data);
-            });
-
-        });*/
-            /*Papa.parse(csvData, {
-                header: true,
-                worker: false,
-                encoding: 'latin1',
-                dynamicTyping: true,
-                transformHeader(header: string, index?: number): string {
-                    if (header === 'Nr#') {
-                        return 'Nr';
-                    }
-                    if (header === 'e-mail') {
-                        return 'email';
-                    }
-                    if (header === 'Straße') {
-                        return 'Strasse';
-                    }
-                    if (header === 'Einschränkungen') {
-                        return 'Einschraenkungen';
-                    }
-                    return header;
-                },
-                complete(results: ParseResult<T>) {
-                    resolve(results.data);
-                },
-                error() {
-                    reject();
-                }
-            });*/
-
+            console.log('nuss: ', parseStream)
+            resolve(parseStream.data)
+        })
     }
 
     private get(url: string, resolve: any, reject: any) {
         https.get(url, (res) => {
             // if any other status codes are returned, those needed to be added here
-            if(res.statusCode === 301 || res.statusCode === 302) {
+            if (res.statusCode === 301 || res.statusCode === 302) {
                 return this.get(res.headers.location, resolve, reject)
             }
 
-            res.setEncoding('latin1');
+            res.setEncoding('latin1')
 
-            let body: string = '';
-            res.on("data", (chunk) => {
-                body+= chunk;
-            });
+            let body: string = ''
+            res.on('data', (chunk) => {
+                body += chunk
+            })
 
-            res.on("end", () => {
+            res.on('end', () => {
                 try {
-                    resolve(body);
+                    resolve(body)
                 } catch (err) {
-                    reject(err);
+                    reject(err)
                 }
-            });
-        });
+            })
+        })
     }
 
     private async getData(url: string) {
-        return new Promise((resolve, reject) => this.get(url, resolve, reject));
+        return new Promise((resolve, reject) => this.get(url, resolve, reject))
     }
 
     private async importBwData(csvData: StartDataBwData[]) {
-        const teams: Map<number, Team> = new Map<number, Team>();
+        const teams: Map<number, Team> = new Map<number, Team>()
 
         for (const row of csvData) {
             // concat teams
             if (teams.has(row.Buchnr)) {
-                const team = teams.get(row.Buchnr);
+                const team = teams.get(row.Buchnr)
                 team.members.push({
-                    member_id: row.RFID !== null ? row.RFID.toString() : this.fixRfidIsNull(row).toString(),
-                } as TeamMember);
+                    member_id:
+                        row.RFID !== null
+                            ? row.RFID.toString()
+                            : this.fixRfidIsNull(row).toString(),
+                } as TeamMember)
             } else {
                 const team = {
                     book_id: row.Buchnr.toString(),
@@ -221,14 +193,24 @@ export class ActivityPortalService {
                     club_name_short: row.Clubname_kurz,
                     organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
                     sport: 'bw',
-                    members: [{member_id: row.RFID !== null ? row.RFID.toString() : this.fixRfidIsNull(row).toString(),}]
-                } as Team;
-                teams.set(row.Buchnr, team);
+                    members: [
+                        {
+                            member_id:
+                                row.RFID !== null
+                                    ? row.RFID.toString()
+                                    : this.fixRfidIsNull(row).toString(),
+                        },
+                    ],
+                } as Team
+                teams.set(row.Buchnr, team)
             }
 
             try {
                 await this.db.athletes.upsert({
-                    rfid: row.RFID !== null ? row.RFID.toString() : this.fixRfidIsNull(row).toString(),
+                    rfid:
+                        row.RFID !== null
+                            ? row.RFID.toString()
+                            : this.fixRfidIsNull(row).toString(),
                     book_id: row.Buchnr,
                     pre_name: row.Vorname,
                     family_name: row.Nachname,
@@ -240,7 +222,7 @@ export class ActivityPortalService {
                     sport: 'bw',
                 })
             } catch (e) {
-                console.error(e);
+                console.error(e)
             }
         }
 
@@ -253,13 +235,13 @@ export class ActivityPortalService {
                     organization: team.organization,
                     sport: team.sport,
                     members: team.members,
-                });
+                })
             } catch (e) {
-                console.error(e);
+                console.error(e)
             }
         }
 
-        console.log('updated imported bw-start-data');
+        console.log('updated imported bw-start-data')
     }
 
     private async importRrData(csvData: StartDataRrData[]) {
@@ -275,7 +257,7 @@ export class ActivityPortalService {
                     club_name_short: row.Clubname_kurz,
                     organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
                     sport: 'rr',
-                });
+                })
                 await this.db.athletes.upsert({
                     rfid: row.RFID2.toString(),
                     book_id: row.Buchnr,
@@ -286,7 +268,7 @@ export class ActivityPortalService {
                     club_name_short: row.Clubname_kurz,
                     organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
                     sport: 'rr',
-                });
+                })
                 await this.db.teams.upsert({
                     book_id: row.Buchnr.toString(),
                     club_id: row.Clubnr,
@@ -295,24 +277,24 @@ export class ActivityPortalService {
                     sport: 'rr',
                     league: row.Startklasse,
                     members: [
-                        {member_id: row.RFID1.toString()},
-                        {member_id: row.RFID2.toString()},
+                        { member_id: row.RFID1.toString() },
+                        { member_id: row.RFID2.toString() },
                     ],
                 })
             } catch (e) {
-                console.error(e);
+                console.error(e)
             }
         }
-        console.log('updated imported rr-start-data');
+        console.log('updated imported rr-start-data')
     }
 
     private async importWrTlData(csvData: StartDataWrTlData[]) {
-        const officials: Map<number, Offical> = new Map<number, Offical>();
+        const officials: Map<number, Offical> = new Map<number, Offical>()
 
         for (const row of csvData) {
             if (officials.has(row.Lizenzn)) {
-                const official = officials.get(row.Lizenzn);
-                this.parseLicense(row.Lizenz, official.licence);
+                const official = officials.get(row.Lizenzn)
+                this.parseLicense(row.Lizenz, official.licence)
             } else {
                 const official = {
                     id: row.Lizenzn.toString(),
@@ -323,8 +305,8 @@ export class ActivityPortalService {
                     licence: this.parseLicense(row.Lizenz),
                     email: row.email,
                     organization: row.LRRVERB,
-                } as Offical;
-                officials.set(row.Lizenzn, official);
+                } as Offical
+                officials.set(row.Lizenzn, official)
             }
         }
 
@@ -339,17 +321,19 @@ export class ActivityPortalService {
                     licence: official.licence,
                     email: official.email,
                     organization: official.organization,
-                });
+                })
             } catch (e) {
-                console.error(e);
+                console.error(e)
             }
         }
 
-        console.log('updated imported officials');
+        console.log('updated imported officials')
     }
 
     private fixRfidIsNull(row: StartDataBwData): number {
-        return row.Anrede === 'Herr' ? (1000001 + (row.Buchnr * 10) - 1000000) : (1000002 + (row.Buchnr * 10) - 1000000);
+        return row.Anrede === 'Herr'
+            ? 1000001 + row.Buchnr * 10 - 1000000
+            : 1000002 + row.Buchnr * 10 - 1000000
     }
 
     private parseLicense(value: string, license?: License): License {
@@ -361,33 +345,33 @@ export class ActivityPortalService {
                 } as BwLicense,
                 rr: {
                     wre: false,
-                    wra: false
+                    wra: false,
                 } as RrLicense,
-            } as License;
+            } as License
         }
 
         switch (value) {
             case 'TL': {
-                license.tl = true;
-                break;
+                license.tl = true
+                break
             }
             case 'WRE-BW': {
-                license.bw.wre = true;
-                break;
+                license.bw.wre = true
+                break
             }
             case 'WRE-RR': {
-                license.rr.wre = true;
-                break;
+                license.rr.wre = true
+                break
             }
             case 'WRA-RR': {
-                license.rr.wra = true;
-                break;
+                license.rr.wra = true
+                break
             }
             default:
-                break;
+                break
         }
 
-        return license;
+        return license
     }
 
     private async importFormationData(csvData: FormationData[]) {
@@ -400,95 +384,95 @@ export class ActivityPortalService {
                     organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
                     sport: row.Startklasse.includes('_RR_') ? 'rr' : 'bw',
                     league: row.Startklasse,
-                });
+                })
             } catch (e) {
-                console.error(e);
+                console.error(e)
             }
         }
 
-        console.log('updated imported formations');
+        console.log('updated imported formations')
     }
 
     private async importAcroData(csvData: DrbvAcroData[]) {
         for (const row of csvData) {
             try {
-                const acroPoints: any[] = [];
+                const acroPoints: any[] = []
                 if (row.RR_A !== null) {
                     acroPoints.push({
                         key: 'rr_a',
                         value: Number(row.RR_A.replace(',', '.')),
-                    });
+                    })
                 }
                 if (row.RR_B !== null) {
                     acroPoints.push({
                         key: 'rr_b',
                         value: Number(row.RR_B.replace(',', '.')),
-                    });
+                    })
                 }
                 if (row.RR_C !== null) {
                     acroPoints.push({
                         key: 'rr_c',
                         value: Number(row.RR_C.replace(',', '.')),
-                    });
+                    })
                 }
                 if (row.RR_J !== null) {
                     acroPoints.push({
                         key: 'rr_j',
                         value: Number(row.RR_J.replace(',', '.')),
-                    });
+                    })
                 }
                 if (row.RR_S !== null) {
                     acroPoints.push({
                         key: 'rr_s',
                         value: Number(row.RR_S.replace(',', '.')),
-                    });
+                    })
                 }
                 if (row.F_RR_M !== null) {
                     acroPoints.push({
                         key: 'f_rr_m',
                         value: Number(row.F_RR_M.replace(',', '.')),
-                    });
+                    })
                 }
                 if (row.F_RR_J !== null) {
                     acroPoints.push({
                         key: 'f_rr_j',
                         value: Number(row.F_RR_J.replace(',', '.')),
-                    });
+                    })
                 }
                 if (row.F_RR_LF !== null) {
                     acroPoints.push({
                         key: 'f_rr_lf',
                         value: Number(row.F_RR_LF.replace(',', '.')),
-                    });
+                    })
                 }
                 if (row.F_RR_GF !== null) {
                     acroPoints.push({
                         key: 'f_rr_gf',
                         value: Number(row.F_RR_GF.replace(',', '.')),
-                    });
+                    })
                 }
                 if (row.F_RR_ST !== null) {
                     acroPoints.push({
                         key: 'f_rr_st',
                         value: Number(row.F_RR_ST.replace(',', '.')),
-                    });
+                    })
                 }
 
-                const acroGroups: any[] = [];
+                const acroGroups: any[] = []
                 if (row.Gruppen_ID_1 !== null) {
-                    acroGroups.push({key: 'id_1', value: row.Gruppen_ID_1});
+                    acroGroups.push({ key: 'id_1', value: row.Gruppen_ID_1 })
                 }
                 if (row.Gruppen_ID_2 !== null) {
-                    acroGroups.push({key: 'id_2', value: row.Gruppen_ID_2});
+                    acroGroups.push({ key: 'id_2', value: row.Gruppen_ID_2 })
                 }
                 if (row.Gruppen_ID_3 !== null) {
-                    acroGroups.push({key: 'id_3', value: row.Gruppen_ID_3});
+                    acroGroups.push({ key: 'id_3', value: row.Gruppen_ID_3 })
                 }
                 if (row.Gruppen_ID_4 !== null) {
-                    acroGroups.push({key: 'id_4', value: row.Gruppen_ID_4});
+                    acroGroups.push({ key: 'id_4', value: row.Gruppen_ID_4 })
                 }
                 if (row.Gruppen_ID_5 !== null) {
-                    acroGroups.push({key: 'id_5', value: row.Gruppen_ID_5});
+                    acroGroups.push({ key: 'id_5', value: row.Gruppen_ID_5 })
                 }
 
                 await this.db.acros.upsert({
@@ -499,13 +483,13 @@ export class ActivityPortalService {
                     points: acroPoints,
                     group: acroGroups,
                     notice: row.Bemerkung !== null ? row.Bemerkung : undefined,
-                });
+                })
             } catch (e) {
-                console.error(e);
+                console.error(e)
             }
         }
 
-        console.log('updated imported acros');
+        console.log('updated imported acros')
     }
 
     private async importAppointmentData(csvData: StartDataAppointmentData[]) {
@@ -516,7 +500,8 @@ export class ActivityPortalService {
                     date: row.Datum,
                     club_id: row.Mitgliedsnr,
                     club_name_short: row.Clubname_kurz,
-                    series_name: row.Cup_Serie !== null ? row.Cup_Serie : undefined,
+                    series_name:
+                        row.Cup_Serie !== null ? row.Cup_Serie : undefined,
                     competition_name: row.Bezeichnung,
                     location: row.Raum,
                     city: row.Ort,
@@ -524,28 +509,50 @@ export class ActivityPortalService {
                     postal_code: row.PLZ,
                     begin_time: row.Beginn,
                     end_time: row.Ende,
-                    competition_type: row.Wettbewerbsart !== null ? row.Wettbewerbsart : undefined,
-                    league: row.Startklasse !== null ? row.Startklasse : undefined,
-                    tl: row.Turnierleiter !== null ? row.Turnierleiter : undefined,
-                    limitations: row.Einschraenkungen !== null ? row.Einschraenkungen : undefined,
+                    competition_type:
+                        row.Wettbewerbsart !== null
+                            ? row.Wettbewerbsart
+                            : undefined,
+                    league:
+                        row.Startklasse !== null ? row.Startklasse : undefined,
+                    tl:
+                        row.Turnierleiter !== null
+                            ? row.Turnierleiter
+                            : undefined,
+                    limitations:
+                        row.Einschraenkungen !== null
+                            ? row.Einschraenkungen
+                            : undefined,
                     contact_person: {
-                        name: row.Ansprechpartner !== null ? row.Ansprechpartner : undefined,
-                        phone: row.Tel_Ansprechpartner !== null ? row.Tel_Ansprechpartner : undefined,
+                        name:
+                            row.Ansprechpartner !== null
+                                ? row.Ansprechpartner
+                                : undefined,
+                        phone:
+                            row.Tel_Ansprechpartner !== null
+                                ? row.Tel_Ansprechpartner
+                                : undefined,
                     },
-                    begin_evening_event: row.Beginn_Abendveranstaltung !== null ? row.Beginn_Abendveranstaltung : undefined,
-                });
+                    begin_evening_event:
+                        row.Beginn_Abendveranstaltung !== null
+                            ? row.Beginn_Abendveranstaltung
+                            : undefined,
+                })
             } catch (e) {
-                console.error(e);
+                console.error(e)
             }
         }
 
-        console.log('updated imported appointments');
+        console.log('updated imported appointments')
     }
 
-    private async importActiveDb(database: RxDatabase, csvData: CompetitionData[]) {
+    private async importActiveDb(
+        database: RxDatabase,
+        csvData: CompetitionData[]
+    ) {
         if (database === null) {
-            console.log("invalid collection");
-            return;
+            console.log('invalid collection')
+            return
         }
         for (const row of csvData) {
             try {
@@ -556,116 +563,160 @@ export class ActivityPortalService {
                     club_id: row.Verein_nr,
                     book_id: row.Startbuch,
                     team_member_count: row.Anz_Taenzer,
-                    acros: [{
-                        round: "VR",
-                        acro: [{
-                            acro_short_text: row.Akro1_VR,
-                            points: row.Wert1_VR,
-                        }, {
-                            acro_short_text: row.Akro2_VR,
-                            points: row.Wert2_VR,
-                        }, {
-                            acro_short_text: row.Akro3_VR,
-                            points: row.Wert3_VR,
-                        }, {
-                            acro_short_text: row.Akro4_VR,
-                            points: row.Wert4_VR,
-                        }, {
-                            acro_short_text: row.Akro5_VR,
-                            points: row.Wert5_VR,
-                        }, {
-                            acro_short_text: row.Akro6_VR,
-                            points: row.Wert6_VR,
-                        }, {
-                            acro_short_text: row.Akro7_VR,
-                            points: row.Wert7_VR,
-                        }, {
-                            acro_short_text: row.Akro8_VR,
-                            points: row.Wert8_VR,
-                        }]
-                    }, {
-                        name: "ZR",
-                        acros: [{
-                            acro_short_text: row.Akro1_ZR,
-                            points: row.Wert1_ZR,
-                        }, {
-                            acro_short_text: row.Akro2_ZR,
-                            points: row.Wert2_ZR,
-                        }, {
-                            acro_short_text: row.Akro3_ZR,
-                            points: row.Wert3_ZR,
-                        }, {
-                            acro_short_text: row.Akro4_ZR,
-                            points: row.Wert4_ZR,
-                        }, {
-                            acro_short_text: row.Akro5_ZR,
-                            points: row.Wert5_ZR,
-                        }, {
-                            acro_short_text: row.Akro6_ZR,
-                            points: row.Wert6_ZR,
-                        }, {
-                            acro_short_text: row.Akro7_ZR,
-                            points: row.Wert7_ZR,
-                        }, {
-                            acro_short_text: row.Akro8_ZR,
-                            points: row.Wert8_ZR,
-                        }]
-                    }, {
-                        name: "ER",
-                        acros: [{
-                            acro_short_text: row.Akro1_ER,
-                            points: row.Wert1_ER,
-                        }, {
-                            acro_short_text: row.Akro2_ER,
-                            points: row.Wert2_ER,
-                        }, {
-                            acro_short_text: row.Akro3_ER,
-                            points: row.Wert3_ER,
-                        }, {
-                            acro_short_text: row.Akro4_ER,
-                            points: row.Wert4_ER,
-                        }, {
-                            acro_short_text: row.Akro5_ER,
-                            points: row.Wert5_ER,
-                        }, {
-                            acro_short_text: row.Akro6_ER,
-                            points: row.Wert6_ER,
-                        }, {
-                            acro_short_text: row.Akro7_ER,
-                            points: row.Wert7_ER,
-                        }, {
-                            acro_short_text: row.Akro8_ER,
-                            points: row.Wert8_ER,
-                        }],
-                    }],
-                    replacement_acros: [{
-                        round: "VR",
-                        acro: [{
-                            acro_short_text: row.E_Akro1_VR,
-                            points: row.E_Wert1_VR,
-                        }, {
-                            acro_short_text: row.E_Akro2_VR,
-                            points: row.E_Wert2_VR,
-                        }]
-                    }, {
-                        name: "ZR",
-                        acros: [{
-                            acro_short_text: row.E_Akro1_ZR,
-                            points: row.E_Wert1_ZR,
-                        }, {
-                            acro_short_text: row.E_Akro2_ZR,
-                            points: row.E_Wert2_ZR,
-                        }]
-                    }, {
-                        name: "ER",
-                        acros: [{
-                            acro_short_text: row.E_Akro1_ER,
-                            points: row.E_Wert1_ER,
-                        }, {
-                            acro_short_text: row.E_Akro2_ER,
-                            points: row.E_Wert2_ER,
-                        }]
-                    }],
+                    acros: [
+                        {
+                            round: 'VR',
+                            acro: [
+                                {
+                                    acro_short_text: row.Akro1_VR,
+                                    points: row.Wert1_VR,
+                                },
+                                {
+                                    acro_short_text: row.Akro2_VR,
+                                    points: row.Wert2_VR,
+                                },
+                                {
+                                    acro_short_text: row.Akro3_VR,
+                                    points: row.Wert3_VR,
+                                },
+                                {
+                                    acro_short_text: row.Akro4_VR,
+                                    points: row.Wert4_VR,
+                                },
+                                {
+                                    acro_short_text: row.Akro5_VR,
+                                    points: row.Wert5_VR,
+                                },
+                                {
+                                    acro_short_text: row.Akro6_VR,
+                                    points: row.Wert6_VR,
+                                },
+                                {
+                                    acro_short_text: row.Akro7_VR,
+                                    points: row.Wert7_VR,
+                                },
+                                {
+                                    acro_short_text: row.Akro8_VR,
+                                    points: row.Wert8_VR,
+                                },
+                            ],
+                        },
+                        {
+                            name: 'ZR',
+                            acros: [
+                                {
+                                    acro_short_text: row.Akro1_ZR,
+                                    points: row.Wert1_ZR,
+                                },
+                                {
+                                    acro_short_text: row.Akro2_ZR,
+                                    points: row.Wert2_ZR,
+                                },
+                                {
+                                    acro_short_text: row.Akro3_ZR,
+                                    points: row.Wert3_ZR,
+                                },
+                                {
+                                    acro_short_text: row.Akro4_ZR,
+                                    points: row.Wert4_ZR,
+                                },
+                                {
+                                    acro_short_text: row.Akro5_ZR,
+                                    points: row.Wert5_ZR,
+                                },
+                                {
+                                    acro_short_text: row.Akro6_ZR,
+                                    points: row.Wert6_ZR,
+                                },
+                                {
+                                    acro_short_text: row.Akro7_ZR,
+                                    points: row.Wert7_ZR,
+                                },
+                                {
+                                    acro_short_text: row.Akro8_ZR,
+                                    points: row.Wert8_ZR,
+                                },
+                            ],
+                        },
+                        {
+                            name: 'ER',
+                            acros: [
+                                {
+                                    acro_short_text: row.Akro1_ER,
+                                    points: row.Wert1_ER,
+                                },
+                                {
+                                    acro_short_text: row.Akro2_ER,
+                                    points: row.Wert2_ER,
+                                },
+                                {
+                                    acro_short_text: row.Akro3_ER,
+                                    points: row.Wert3_ER,
+                                },
+                                {
+                                    acro_short_text: row.Akro4_ER,
+                                    points: row.Wert4_ER,
+                                },
+                                {
+                                    acro_short_text: row.Akro5_ER,
+                                    points: row.Wert5_ER,
+                                },
+                                {
+                                    acro_short_text: row.Akro6_ER,
+                                    points: row.Wert6_ER,
+                                },
+                                {
+                                    acro_short_text: row.Akro7_ER,
+                                    points: row.Wert7_ER,
+                                },
+                                {
+                                    acro_short_text: row.Akro8_ER,
+                                    points: row.Wert8_ER,
+                                },
+                            ],
+                        },
+                    ],
+                    replacement_acros: [
+                        {
+                            round: 'VR',
+                            acro: [
+                                {
+                                    acro_short_text: row.E_Akro1_VR,
+                                    points: row.E_Wert1_VR,
+                                },
+                                {
+                                    acro_short_text: row.E_Akro2_VR,
+                                    points: row.E_Wert2_VR,
+                                },
+                            ],
+                        },
+                        {
+                            name: 'ZR',
+                            acros: [
+                                {
+                                    acro_short_text: row.E_Akro1_ZR,
+                                    points: row.E_Wert1_ZR,
+                                },
+                                {
+                                    acro_short_text: row.E_Akro2_ZR,
+                                    points: row.E_Wert2_ZR,
+                                },
+                            ],
+                        },
+                        {
+                            name: 'ER',
+                            acros: [
+                                {
+                                    acro_short_text: row.E_Akro1_ER,
+                                    points: row.E_Wert1_ER,
+                                },
+                                {
+                                    acro_short_text: row.E_Akro2_ER,
+                                    points: row.E_Wert2_ER,
+                                },
+                            ],
+                        },
+                    ],
                     music: {
                         dance: row.Musik_FT,
                         acro: row.Musik_Akro,
@@ -675,13 +726,13 @@ export class ActivityPortalService {
                         team_preparation_short: row.Musik_Stell_kurz,
                         team_competition_short: row.Musik_Form_kurz,
                         team_ceremony_short: row.Musik_Sieg_kurz,
-                    }
-                });
+                    },
+                })
             } catch (e) {
-                console.error(e);
+                console.error(e)
             }
         }
 
-        console.log('updated imported appointments');
+        console.log('updated imported appointments')
     }
 }
