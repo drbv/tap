@@ -120,7 +120,6 @@ export class ActivityPortalService {
         return new Promise<T[]>((resolve, reject) => {
             const parseStream = Papa.parse<T>(csvData, {
                 header: true,
-                fastMode: true,
                 worker: false,
                 dynamicTyping: true,
                 transformHeader(header: string, index?: number): string {
