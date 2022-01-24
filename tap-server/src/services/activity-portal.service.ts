@@ -492,52 +492,58 @@ export class ActivityPortalService {
 
     private async importAppointmentData(csvData: StartDataAppointmentData[]) {
         for (const row of csvData) {
-            try {
-                await this.db.appointments.upsert({
-                    appointment_id: row.Terminnummer.toString(),
-                    date: row.Datum,
-                    club_id: row.Mitgliedsnr,
-                    club_name_short: row.Clubname_kurz,
-                    series_name:
-                        row.Cup_Serie !== null ? row.Cup_Serie : undefined,
-                    competition_name: row.Bezeichnung,
-                    location: row.Raum,
-                    city: row.Ort,
-                    street: row.Strasse,
-                    postal_code: row.PLZ,
-                    begin_time: row.Beginn,
-                    end_time: row.Ende,
-                    competition_type:
-                        row.Wettbewerbsart !== null
-                            ? row.Wettbewerbsart
-                            : undefined,
-                    league:
-                        row.Startklasse !== null ? row.Startklasse : undefined,
-                    tl:
-                        row.Turnierleiter !== null
-                            ? row.Turnierleiter
-                            : undefined,
-                    limitations:
-                        row.Einschraenkungen !== null
-                            ? row.Einschraenkungen
-                            : undefined,
-                    contact_person: {
-                        name:
-                            row.Ansprechpartner !== null
-                                ? row.Ansprechpartner
+            if (!row) {
+                console.log("Row is null")
+            } else if (!row.Terminnummer) {
+                console.log("Appointment_ID is null")
+            } else {
+                try {
+                    await this.db.appointments.upsert({
+                        appointment_id: row.Terminnummer.toString(),
+                        date: row.Datum,
+                        club_id: row.Mitgliedsnr,
+                        club_name_short: row.Clubname_kurz,
+                        series_name:
+                            row.Cup_Serie !== null ? row.Cup_Serie : undefined,
+                        competition_name: row.Bezeichnung,
+                        location: row.Raum,
+                        city: row.Ort,
+                        street: row.Strasse,
+                        postal_code: row.PLZ,
+                        begin_time: row.Beginn,
+                        end_time: row.Ende,
+                        competition_type:
+                            row.Wettbewerbsart !== null
+                                ? row.Wettbewerbsart
                                 : undefined,
-                        phone:
-                            row.Tel_Ansprechpartner !== null
-                                ? row.Tel_Ansprechpartner
+                        league:
+                            row.Startklasse !== null ? row.Startklasse : undefined,
+                        tl:
+                            row.Turnierleiter !== null
+                                ? row.Turnierleiter
                                 : undefined,
-                    },
-                    begin_evening_event:
-                        row.Beginn_Abendveranstaltung !== null
-                            ? row.Beginn_Abendveranstaltung
-                            : undefined,
-                })
-            } catch (e) {
-                console.error(e)
+                        limitations:
+                            row.Einschraenkungen !== null
+                                ? row.Einschraenkungen
+                                : undefined,
+                        contact_person: {
+                            name:
+                                row.Ansprechpartner !== null
+                                    ? row.Ansprechpartner
+                                    : undefined,
+                            phone:
+                                row.Tel_Ansprechpartner !== null
+                                    ? row.Tel_Ansprechpartner
+                                    : undefined,
+                        },
+                        begin_evening_event:
+                            row.Beginn_Abendveranstaltung !== null
+                                ? row.Beginn_Abendveranstaltung
+                                : undefined,
+                    })
+                } catch (e) {
+                    console.error(e)
+                }
             }
         }
 

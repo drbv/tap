@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react"
 
 import {
     withStyles,
@@ -9,19 +9,21 @@ import {
     IconButton,
     Typography,
     TextField,
-} from '@material-ui/core'
-import MUIDataTable from 'mui-datatables'
+    Grid,
+} from "@material-ui/core"
+import MUIDataTable from "mui-datatables"
+import axios from "axios"
 
-import { getBaseCollection, getCollection } from '../../Database'
-import { Autocomplete } from '@mui/material'
+import { getBaseCollection, getCollection } from "../../Database"
+import { Autocomplete } from "@mui/material"
 
 const styles = (theme) => ({
     root: {
         padding: theme.spacing(2),
-        margin: '11px',
+        margin: "11px",
     },
     text: {
-        'text-transform': 'none',
+        "text-transform": "none",
     },
 })
 
@@ -38,12 +40,12 @@ class Competition extends Component {
     }
 
     async componentDidMount() {
-        getBaseCollection('appointments').then(async (collection) => {
+        getBaseCollection("appointments").then(async (collection) => {
             const sub = await collection.find().$.subscribe((Appointments) => {
                 if (!Appointments) {
                     return
                 }
-                console.log('reload Appointment-list')
+                console.log("reload Appointment-list")
                 console.dir(Appointments)
                 this.setState({
                     Appointments,
@@ -71,28 +73,69 @@ class Competition extends Component {
                     >
                         Bitte im folgenden das Turnier auswählen
                     </Typography>
-                    <Autocomplete
-                        options={Appointments}
-                        style={{ width: '300px' }}
-                        value={selectedAppointment}
-                        onChange={(e, newValue) => {
-                            Appointments &&
-                                newValue &&
-                                this.setState({
-                                    selectedAppointment: newValue,
-                                })
-                        }}
-                        getOptionLabel={(option) => option.name}
-                        id="Turnierauswahl"
-                        debug
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label="Turniere"
-                                margin="normal"
+                    <Grid container spacing={3} alignItems="flex-end">
+                        <Grid
+                            item
+                            xs={
+                                selectedAppointment && selectedAppointment != ""
+                                    ? 8
+                                    : 12
+                            }
+                        >
+                            <Autocomplete
+                                options={Appointments}
+                                style={{ width: "100%" }}
+                                value={selectedAppointment}
+                                onChange={(e, newValue) => {
+                                    Appointments &&
+                                        newValue &&
+                                        this.setState({
+                                            selectedAppointment: newValue,
+                                        })
+                                }}
+                                getOptionLabel={(option) =>
+                                    option.date +
+                                    ": " +
+                                    option.club_name_short +
+                                    " - " +
+                                    option.competition_name
+                                }
+                                id="Turnierauswahl"
+                                debug
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label="Turniere"
+                                        margin="normal"
+                                    />
+                                )}
                             />
+                        </Grid>
+                        {selectedAppointment && selectedAppointment != "" && (
+                            <Grid item xs={4}>
+                                <Button
+                                    className={classes.newEvaluationButton}
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={async () => {
+                                        axios
+                                            .get(
+                                                "http://localhost:5000/activate?id=" +
+                                                    selectedAppointment.appointment_id
+                                            )
+                                            .then((response) => {
+                                                console.dir(response)
+                                            })
+                                            .catch((error) => {
+                                                console.log(error)
+                                            })
+                                    }}
+                                >
+                                    Dieses Turnier verwenden
+                                </Button>
+                            </Grid>
                         )}
-                    />
+                    </Grid>
                 </Paper>
             </div>
         )
