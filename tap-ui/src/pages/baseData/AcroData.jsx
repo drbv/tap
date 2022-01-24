@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react"
 
 import {
     withStyles,
@@ -8,19 +8,19 @@ import {
     Tooltip,
     IconButton,
     Typography,
-} from '@material-ui/core'
-import MUIDataTable from 'mui-datatables'
+} from "@material-ui/core"
+import MUIDataTable from "mui-datatables"
 
-import { getBaseCollection } from '../../Database'
+import { getBaseCollection } from "../../Database"
 
 const styles = (theme) => ({
     root: {
         padding: theme.spacing(2),
-        margin: '11px',
+        margin: "11px",
     },
     table: {
-        margin: '11px',
-        marginBottom: '80px',
+        margin: "11px",
+        marginBottom: "80px",
     },
 })
 
@@ -37,17 +37,19 @@ class AcroData extends Component {
     }
 
     async componentDidMount() {
-        getBaseCollection('acros').then(async (collection) => {
-            const sub = await collection.find().$.subscribe((Acros) => {
-                if (!Acros) {
-                    return
-                }
-                console.log('reload Acro-list')
-                console.dir(Acros)
-                this.setState({
-                    Acros,
+        getBaseCollection("acros").then(async (collection) => {
+            const sub = await collection
+                .find()
+                .limit(200)
+                .$.subscribe((Acros) => {
+                    if (!Acros) {
+                        return
+                    }
+                    console.log("reload Acro-list")
+                    this.setState({
+                        Acros,
+                    })
                 })
-            })
             this.subs.push(sub)
         })
     }
@@ -68,54 +70,54 @@ class AcroData extends Component {
                         data={Acros}
                         columns={[
                             {
-                                name: 'id',
+                                name: "id",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
                                 // Akrobatik
-                                name: 'acro_short_text',
+                                name: "acro_short_text",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
                                 // Langtext
-                                name: 'acro_long_text',
+                                name: "acro_long_text",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
                                 // Einstufung
-                                name: 'rating',
+                                name: "rating",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: 'points',
+                                name: "points",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: 'group',
+                                name: "group",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: 'notice',
+                                name: "notice",
                                 options: {
                                     filter: false,
                                 },
                             },
                         ]}
                         options={{
-                            responsive: 'scrollFullHeight',
-                            selectableRows: 'none',
+                            responsive: "scrollFullHeight",
+                            selectableRows: "none",
                             rowsPerPageOptions: [50, 100, 250],
                         }}
                     ></MUIDataTable>

@@ -1,8 +1,8 @@
 //HOC and utils
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Route, Router, withRouter } from 'react-router-dom'
-import { withStyles } from '@material-ui/core'
+import React from "react"
+import PropTypes from "prop-types"
+import { Route, Router, withRouter } from "react-router-dom"
+import { withStyles } from "@material-ui/core"
 //components and libraries
 import {
     Drawer,
@@ -15,7 +15,7 @@ import {
     Avatar,
     Typography,
     Tooltip,
-} from '@material-ui/core'
+} from "@material-ui/core"
 //icons
 import {
     Info,
@@ -26,29 +26,29 @@ import {
     AttachMoney,
     Language,
     SettingsPower,
-} from '@material-ui/icons'
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
-import InfoDialog from '../tools/info_dialog/InfoDialog'
-import logoURL from '../images/logo.png'
+} from "@material-ui/icons"
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
+import ChevronRightIcon from "@material-ui/icons/ChevronRight"
+import InfoDialog from "../tools/info_dialog/InfoDialog"
+import logoURL from "../images/logo.png"
 
-import withProps from './HOC'
+import withProps from "./HOC"
 
 const drawerWidth = 240
 
 const styles = (theme) => ({
     root: {
-        display: 'flex',
+        display: "flex",
     },
     contentShift: {
         marginLeft: +200,
-        transition: theme.transitions.create('margin', {
+        transition: theme.transitions.create("margin", {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
     },
     appBar: {
-        transition: theme.transitions.create(['margin', 'width'], {
+        transition: theme.transitions.create(["margin", "width"], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
@@ -56,7 +56,7 @@ const styles = (theme) => ({
     appBarShift: {
         width: `calc(100% - ${drawerWidth}px)`,
         marginLeft: drawerWidth,
-        transition: theme.transitions.create(['margin', 'width'], {
+        transition: theme.transitions.create(["margin", "width"], {
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.enteringScreen,
         }),
@@ -66,7 +66,7 @@ const styles = (theme) => ({
         marginRight: 20,
     },
     hide: {
-        display: 'none',
+        display: "none",
     },
     drawer: {
         width: drawerWidth,
@@ -76,57 +76,57 @@ const styles = (theme) => ({
         width: drawerWidth,
     },
     drawerHeader: {
-        display: 'flex',
-        alignItems: 'center',
-        padding: '0 8px',
+        display: "flex",
+        alignItems: "center",
+        padding: "0 8px",
         ...theme.mixins.toolbar,
-        justifyContent: 'flex-end',
+        justifyContent: "flex-end",
     },
     content: {
         flexGrow: 1,
         padding: theme.spacing(3),
-        transition: theme.transitions.create('margin', {
+        transition: theme.transitions.create("margin", {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
         marginLeft: -drawerWidth,
     },
     contentShift: {
-        transition: theme.transitions.create('margin', {
+        transition: theme.transitions.create("margin", {
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.enteringScreen,
         }),
         marginLeft: 0,
     },
     row: {
-        display: 'flex',
-        justifyContent: 'center',
+        display: "flex",
+        justifyContent: "center",
     },
     utility: {
-        alignSelf: 'center',
+        alignSelf: "center",
         margin: 45,
     },
     logo: {
-        maxWidth: '30vw',
-        maxHeight: '30vh',
-        display: 'block',
-        marginLeft: 'auto',
-        marginRight: 'auto',
+        maxWidth: "30vw",
+        maxHeight: "30vh",
+        display: "block",
+        marginLeft: "auto",
+        marginRight: "auto",
         marginBottom: 20,
     },
     account: {
-        textAlign: 'center',
+        textAlign: "center",
     },
     accountContainer: {
-        display: 'inline-block',
+        display: "inline-block",
     },
     chameleon: {
-        'background-image':
-            'linear-gradient(to right, orange,yellow,green,cyan)',
+        "background-image":
+            "linear-gradient(to right, orange,yellow,green,cyan)",
     },
     chameleonCustomer: {
-        textAlign: 'center',
-        'font-weight': 'bold',
+        textAlign: "center",
+        "font-weight": "bold",
     },
 })
 
@@ -146,10 +146,10 @@ class MainDrawer extends React.Component {
         }
     }
 
-    handleClose(type = '') {
-        if (type == 'help') {
+    handleClose(type = "") {
+        if (type == "help") {
             this.setState({ helpOpen: !this.state.helpOpen })
-        } else if (type == 'info') {
+        } else if (type == "info") {
             this.setState({ infoOpen: !this.state.infoOpen })
         }
     }
@@ -175,7 +175,7 @@ class MainDrawer extends React.Component {
                         <IconButton
                             onClick={() => this.props.handleDrawerToggle(true)}
                         >
-                            {theme.direction === 'ltr' ? (
+                            {theme.direction === "ltr" ? (
                                 <ChevronLeftIcon />
                             ) : (
                                 <ChevronRightIcon />
@@ -216,7 +216,7 @@ class MainDrawer extends React.Component {
                                 } else if (
                                     route.admin &&
                                     this.props.user &&
-                                    this.props.user.role == 'admin'
+                                    this.props.user.role == "admin"
                                 ) {
                                     return item
                                 } else if (!route.admin) {
@@ -241,8 +241,8 @@ class MainDrawer extends React.Component {
                                     })
                                 }}
                             >
-                                {' '}
-                                <Info />{' '}
+                                {" "}
+                                <Info />{" "}
                             </IconButton>
                         </Tooltip>
 
@@ -259,8 +259,8 @@ class MainDrawer extends React.Component {
                                     })
                                 }}
                             >
-                                {' '}
-                                <Help />{' '}
+                                {" "}
+                                <Help />{" "}
                             </IconButton>
                         </Tooltip>
                     </div>
@@ -268,7 +268,7 @@ class MainDrawer extends React.Component {
                 {this.state.infoOpen && (
                     <InfoDialog
                         handleClose={() => {
-                            this.handleClose('info')
+                            this.handleClose("info")
                         }}
                         open={this.state.infoOpen}
                     />

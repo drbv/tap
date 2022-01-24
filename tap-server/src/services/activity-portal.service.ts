@@ -136,11 +136,11 @@ export class ActivityPortalService {
             res.setEncoding('latin1');
 
             let body: string = '';
-            res.on("data", (chunk) => {
+            res.on('data', (chunk) => {
                 body+= chunk;
             });
 
-            res.on("end", () => {
+            res.on('end', () => {
                 try {
                     resolve(body);
                 } catch (err) {
@@ -460,32 +460,58 @@ export class ActivityPortalService {
 
     private async importAppointmentData(csvData: StartDataAppointmentData[]) {
         for (const row of csvData) {
-            try {
-                await this.db.appointments.upsert({
-                    appointment_id: row.Terminnummer.toString(),
-                    date: row.Datum,
-                    club_id: row.Mitgliedsnr,
-                    club_name_short: row.Clubname_kurz,
-                    series_name: row.Cup_Serie !== null ? row.Cup_Serie : undefined,
-                    competition_name: row.Bezeichnung,
-                    location: row.Raum,
-                    city: row.Ort,
-                    street: row.Strasse,
-                    postal_code: row.PLZ,
-                    begin_time: row.Beginn,
-                    end_time: row.Ende,
-                    competition_type: row.Wettbewerbsart !== null ? row.Wettbewerbsart : undefined,
-                    league: row.Startklasse !== null ? row.Startklasse : undefined,
-                    tl: row.Turnierleiter !== null ? row.Turnierleiter : undefined,
-                    limitations: row.Einschraenkungen !== null ? row.Einschraenkungen : undefined,
-                    contact_person: {
-                        name: row.Ansprechpartner !== null ? row.Ansprechpartner : undefined,
-                        phone: row.Tel_Ansprechpartner !== null ? row.Tel_Ansprechpartner : undefined,
-                    },
-                    begin_evening_event: row.Beginn_Abendveranstaltung !== null ? row.Beginn_Abendveranstaltung : undefined,
-                });
-            } catch (e) {
-                console.error(e);
+            if (!row) {
+                console.log("Row is null")
+            } else if (!row.Terminnummer) {
+                console.log("Appointment_ID is null")
+            } else {
+                try {
+                    await this.db.appointments.upsert({
+                        appointment_id: row.Terminnummer.toString(),
+                        date: row.Datum,
+                        club_id: row.Mitgliedsnr,
+                        club_name_short: row.Clubname_kurz,
+                        series_name:
+                            row.Cup_Serie !== null ? row.Cup_Serie : undefined,
+                        competition_name: row.Bezeichnung,
+                        location: row.Raum,
+                        city: row.Ort,
+                        street: row.Strasse,
+                        postal_code: row.PLZ,
+                        begin_time: row.Beginn,
+                        end_time: row.Ende,
+                        competition_type:
+                            row.Wettbewerbsart !== null
+                                ? row.Wettbewerbsart
+                                : undefined,
+                        league:
+                            row.Startklasse !== null ? row.Startklasse : undefined,
+                        tl:
+                            row.Turnierleiter !== null
+                                ? row.Turnierleiter
+                                : undefined,
+                        limitations:
+                            row.Einschraenkungen !== null
+                                ? row.Einschraenkungen
+                                : undefined,
+                        contact_person: {
+                            name:
+                                row.Ansprechpartner !== null
+                                    ? row.Ansprechpartner
+                                    : undefined,
+                            phone:
+                                row.Tel_Ansprechpartner !== null
+                                    ? row.Tel_Ansprechpartner
+                                    : undefined,
+                        },
+                        begin_evening_event:
+                            row.Beginn_Abendveranstaltung !== null
+                                ? row.Beginn_Abendveranstaltung
+                                : undefined,
+                    })
+                } catch (e) {
+                    console.error(e);
+                }
             }
         }
 
@@ -506,116 +532,160 @@ export class ActivityPortalService {
                     club_id: row.Verein_nr,
                     book_id: row.Startbuch,
                     team_member_count: row.Anz_Taenzer,
-                    acros: [{
-                        round: "VR",
-                        acro: [{
-                            acro_short_text: row.Akro1_VR,
-                            points: row.Wert1_VR,
-                        }, {
-                            acro_short_text: row.Akro2_VR,
-                            points: row.Wert2_VR,
-                        }, {
-                            acro_short_text: row.Akro3_VR,
-                            points: row.Wert3_VR,
-                        }, {
-                            acro_short_text: row.Akro4_VR,
-                            points: row.Wert4_VR,
-                        }, {
-                            acro_short_text: row.Akro5_VR,
-                            points: row.Wert5_VR,
-                        }, {
-                            acro_short_text: row.Akro6_VR,
-                            points: row.Wert6_VR,
-                        }, {
-                            acro_short_text: row.Akro7_VR,
-                            points: row.Wert7_VR,
-                        }, {
-                            acro_short_text: row.Akro8_VR,
-                            points: row.Wert8_VR,
-                        }]
-                    }, {
-                        name: "ZR",
-                        acros: [{
-                            acro_short_text: row.Akro1_ZR,
-                            points: row.Wert1_ZR,
-                        }, {
-                            acro_short_text: row.Akro2_ZR,
-                            points: row.Wert2_ZR,
-                        }, {
-                            acro_short_text: row.Akro3_ZR,
-                            points: row.Wert3_ZR,
-                        }, {
-                            acro_short_text: row.Akro4_ZR,
-                            points: row.Wert4_ZR,
-                        }, {
-                            acro_short_text: row.Akro5_ZR,
-                            points: row.Wert5_ZR,
-                        }, {
-                            acro_short_text: row.Akro6_ZR,
-                            points: row.Wert6_ZR,
-                        }, {
-                            acro_short_text: row.Akro7_ZR,
-                            points: row.Wert7_ZR,
-                        }, {
-                            acro_short_text: row.Akro8_ZR,
-                            points: row.Wert8_ZR,
-                        }]
-                    }, {
-                        name: "ER",
-                        acros: [{
-                            acro_short_text: row.Akro1_ER,
-                            points: row.Wert1_ER,
-                        }, {
-                            acro_short_text: row.Akro2_ER,
-                            points: row.Wert2_ER,
-                        }, {
-                            acro_short_text: row.Akro3_ER,
-                            points: row.Wert3_ER,
-                        }, {
-                            acro_short_text: row.Akro4_ER,
-                            points: row.Wert4_ER,
-                        }, {
-                            acro_short_text: row.Akro5_ER,
-                            points: row.Wert5_ER,
-                        }, {
-                            acro_short_text: row.Akro6_ER,
-                            points: row.Wert6_ER,
-                        }, {
-                            acro_short_text: row.Akro7_ER,
-                            points: row.Wert7_ER,
-                        }, {
-                            acro_short_text: row.Akro8_ER,
-                            points: row.Wert8_ER,
-                        }],
-                    }],
-                    replacement_acros: [{
-                        round: "VR",
-                        acro: [{
-                            acro_short_text: row.E_Akro1_VR,
-                            points: row.E_Wert1_VR,
-                        }, {
-                            acro_short_text: row.E_Akro2_VR,
-                            points: row.E_Wert2_VR,
-                        }]
-                    }, {
-                        name: "ZR",
-                        acros: [{
-                            acro_short_text: row.E_Akro1_ZR,
-                            points: row.E_Wert1_ZR,
-                        }, {
-                            acro_short_text: row.E_Akro2_ZR,
-                            points: row.E_Wert2_ZR,
-                        }]
-                    }, {
-                        name: "ER",
-                        acros: [{
-                            acro_short_text: row.E_Akro1_ER,
-                            points: row.E_Wert1_ER,
-                        }, {
-                            acro_short_text: row.E_Akro2_ER,
-                            points: row.E_Wert2_ER,
-                        }]
-                    }],
+                    acros: [
+                        {
+                            round: 'VR',
+                            acro: [
+                                {
+                                    acro_short_text: row.Akro1_VR,
+                                    points: row.Wert1_VR,
+                                },
+                                {
+                                    acro_short_text: row.Akro2_VR,
+                                    points: row.Wert2_VR,
+                                },
+                                {
+                                    acro_short_text: row.Akro3_VR,
+                                    points: row.Wert3_VR,
+                                },
+                                {
+                                    acro_short_text: row.Akro4_VR,
+                                    points: row.Wert4_VR,
+                                },
+                                {
+                                    acro_short_text: row.Akro5_VR,
+                                    points: row.Wert5_VR,
+                                },
+                                {
+                                    acro_short_text: row.Akro6_VR,
+                                    points: row.Wert6_VR,
+                                },
+                                {
+                                    acro_short_text: row.Akro7_VR,
+                                    points: row.Wert7_VR,
+                                },
+                                {
+                                    acro_short_text: row.Akro8_VR,
+                                    points: row.Wert8_VR,
+                                },
+                            ],
+                        },
+                        {
+                            name: 'ZR',
+                            acros: [
+                                {
+                                    acro_short_text: row.Akro1_ZR,
+                                    points: row.Wert1_ZR,
+                                },
+                                {
+                                    acro_short_text: row.Akro2_ZR,
+                                    points: row.Wert2_ZR,
+                                },
+                                {
+                                    acro_short_text: row.Akro3_ZR,
+                                    points: row.Wert3_ZR,
+                                },
+                                {
+                                    acro_short_text: row.Akro4_ZR,
+                                    points: row.Wert4_ZR,
+                                },
+                                {
+                                    acro_short_text: row.Akro5_ZR,
+                                    points: row.Wert5_ZR,
+                                },
+                                {
+                                    acro_short_text: row.Akro6_ZR,
+                                    points: row.Wert6_ZR,
+                                },
+                                {
+                                    acro_short_text: row.Akro7_ZR,
+                                    points: row.Wert7_ZR,
+                                },
+                                {
+                                    acro_short_text: row.Akro8_ZR,
+                                    points: row.Wert8_ZR,
+                                },
+                            ],
+                        },
+                        {
+                            name: 'ER',
+                            acros: [
+                                {
+                                    acro_short_text: row.Akro1_ER,
+                                    points: row.Wert1_ER,
+                                },
+                                {
+                                    acro_short_text: row.Akro2_ER,
+                                    points: row.Wert2_ER,
+                                },
+                                {
+                                    acro_short_text: row.Akro3_ER,
+                                    points: row.Wert3_ER,
+                                },
+                                {
+                                    acro_short_text: row.Akro4_ER,
+                                    points: row.Wert4_ER,
+                                },
+                                {
+                                    acro_short_text: row.Akro5_ER,
+                                    points: row.Wert5_ER,
+                                },
+                                {
+                                    acro_short_text: row.Akro6_ER,
+                                    points: row.Wert6_ER,
+                                },
+                                {
+                                    acro_short_text: row.Akro7_ER,
+                                    points: row.Wert7_ER,
+                                },
+                                {
+                                    acro_short_text: row.Akro8_ER,
+                                    points: row.Wert8_ER,
+                                },
+                            ],
+                        },
+                    ],
+                    replacement_acros: [
+                        {
+                            round: 'VR',
+                            acro: [
+                                {
+                                    acro_short_text: row.E_Akro1_VR,
+                                    points: row.E_Wert1_VR,
+                                },
+                                {
+                                    acro_short_text: row.E_Akro2_VR,
+                                    points: row.E_Wert2_VR,
+                                },
+                            ],
+                        },
+                        {
+                            name: 'ZR',
+                            acros: [
+                                {
+                                    acro_short_text: row.E_Akro1_ZR,
+                                    points: row.E_Wert1_ZR,
+                                },
+                                {
+                                    acro_short_text: row.E_Akro2_ZR,
+                                    points: row.E_Wert2_ZR,
+                                },
+                            ],
+                        },
+                        {
+                            name: 'ER',
+                            acros: [
+                                {
+                                    acro_short_text: row.E_Akro1_ER,
+                                    points: row.E_Wert1_ER,
+                                },
+                                {
+                                    acro_short_text: row.E_Akro2_ER,
+                                    points: row.E_Wert2_ER,
+                                },
+                            ],
+                        },
+                    ],
                     music: {
                         dance: row.Musik_FT,
                         acro: row.Musik_Akro,

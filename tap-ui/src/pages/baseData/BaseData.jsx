@@ -1,29 +1,29 @@
-import React, { Component, lazy } from 'react'
-import { Route, withRouter } from 'react-router-dom'
+import React, { Component, lazy } from "react"
+import { Route, withRouter } from "react-router-dom"
 
-import { withStyles, Tabs, Tab, Typography, Paper } from '@material-ui/core'
+import { withStyles, Tabs, Tab, Typography, Paper } from "@material-ui/core"
 
-const AcroData = lazy(() => import('./AcroData'))
-const AthleteData = lazy(() => import('./AthleteData'))
-const AppointmentData = lazy(() => import('./AppointmentData'))
-const OfficialData = lazy(() => import('./OfficialData'))
-const TeamData = lazy(() => import('./TeamData'))
+const AcroData = lazy(() => import("./AcroData"))
+const AthleteData = lazy(() => import("./AthleteData"))
+const AppointmentData = lazy(() => import("./AppointmentData"))
+const OfficialData = lazy(() => import("./OfficialData"))
+const TeamData = lazy(() => import("./TeamData"))
 
 const styles = (theme) => ({
     root: {
-        display: 'flex',
-        flexDirection: 'column',
-        margin: '11px',
+        display: "flex",
+        flexDirection: "column",
+        margin: "11px",
     },
     tablabel: {
-        'text-transform': 'none',
+        "text-transform": "none",
     },
 })
 
 function a11yProps(index) {
     return {
         id: `scrollable-prevent-tab-${index}`,
-        'aria-controls': `scrollable-prevent-tabpanel-${index}`,
+        "aria-controls": `scrollable-prevent-tabpanel-${index}`,
     }
 }
 
@@ -71,7 +71,7 @@ class BaseData extends Component {
                                         textColor="secondary"
                                         variant="fullWidth"
                                     >
-                                        <Tab
+                                        {/* <Tab
                                             label={
                                                 <Typography
                                                     className={classes.tablabel}
@@ -82,7 +82,7 @@ class BaseData extends Component {
                                                 </Typography>
                                             }
                                             {...a11yProps(0)}
-                                        />
+                                        /> */}
                                         <Tab
                                             label={
                                                 <Typography
@@ -92,7 +92,7 @@ class BaseData extends Component {
                                                     Turniere
                                                 </Typography>
                                             }
-                                            {...a11yProps(1)}
+                                            {...a11yProps(0)}
                                         />
                                         <Tab
                                             label={
@@ -103,7 +103,7 @@ class BaseData extends Component {
                                                     Athleten
                                                 </Typography>
                                             }
-                                            {...a11yProps(2)}
+                                            {...a11yProps(1)}
                                         />
                                         <Tab
                                             label={
@@ -114,7 +114,7 @@ class BaseData extends Component {
                                                     Offizielle
                                                 </Typography>
                                             }
-                                            {...a11yProps(3)}
+                                            {...a11yProps(2)}
                                         />
                                         <Tab
                                             label={
@@ -125,23 +125,23 @@ class BaseData extends Component {
                                                     Teams
                                                 </Typography>
                                             }
-                                            {...a11yProps(4)}
+                                            {...a11yProps(3)}
                                         />
                                     </Tabs>
                                 </Paper>
-                                <TabPanel value={this.state.tab} index={0}>
+                                {/* <TabPanel value={this.state.tab} index={0}>
                                     <AcroData />
-                                </TabPanel>
-                                <TabPanel value={this.state.tab} index={1}>
+                                </TabPanel> */}
+                                <TabPanel value={this.state.tab} index={0}>
                                     <AppointmentData />
                                 </TabPanel>
-                                <TabPanel value={this.state.tab} index={2}>
+                                <TabPanel value={this.state.tab} index={1}>
                                     <AthleteData />
                                 </TabPanel>
-                                <TabPanel value={this.state.tab} index={3}>
+                                <TabPanel value={this.state.tab} index={2}>
                                     <OfficialData />
                                 </TabPanel>
-                                <TabPanel value={this.state.tab} index={4}>
+                                <TabPanel value={this.state.tab} index={3}>
                                     <TeamData />
                                 </TabPanel>
                             </div>

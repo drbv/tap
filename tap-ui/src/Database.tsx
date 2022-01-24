@@ -4,17 +4,17 @@ import {
     createRxDatabase,
     getRxStoragePouch,
     RxDatabase,
-} from 'rxdb'
-import { RxDBNoValidatePlugin } from 'rxdb/plugins/no-validate'
-import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election'
-import { RxDBReplicationCouchDBPlugin } from 'rxdb/plugins/replication-couchdb'
-import pouchdb_adapter_http from 'pouchdb-adapter-http'
-import pouchdb_adapter_websql from 'pouchdb-adapter-websql'
-import { AthleteSchema } from '../../shared/schemas/athlete.schema'
-import { TeamSchema } from '../../shared/schemas/team.schema'
-import { OfficialSchema } from '../../shared/schemas/official.schema'
-import { AcroSchema } from '../../shared/schemas/acro.schema'
-import { AppointmentSchema } from 'shared/schemas/appointment.schema'
+} from "rxdb"
+import { RxDBNoValidatePlugin } from "rxdb/plugins/no-validate"
+import { RxDBLeaderElectionPlugin } from "rxdb/plugins/leader-election"
+import { RxDBReplicationCouchDBPlugin } from "rxdb/plugins/replication-couchdb"
+import pouchdb_adapter_http from "pouchdb-adapter-http"
+import pouchdb_adapter_websql from "pouchdb-adapter-websql"
+import { AthleteSchema } from "../../shared/schemas/athlete.schema"
+import { TeamSchema } from "../../shared/schemas/team.schema"
+import { OfficialSchema } from "../../shared/schemas/official.schema"
+import { AcroSchema } from "../../shared/schemas/acro.schema"
+import { AppointmentSchema } from "shared/schemas/appointment.schema"
 import {
     userSchema,
     stationSchema,
@@ -24,7 +24,7 @@ import {
     subRoundSchema,
     coupleSchema,
     resultSchema,
-} from './schema'
+} from "./schema"
 
 addRxPlugin(RxDBReplicationCouchDBPlugin)
 addRxPlugin(RxDBNoValidatePlugin)
@@ -51,7 +51,7 @@ export async function getCollection(collection: string) {
 
     // sync local collection with server
     var repState = rxCollection.syncCouchDB({
-        remote: 'http://localhost:5000/db/' + collection,
+        remote: "http://localhost:5000/db/" + collection,
         options: {
             live: true,
             retry: true,
@@ -77,7 +77,7 @@ export async function getBaseCollection(collection: string) {
 
     // sync local collection with server
     var repState = rxCollection.syncCouchDB({
-        remote: 'http://localhost:5000/basedb/' + collection,
+        remote: "http://localhost:5000/basedb/" + collection,
         options: {
             live: true,
             retry: true,
@@ -100,8 +100,8 @@ export async function closeCollection(collection: string) {
 
 async function _create() {
     const db = await createRxDatabase({
-        name: './client-db',
-        storage: getRxStoragePouch('websql'),
+        name: "./client-db",
+        storage: getRxStoragePouch("websql"),
         ignoreDuplicate: true,
     })
 
@@ -147,10 +147,10 @@ async function _create() {
     })
 
     await db.users.upsert({
-        id: 'DEFAULT_ADMIN',
-        name: 'DEFAULT_ADMIN',
-        role: 'admin',
-        key: 'admindarfalles',
+        id: "DEFAULT_ADMIN",
+        name: "DEFAULT_ADMIN",
+        role: "admin",
+        key: "admindarfalles",
     })
 
     return db
@@ -158,8 +158,8 @@ async function _create() {
 
 async function _createBase() {
     const db = await createRxDatabase({
-        name: './clientbase-db',
-        storage: getRxStoragePouch('websql'),
+        name: "./clientbase-db",
+        storage: getRxStoragePouch("websql"),
         ignoreDuplicate: true,
     })
 
