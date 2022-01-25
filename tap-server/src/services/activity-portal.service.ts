@@ -21,6 +21,7 @@ import { DrbvAcroData } from '../../../shared/models/drbv-acro-data.model'
 import { StartDataAppointmentData } from '../../../shared/models/start-data-appointment-data.model'
 import { CompetitionData } from '../../../shared/models/competition-data.model'
 import * as https from 'https'
+import { resolve } from 'path'
 
 export class ActivityPortalService {
     private db: RxDatabaseBase<any, any> &
@@ -30,7 +31,7 @@ export class ActivityPortalService {
     public async fetchDataFromPortal(): Promise<void> {
         const urlConfigs: UrlConfig[] = config.get('urls')
 
-        this.db = await Database.get()
+        this.db = await Database.getBaseDB()
 
         if (this.db === null) {
             console.error('cannot access database')
@@ -94,19 +95,19 @@ export class ActivityPortalService {
         }
     }
 
-    public async fetchAppointmentDataFromPortal(id: string): Promise<void> {
-        this.db = await Database.get()
-
-        if (this.db === null) {
+    public async fetchAppointmentDataFromPortal(id: string, competitionDB: RxDatabase): Promise<void> {
+        if (competitionDB === null) {
             console.error('cannot access database')
+            return null
         }
-
-        const database = await Database.createDatabase(id)
 
         const url = `https://drbv.de/cms/images/Download/TurnierProgramm/startlisten/${id}_Anmeldung.txt`
 
         const csvData = await this.fetchData<CompetitionData>(url)
-        await this.importActiveDb(database, csvData)
+        await this.importActiveDb(competitionDB, csvData)
+        
+        // TODO: Return Promise
+        return null
     }
 
     private async fetchData<T>(url: string): Promise<T[]> {
@@ -292,6 +293,7 @@ export class ActivityPortalService {
         for (const row of csvData) {
             if (officials.has(row.Lizenzn)) {
                 const official = officials.get(row.Lizenzn)
+                if (!official) {continue}
                 this.parseLicense(row.Lizenz, official.licence)
             } else {
                 const official = {
