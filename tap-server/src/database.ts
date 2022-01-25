@@ -26,23 +26,86 @@ export class Database {
         RxDatabaseGenerated<CollectionsOfDatabase>
 
     private static dbList = new Map<string, RxDatabase>();
+    private static currentCompetition: string
 
-    public static async get(name = 'base'): Promise<RxDatabase> {
+    public static async setCurrentCompetitionDB(name: string): Promise<RxDatabase>{
+        try{
+            const db = await this.getCompetitionDB(name)
+            this.currentCompetition = name
+
+            return db
+        }
+        catch(e){
+            console.log(e)
+            return null
+        }
+    }
+
+    public static async getCurrentCompetitionDB(): Promise<RxDatabase> {
         // get database from dbList by name
-        const db = this.dbList.get(name);
+        let name = this.currentCompetition
+
+        // check if currentCompetiton is available
+        if (name && name !== ""){
+            return this.getCompetitionDB(name)
+        }
+
+        // TODO: resolve Promise
+        return null
+    }
+
+    public static async getCompetitionDB(name: string): Promise<RxDatabase> {
+        // get database from dbList by name
+        let db = this.dbList.get(name);
         if (db != null) {
             // return db if exist
             return db;
         }
 
         // if not exist -> create database
-        const base = name === 'base';
-        return this.createDatabase(name, base);
+        db = await this.createCompetitionDB(name);
+        this.dbList.set(name, db);
+
+        return db
     }
 
-    static async createDatabase(name = 'base', base = false): Promise<RxDatabase> {
+    public static async getAdminDB(): Promise<RxDatabase> {
+        const name = "adminDB"
+
+        // get database from dbList by name
+        let db = this.dbList.get(name);
+        if (db != null) {
+            // return db if exist
+            return db;
+        }
+
+        // if not exist -> create database
+        db = await this.createAdminDB(name);
+        this.dbList.set(name, db);
+
+        return db
+    }
+
+    public static async getBaseDB(): Promise<RxDatabase> {
+        const name = "baseDB"
+
+        // get database from dbList by name
+        let db = this.dbList.get(name);
+        if (db != null) {
+            // return db if exist
+            return db;
+        }
+
+        // if not exist -> create database
+        db = await this.createBaseDB(name);
+        this.dbList.set(name, db);
+
+        return db
+    }
+
+    static async createCompetitionDB(name: string): Promise<RxDatabase> {
         const db: RxDatabase = await createRxDatabase({
-            name: './db' + name,
+            name: "./" + name,
             storage: getRxStoragePouch('websql'),
             ignoreDuplicate: true,
         });
@@ -51,37 +114,76 @@ export class Database {
         console.log('isLeader now');
 
         try {
-            if (base) {
-                await db.addCollections({
-                    athletes: {
-                        schema: AthleteSchema,
-                    },
-                    teams: {
-                        schema: TeamSchema,
-                    },
-                    officials: {
-                        schema: OfficialSchema,
-                    },
-                    acros: {
-                        schema: AcroSchema,
-                    },
-                    appointments: {
-                        schema: AppointmentSchema,
-                    },
-                });
-            } else {
-                await db.addCollections({
+            await db.addCollections({
                 // TODO add missing collections
-                    competition: {
-                        schema: CompetitionSchema,
-                    },
-                });
-            }
+                // competition: {
+                //     schema: CompetitionSchema,
+                // },
+            });
         } catch (e) {
             console.log('error: ', e);
         }
 
-        this.dbList.set(name, db);
+        console.log(name + ' initialized.');
+        return db;
+    }
+
+    static async createAdminDB(name: string): Promise<RxDatabase> {
+        const db: RxDatabase = await createRxDatabase({
+            name: "./" + name,
+            storage: getRxStoragePouch('websql'),
+            ignoreDuplicate: true,
+        });
+
+        await db.waitForLeadership();
+        console.log('isLeader now');
+
+        try {
+            await db.addCollections({
+                // TODO add missing collections
+                // competition: {
+                //     schema: CompetitionSchema,
+                // },
+            });
+        } catch (e) {
+            console.log('error: ', e);
+        }
+
+        console.log(name + ' initialized.');
+        return db;
+    }
+
+    static async createBaseDB(name: string): Promise<RxDatabase> {
+        const db: RxDatabase = await createRxDatabase({
+            name: "./" + name,
+            storage: getRxStoragePouch('websql'),
+            ignoreDuplicate: true,
+        });
+
+        await db.waitForLeadership();
+        console.log('isLeader now');
+
+        try {
+            await db.addCollections({
+                athletes: {
+                    schema: AthleteSchema,
+                },
+                teams: {
+                    schema: TeamSchema,
+                },
+                officials: {
+                    schema: OfficialSchema,
+                },
+                acros: {
+                    schema: AcroSchema,
+                },
+                appointments: {
+                    schema: AppointmentSchema,
+                },
+            });
+        } catch (e) {
+            console.log('error: ', e);
+        }
 
         console.log(name + ' initialized.');
         return db;

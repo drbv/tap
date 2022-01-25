@@ -16,15 +16,9 @@ import { OfficialSchema } from "../../shared/schemas/official.schema"
 import { AcroSchema } from "../../shared/schemas/acro.schema"
 import { AppointmentSchema } from "shared/schemas/appointment.schema"
 import {
-    userSchema,
-    stationSchema,
-    roundSetSchema,
-    roundSchema,
-    evaluationSchema,
-    subRoundSchema,
-    coupleSchema,
-    resultSchema,
-} from "./schema"
+    CompetitionSchema
+} from "../../shared/schemas/competition.schema"
+import { userSchema } from "./schema"
 
 addRxPlugin(RxDBReplicationCouchDBPlugin)
 addRxPlugin(RxDBNoValidatePlugin)
@@ -126,23 +120,8 @@ async function _create() {
         users: {
             schema: userSchema,
         },
-        stations: {
-            schema: stationSchema,
-        },
-        roundsets: {
-            schema: roundSetSchema,
-        },
-        evaluations: {
-            schema: evaluationSchema,
-        },
-        rounds: {
-            schema: roundSchema,
-        },
-        subrounds: {
-            schema: subRoundSchema,
-        },
-        results: {
-            schema: resultSchema,
+        competition: {
+            schema: CompetitionSchema,
         },
     })
 

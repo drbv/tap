@@ -1,30 +1,37 @@
 import config from 'config'
-import Papa, {NODE_STREAM_INPUT, ParseResult} from 'papaparse'
-import {UrlConfig} from '../interfaces/url-config.interface'
-import {Constants} from '../models/constants.model'
-import {Database} from '../database'
-import {StartDataBwData} from '../../../shared/models/start-data-bw-data.model'
-import {StartDataRrData} from '../../../shared/models/start-data-rr-data.model'
-import {RxDatabaseBase} from 'rxdb/dist/types/rx-database'
-import {CollectionsOfDatabase, RxDatabase, RxDatabaseGenerated} from 'rxdb'
-import {StartDataWrTlData} from '../../../shared/models/start-data-wr-tl-data.model'
-import {BwLicense, License, RrLicense,} from '../../../shared/interfaces/license.interface'
-import {Offical} from '../../../shared/interfaces/offical.interface'
-import {Team} from '../../../shared/interfaces/team.interface'
-import {TeamMember} from '../../../shared/interfaces/team-member.interface'
-import {FormationData} from '../../../shared/models/formation-data.model'
-import {DrbvAcroData} from '../../../shared/models/drbv-acro-data.model'
-import {StartDataAppointmentData} from '../../../shared/models/start-data-appointment-data.model'
-import {CompetitionData} from "../../../shared/models/competition-data.model";
-import * as https from "https";
+import Papa, { NODE_STREAM_INPUT, ParseResult } from 'papaparse'
+import { UrlConfig } from '../interfaces/url-config.interface'
+import { Constants } from '../models/constants.model'
+import { Database } from '../database'
+import { StartDataBwData } from '../../../shared/models/start-data-bw-data.model'
+import { StartDataRrData } from '../../../shared/models/start-data-rr-data.model'
+import { RxDatabaseBase } from 'rxdb/dist/types/rx-database'
+import { CollectionsOfDatabase, RxDatabase, RxDatabaseGenerated } from 'rxdb'
+import { StartDataWrTlData } from '../../../shared/models/start-data-wr-tl-data.model'
+import {
+    BwLicense,
+    License,
+    RrLicense,
+} from '../../../shared/interfaces/license.interface'
+import { Offical } from '../../../shared/interfaces/offical.interface'
+import { Team } from '../../../shared/interfaces/team.interface'
+import { TeamMember } from '../../../shared/interfaces/team-member.interface'
+import { FormationData } from '../../../shared/models/formation-data.model'
+import { DrbvAcroData } from '../../../shared/models/drbv-acro-data.model'
+import { StartDataAppointmentData } from '../../../shared/models/start-data-appointment-data.model'
+import { CompetitionData } from '../../../shared/models/competition-data.model'
+import * as https from 'https'
+import { resolve } from 'path'
 
 export class ActivityPortalService {
-    private db: RxDatabaseBase<any, any> & CollectionsOfDatabase & RxDatabaseGenerated<CollectionsOfDatabase>;
+    private db: RxDatabaseBase<any, any> &
+        CollectionsOfDatabase &
+        RxDatabaseGenerated<CollectionsOfDatabase>
 
     public async fetchDataFromPortal(): Promise<void> {
         const urlConfigs: UrlConfig[] = config.get('urls');
 
-        this.db = await Database.get();
+        this.db = await Database.getBaseDB();
 
         if (this.db === null) {
             console.error('cannot access database');
@@ -75,19 +82,19 @@ export class ActivityPortalService {
         }
     }
 
-    public async fetchAppointmentDataFromPortal(id: string): Promise<void> {
-        this.db = await Database.get();
-
-        if (this.db === null) {
-            console.error('cannot access database');
+    public async fetchAppointmentDataFromPortal(id: string, competitionDB: RxDatabase): Promise<void> {
+        if (competitionDB === null) {
+            console.error('cannot access database')
+            return null
         }
-
-        const database = await Database.createDatabase(id);
 
         const url = `https://drbv.de/cms/images/Download/TurnierProgramm/startlisten/${id}_Anmeldung.txt`;
 
         const csvData = await this.fetchData<CompetitionData>(url);
-        await this.importActiveDb(database, csvData);
+        await this.importActiveDb(competitionDB, csvData);
+
+        // TODO: Return Promise
+        return null
     }
 
     private async fetchData<T>(url: string): Promise<T[]> {
@@ -262,6 +269,9 @@ export class ActivityPortalService {
         for (const row of csvData) {
             if (officials.has(row.Lizenzn)) {
                 const official = officials.get(row.Lizenzn);
+                if (!official) {
+                    continue;
+                }
                 this.parseLicense(row.Lizenz, official.licence);
             } else {
                 const official = {
