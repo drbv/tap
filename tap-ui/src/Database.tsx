@@ -45,7 +45,7 @@ export async function getCollection(collection: string) {
 
     // sync local collection with server
     var repState = rxCollection.syncCouchDB({
-        remote: "http://localhost:5000/db/" + collection,
+        remote: "http://localhost:5000/competitiondb/" + collection,
         options: {
             live: true,
             retry: true,

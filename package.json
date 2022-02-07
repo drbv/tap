@@ -7,7 +7,8 @@
         "server": "ts-node tap-server/src/server.ts",
         "client": "npm start --prefix tap-ui",
         "dev": "NODE_ENV=development concurrently \"npm run server\" \"npm run client\"",
-        "build": "tsc --project ./"
+        "build": "tsc --project ./",
+        "clean": "rm *rxdb* _replicator _users pouch__all_dbs__"
     },
     "dependencies": {
         "@babel/polyfill": "^7.12.1",

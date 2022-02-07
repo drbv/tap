@@ -11,6 +11,8 @@ const port = config.get("port")
 function initialize(withLocalDb = false){
     const mainApp = express()
 
+    
+
     Database.getAdminDB().then(async (db) => {
         const { app, server } = await db.server({
             startServer: false,
@@ -18,7 +20,7 @@ function initialize(withLocalDb = false){
         })
     
         // configure CORS, other middlewares...
-        mainApp.use("/adminDB", app)
+        mainApp.use("/admindb", app)
     })
 
     Database.getBaseDB().then(async (db) => {
@@ -28,18 +30,20 @@ function initialize(withLocalDb = false){
         })
     
         // configure CORS, other middlewares...
-        mainApp.use("/baseDB", app)
+        mainApp.use("/basedb", app)
     })
       
     Database.getCurrentCompetitionDB().then(async (db) => {
-        const { app, server } = await db.server({
-            startServer: false,
-            cors: true,
-        })
-       
-        // configure CORS, other middlewares...
-        mainApp.use("/competitionDB", app)
-        //mainApp.use("/db", app)
+        if (db != undefined) {
+            const { app, server } = await db.server({
+                startServer: false,
+                cors: true,
+            })
+           
+            // configure CORS, other middlewares...
+            mainApp.use("/competitiondb", app)
+            //mainApp.use("/db", app)
+        }
     })
     
     mainApp.use("/import", (req, res) => {
@@ -65,10 +69,6 @@ function initialize(withLocalDb = false){
         }
         
         res.status(400).send("Database " + id + " could not be activated")
-    })
-    
-    mainApp.use("/", (req, res) => {
-        res.send("hello")
     })
     
     console.log("port: ", port)

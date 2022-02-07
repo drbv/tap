@@ -267,24 +267,26 @@ export class ActivityPortalService {
         const officials: Map<number, Offical> = new Map<number, Offical>();
 
         for (const row of csvData) {
-            if (officials.has(row.Lizenzn)) {
-                const official = officials.get(row.Lizenzn);
-                if (!official) {
-                    continue;
+            if (row && row.Lizenzn) {
+                if (officials.has(row.Lizenzn)) {
+                    const official = officials.get(row.Lizenzn);
+                    if (!official) {
+                        continue;
+                    }
+                    this.parseLicense(row.Lizenz, official.licence);
+                } else {
+                    const official = {
+                        id: row.Lizenzn.toString(),
+                        rfid: row.RFID,
+                        pre_name: row.WVorname,
+                        family_name: row.WName,
+                        club_id: row.club,
+                        licence: this.parseLicense(row.Lizenz),
+                        email: row.email,
+                        organization: row.LRRVERB,
+                    } as Offical;
+                    officials.set(row.Lizenzn, official);
                 }
-                this.parseLicense(row.Lizenz, official.licence);
-            } else {
-                const official = {
-                    id: row.Lizenzn.toString(),
-                    rfid: row.RFID,
-                    pre_name: row.WVorname,
-                    family_name: row.WName,
-                    club_id: row.club,
-                    licence: this.parseLicense(row.Lizenz),
-                    email: row.email,
-                    organization: row.LRRVERB,
-                } as Offical;
-                officials.set(row.Lizenzn, official);
             }
         }
 
