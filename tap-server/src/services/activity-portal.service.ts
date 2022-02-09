@@ -21,7 +21,6 @@ import { DrbvAcroData } from '../../../shared/models/drbv-acro-data.model'
 import { StartDataAppointmentData } from '../../../shared/models/start-data-appointment-data.model'
 import { CompetitionData } from '../../../shared/models/competition-data.model'
 import * as https from 'https'
-import { resolve } from 'path'
 
 export class ActivityPortalService {
     private db: RxDatabaseBase<any, any> &
@@ -82,19 +81,18 @@ export class ActivityPortalService {
         }
     }
 
-    public async fetchAppointmentDataFromPortal(id: string, competitionDB: RxDatabase): Promise<void> {
+    public async fetchAppointmentDataFromPortal(id: string): Promise<void> {
+        const competitionDB = await Database.setCurrentCompetitionDB(id);
+
         if (competitionDB === null) {
-            console.error('cannot access database')
-            return null
+            console.error('cannot access database');
+            return null;
         }
 
         const url = `https://drbv.de/cms/images/Download/TurnierProgramm/startlisten/${id}_Anmeldung.txt`;
 
         const csvData = await this.fetchData<CompetitionData>(url);
-        await this.importActiveDb(competitionDB, csvData);
-
-        // TODO: Return Promise
-        return null
+        return this.importActiveDb(competitionDB, csvData);
     }
 
     private async fetchData<T>(url: string): Promise<T[]> {
