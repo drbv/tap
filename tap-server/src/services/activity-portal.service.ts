@@ -21,7 +21,6 @@ import { DrbvAcroData } from '../../../shared/models/drbv-acro-data.model'
 import { StartDataAppointmentData } from '../../../shared/models/start-data-appointment-data.model'
 import { CompetitionData } from '../../../shared/models/competition-data.model'
 import * as https from 'https'
-import { resolve } from 'path'
 
 export class ActivityPortalService {
     private db: RxDatabaseBase<any, any> &
@@ -29,85 +28,72 @@ export class ActivityPortalService {
         RxDatabaseGenerated<CollectionsOfDatabase>
 
     public async fetchDataFromPortal(): Promise<void> {
-        const urlConfigs: UrlConfig[] = config.get('urls')
+        const urlConfigs: UrlConfig[] = config.get('urls');
 
-        this.db = await Database.getBaseDB()
+        this.db = await Database.getBaseDB();
 
         if (this.db === null) {
-            console.error('cannot access database')
+            console.error('cannot access database');
         }
 
         for (const urlConfig of urlConfigs) {
             try {
                 switch (urlConfig.schema) {
                     case Constants.ACTIVITY_PORTAL_IMPORT_BW: {
-                        const csvData = await this.fetchData<StartDataBwData>(
-                            urlConfig.url
-                        )
-                        await this.importBwData(csvData)
+                        const csvData = await this.fetchData<StartDataBwData>(urlConfig.url);
+                        await this.importBwData(csvData);
                         break
                     }
                     case Constants.ACTIVITY_PORTAL_IMPORT_RR: {
-                        const csvData = await this.fetchData<StartDataRrData>(
-                            urlConfig.url
-                        )
+                        const csvData = await this.fetchData<StartDataRrData>(urlConfig.url);
                         await this.importRrData(csvData)
                         break
                     }
 
                     case Constants.ACTIVITY_PORTAL_IMPORT_F: {
-                        const csvData = await this.fetchData<FormationData>(
-                            urlConfig.url
-                        )
+                        const csvData = await this.fetchData<FormationData>(urlConfig.url);
                         await this.importFormationData(csvData)
                         break
                     }
                     case Constants.ACTIVITY_PORTAL_IMPORT_WR_TL: {
-                        const csvData = await this.fetchData<StartDataWrTlData>(
-                            urlConfig.url
-                        )
+                        const csvData = await this.fetchData<StartDataWrTlData>(urlConfig.url);
                         await this.importWrTlData(csvData)
                         break
                     }
                     case Constants.ACTIVITY_PORTAL_IMPORT_ACRO: {
-                        const csvData = await this.fetchData<DrbvAcroData>(
-                            urlConfig.url
-                        )
-                        await this.importAcroData(csvData)
-                        break
+                        const csvData = await this.fetchData<DrbvAcroData>(urlConfig.url);
+                        await this.importAcroData(csvData);
+                        break;
                     }
                     case Constants.ACTIVITY_PORTAL_IMPORT_APPOINTMENTS: {
                         const csvData =
-                            await this.fetchData<StartDataAppointmentData>(
-                                urlConfig.url
-                            )
-                        await this.importAppointmentData(csvData)
-                        break
+                            await this.fetchData<StartDataAppointmentData>(urlConfig.url);
+                        await this.importAppointmentData(csvData);
+                        break;
                     }
 
                     default: {
-                        break
+                        break;
                     }
                 }
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
         }
     }
 
-    public async fetchAppointmentDataFromPortal(id: string, competitionDB: RxDatabase): Promise<void> {
+    public async fetchAppointmentDataFromPortal(id: string): Promise<void> {
+        const competitionDB = await Database.setCurrentCompetitionDB(id);
+
         if (competitionDB === null) {
-            console.error('cannot access database')
-            return null
+            console.error('cannot access database');
+            return null;
         }
 
-        const url = `https://drbv.de/cms/images/Download/TurnierProgramm/startlisten/${id}_Anmeldung.txt`
+        const url = `https://drbv.de/cms/images/Download/TurnierProgramm/startlisten/${id}_Anmeldung.txt`;
 
-        const csvData = await this.fetchData<CompetitionData>(url)
-        await this.importActiveDb(competitionDB, csvData)
-        
-        // TODO: Return Promise
-        return null
+        const csvData = await this.fetchData<CompetitionData>(url);
+        return this.importActiveDb(competitionDB, csvData);
     }
 
     private async fetchData<T>(url: string): Promise<T[]> {
@@ -116,7 +102,7 @@ export class ActivityPortalService {
                 console.log(res)
                 resolve(res)
             })
-        )
+        );
 
         return new Promise<T[]>((resolve, reject) => {
             const parseStream = Papa.parse<T>(csvData, {
@@ -125,22 +111,22 @@ export class ActivityPortalService {
                 dynamicTyping: true,
                 transformHeader(header: string, index?: number): string {
                     if (header === 'Nr#') {
-                        return 'Nr'
+                        return 'Nr';
                     }
                     if (header === 'e-mail') {
-                        return 'email'
+                        return 'email';
                     }
                     if (header === 'Straße') {
-                        return 'Strasse'
+                        return 'Strasse';
                     }
                     if (header === 'Einschränkungen') {
-                        return 'Einschraenkungen'
+                        return 'Einschraenkungen';
                     }
-                    return header
+                    return header;
                 },
             })
 
-            resolve(parseStream.data)
+            resolve(parseStream.data);
         })
     }
 
