@@ -84,7 +84,7 @@ export class ActivityPortalService {
     public async fetchAppointmentDataFromPortal(id: string): Promise<void> {
         const competitionDB = await Database.setCurrentCompetitionDB(id);
 
-        if (competitionDB === null) {
+        if (competitionDB == null) {
             console.error('cannot access database');
             return null;
         }
@@ -528,9 +528,12 @@ export class ActivityPortalService {
         console.log('updated imported appointments');
     }
 
-    private async importActiveDb(database: RxDatabase, csvData: CompetitionData[]) {
-        if (database === null) {
-            console.log("invalid collection");
+    private async importActiveDb(
+        database: RxDatabase,
+        csvData: CompetitionData[]
+    ) {
+        if (database == null) {
+            console.log('invalid collection');
             return;
         }
         for (const row of csvData) {
