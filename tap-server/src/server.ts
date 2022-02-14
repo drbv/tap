@@ -1,78 +1,73 @@
-import express from "express"
-import { Database } from "./database"
-import { ActivityPortalService } from "./services/activity-portal.service"
-import config from "config"
-import { ServerResponse } from "http"
+import express from "express";
+import { Database } from "./database";
+import { ActivityPortalService } from "./services/activity-portal.service";
+import config from "config";
+import { resolve } from "path";
 
-var server: any
+let server: any;
+const port = config.get("port");
 
-const port = config.get("port")
+async function initialize() {
+    const mainApp = express();
 
-function initialize(withLocalDb = false){
-    const mainApp = express()
-
-    
 
     Database.getAdminDB().then(async (db) => {
-        const { app, server } = await db.server({
+        const {app} = await db.server({
             startServer: false,
             cors: true,
-        })
-    
-        // configure CORS, other middlewares...
-        mainApp.use("/admindb", app)
-    })
+        });
+
+        mainApp.use("/admindb", app);
+    });
 
     Database.getBaseDB().then(async (db) => {
-        const { app, server } = await db.server({
+        const {app} = await db.server({
             startServer: false,
             cors: true,
         })
-    
-        // configure CORS, other middlewares...
+
         mainApp.use("/basedb", app)
     })
-      
-    Database.getCurrentCompetitionDB().then(async (db) => {
-        if (db != undefined) {
-            const { app, server } = await db.server({
-                startServer: false,
-                cors: true,
+
+    mainApp.use("/competitiondb", (req, res) => {
+        if (Database.currentCompetition != "") {
+            Database.getCompetitionDatabaseApp().then((app) => {
+                mainApp.use('/db/' + Database.currentCompetition, app)
+                res.redirect('/db/' + Database.currentCompetition)
             })
-           
-            // configure CORS, other middlewares...
-            mainApp.use("/competitiondb", app)
-            //mainApp.use("/db", app)
+        } else {
+            res.status(400).send("No current competitionDb")
         }
     })
-    
+
+    const activityPortalService = new ActivityPortalService();
+
     mainApp.use("/import", (req, res) => {
-        const activityPortalService = new ActivityPortalService()
-        activityPortalService.fetchDataFromPortal()
-        res.send("importing")
-    })
-    
+        activityPortalService.fetchDataFromPortal().then();
+        res.send("importing...")
+    });
+
     mainApp.use("/activate", async (req, res) => {
-        console.log("call received")
         if (!req.query.id) {
-            res.status(400).send("Required query params missing")
+            res.status(400).send("Required query params missing");
         }
-        const id = req.query.id as string
 
-        // TODO: move to activityPortalService
-        const db = await Database.setCurrentCompetitionDB(id)
-        if (db !== null){
-            const activityPortalService = new ActivityPortalService()
-            await activityPortalService.fetchAppointmentDataFromPortal(id, db)
+        const id = req.query.id as string;
 
-            res.send("Database " + id + " activated.")
+        if (id != null) {
+            await activityPortalService.fetchAppointmentDataFromPortal(id);
+
+            res.send("Database " + id + " activated.");
         }
-        
-        res.status(400).send("Database " + id + " could not be activated")
+
+        res.status(404);
     })
-    
-    console.log("port: ", port)
-    server = mainApp.listen(port, () => console.log(`Server listening on port ${port}`))
+
+    server = mainApp.listen(port, () => console.log(`Server listening on port ${port}`));
 }
 
-initialize()
+async function addDb(mainApp: any, name: string) {
+    mainApp.use("/db/" + name, )
+}
+
+initialize();
