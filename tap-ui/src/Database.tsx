@@ -18,6 +18,7 @@ import { AppointmentSchema } from "shared/schemas/appointment.schema"
 import {
     CompetitionSchema
 } from "../../shared/schemas/competition.schema"
+import { RoundSchema } from "../../shared/schemas/round.schema"
 import { userSchema } from "./schema"
 
 addRxPlugin(RxDBReplicationCouchDBPlugin)
@@ -114,6 +115,11 @@ async function _create() {
         },
         appointments: {
             schema: AppointmentSchema,
+        },
+
+        //new data
+        rounds: {
+            schema: RoundSchema,
         },
 
         //old data

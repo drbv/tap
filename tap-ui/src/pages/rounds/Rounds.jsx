@@ -1,19 +1,19 @@
-import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
-import MUIDataTable from 'mui-datatables'
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import MUIDataTable from "mui-datatables";
 import {
     LinearProgress,
     Paper,
     Button,
     Tooltip,
     IconButton,
-} from '@material-ui/core'
-import withStyles from '@material-ui/core/es/styles/withStyles'
-import { Edit, Delete, PeopleAlt } from '@material-ui/icons'
-import * as Database from '../../Database'
-import RoundSetDialog from './RoundSetDialog'
-import RoundDialog from './RoundDialog'
-import SubRoundsDialog from './SubRoundsDialog'
+} from "@material-ui/core";
+import withStyles from "@material-ui/core/es/styles/withStyles";
+import { Edit, Delete, PeopleAlt } from "@material-ui/icons";
+import { getCollection } from "../../Database";
+import RoundSetDialog from "./RoundSetDialog";
+import RoundDialog from "./RoundDialog";
+import SubRoundsDialog from "./SubRoundsDialog";
 
 const styles = (theme) => ({
     root: {
@@ -21,20 +21,20 @@ const styles = (theme) => ({
         padding: 30,
     },
     table: {
-        margin: '11px',
-        marginBottom: '80px',
+        margin: "11px",
+        marginBottom: "80px",
     },
     newRoundField: {
-        margin: '11px',
+        margin: "11px",
     },
     newRoundButton: {
         margin: 10,
     },
-})
+});
 
 class Rounds extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             newRoundSetOpen: false,
@@ -42,83 +42,73 @@ class Rounds extends Component {
             roundsets: null,
             newRoundOpen: false,
             rountToEdit: null,
-            rounds: null,
+            Rounds: null,
             subRoundsOpen: false,
             subRoundPropId: null,
-        }
+        };
 
-        this.subs = []
+        this.subs = [];
     }
 
     async componentDidMount() {
-        this.setState({ db: await Database.getClientDb() })
-
-        const sub = await this.state.db.rounds.find().$.subscribe((rounds) => {
-            if (!rounds) {
-                return
-            }
-            console.log('reload rounds-list ')
-            console.dir(rounds)
-            this.setState({
-                rounds,
-            })
-        })
-        this.subs.push(sub)
+        getCollection("rounds").then(async (collection) => {
+            const sub = await collection.find().$.subscribe((Rounds) => {
+                if (!Rounds) {
+                    return;
+                }
+                console.log("reload rounds-list ");
+                console.dir(Rounds);
+                this.setState({
+                    Rounds,
+                });
+            });
+            this.subs.push(sub);
+        });
     }
 
     componentWillUnmount() {
         // Unsubscribe from all subscriptions
-        this.subs.forEach((sub) => sub.unsubscribe())
-    }
-
-    async deleteRoundSet(id) {
-        await this.state.db.rounds
-            .findOne({
-                selector: {
-                    id: id,
-                },
-            })
-            .remove()
+        this.subs.forEach((sub) => sub.unsubscribe());
     }
 
     render() {
-        const { classes } = this.props
+        const { classes } = this.props;
         const {
-            rounds,
+            Rounds,
             roundToEdit,
             newRoundSetOpen,
             newRoundOpen,
             subRoundsOpen,
             subRoundPropId,
-        } = this.state
+        } = this.state;
 
         return (
             <div>
                 <Paper className={classes.newRoundField}>
                     <Button
                         className={classes.newRoundButton}
-                        color="inherit"
-                        variant="outlined"
-                        color="primary"
+                        color='inherit'
+                        variant='outlined'
+                        color='primary'
                         onClick={() => {
-                            this.setState({ newRoundSetOpen: true })
+                            this.setState({ newRoundSetOpen: true });
                         }}
                     >
                         Rundenaufteilung erstellen
                     </Button>
                     <Button
                         className={classes.newRoundButton}
-                        color="inherit"
-                        variant="outlined"
-                        color="primary"
+                        color='inherit'
+                        variant='outlined'
+                        color='primary'
                         onClick={() => {
-                            this.setState({ newRoundOpen: true })
+                            this.setState({ newRoundOpen: true });
                         }}
                     >
                         Runde erstellen
                     </Button>
                 </Paper>
-                <RoundSetDialog
+                {/* <RoundSetDialog
                     open={newRoundSetOpen}
                     handleClose={() =>
                         this.setState({
@@ -139,41 +129,41 @@ class Rounds extends Component {
                             subRoundsOpen: false,
                         })
                     }
-                />
-                {rounds != null ? (
+                /> */}
+                {Rounds != null ? (
                     <MUIDataTable
                         className={classes.table}
-                        data={rounds}
+                        data={Rounds}
                         columns={[
                             {
-                                name: 'id',
+                                name: "id",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: 'name',
-                                options: {
-                                    filter: false,
-                                    sort: true,
-                                },
-                            },
-                            {
-                                name: 'numberSubRounds',
+                                name: "name",
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'evaluationTemplateId',
+                                name: "numberSubRounds",
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'judgeIds',
+                                name: "evaluationTemplateId",
+                                options: {
+                                    filter: false,
+                                    sort: true,
+                                },
+                            },
+                            {
+                                name: "judgeIds",
                                 options: {
                                     filter: false,
                                     excluded: true,
@@ -181,7 +171,7 @@ class Rounds extends Component {
                                 },
                             },
                             {
-                                name: 'observerIds',
+                                name: "observerIds",
                                 options: {
                                     filter: false,
                                     excluded: true,
@@ -189,14 +179,14 @@ class Rounds extends Component {
                                 },
                             },
                             {
-                                name: 'status',
+                                name: "status",
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'aktionen',
+                                name: "aktionen",
                                 options: {
                                     filter: false,
                                     sort: false,
@@ -208,7 +198,7 @@ class Rounds extends Component {
                                         if (tableMeta.rowData != null) {
                                             return (
                                                 <div>
-                                                    <Tooltip title="Paare hinzufügen">
+                                                    <Tooltip title='Paare hinzufügen'>
                                                         <span>
                                                             <IconButton
                                                                 onClick={() => {
@@ -220,14 +210,14 @@ class Rounds extends Component {
                                                                             subRoundsOpen:
                                                                                 !subRoundsOpen,
                                                                         }
-                                                                    )
+                                                                    );
                                                                 }}
                                                             >
                                                                 <PeopleAlt />
                                                             </IconButton>
                                                         </span>
                                                     </Tooltip>
-                                                    <Tooltip title="Bearbeiten">
+                                                    <Tooltip title='Bearbeiten'>
                                                         <span>
                                                             <IconButton
                                                                 onClick={() => {
@@ -257,21 +247,21 @@ class Rounds extends Component {
                                                                                         .rowData[6],
                                                                                 },
                                                                         }
-                                                                    )
+                                                                    );
                                                                 }}
                                                             >
                                                                 <Edit />
                                                             </IconButton>
                                                         </span>
                                                     </Tooltip>
-                                                    <Tooltip title="Entfernen">
+                                                    <Tooltip title='Entfernen'>
                                                         <span>
                                                             <IconButton
                                                                 onClick={() => {
                                                                     this.deleteRound(
                                                                         tableMeta
                                                                             .rowData[0]
-                                                                    )
+                                                                    );
                                                                 }}
                                                             >
                                                                 <Delete />
@@ -279,17 +269,17 @@ class Rounds extends Component {
                                                         </span>
                                                     </Tooltip>
                                                 </div>
-                                            )
+                                            );
                                         }
                                     },
                                 },
                             },
                         ]}
                         options={{
-                            responsive: 'scrollFullHeight',
+                            responsive: "scrollFullHeight",
                             filter: false,
                             print: false,
-                            selectableRows: 'none',
+                            selectableRows: "none",
                             rowsPerPageOptions: [10, 25, 50, 100, 250],
                         }}
                     />
@@ -297,7 +287,7 @@ class Rounds extends Component {
                     <LinearProgress />
                 )}
             </div>
-        )
+        );
     }
 }
 
@@ -306,8 +296,8 @@ Rounds.defaultProps = {
     routes: {
         routes: [
             {
-                name: 'default',
-                path: '/rounds',
+                name: "default",
+                path: "/rounds",
                 exact: true,
                 component: <LinearProgress />,
                 admin: false,
@@ -316,6 +306,6 @@ Rounds.defaultProps = {
             },
         ],
     },
-}
+};
 
-export default withStyles(styles, { withTheme: true })(withRouter(Rounds))
+export default withStyles(styles, { withTheme: true })(withRouter(Rounds));
