@@ -2,11 +2,12 @@ import express from "express";
 import { Database } from "./database";
 import { ActivityPortalService } from "./services/activity-portal.service";
 import config from "config";
+import { resolve } from "path";
 
 let server: any;
 const port = config.get("port");
 
-function initialize() {
+async function initialize() {
     const mainApp = express();
 
 
@@ -28,9 +29,16 @@ function initialize() {
         mainApp.use("/basedb", app)
     })
 
-    Database.getCompetitionDatabaseApp().then(async (app) => {
-            mainApp.use("/competitiondb", app)
-    });
+    mainApp.use("/competitiondb", (req, res) => {
+        if (Database.currentCompetition != "") {
+            Database.getCompetitionDatabaseApp().then((app) => {
+                mainApp.use('/db/' + Database.currentCompetition, app)
+                res.redirect('/db/' + Database.currentCompetition)
+            })
+        } else {
+            res.status(400).send("No current competitionDb")
+        }
+    })
 
     const activityPortalService = new ActivityPortalService();
 
@@ -46,16 +54,20 @@ function initialize() {
 
         const id = req.query.id as string;
 
-        if (id !== null) {
+        if (id != null) {
             await activityPortalService.fetchAppointmentDataFromPortal(id);
 
             res.send("Database " + id + " activated.");
         }
 
-        res.status(400).send("Database " + id + " could not be activated");
+        res.status(404);
     })
 
     server = mainApp.listen(port, () => console.log(`Server listening on port ${port}`));
+}
+
+async function addDb(mainApp: any, name: string) {
+    mainApp.use("/db/" + name, )
 }
 
 initialize();

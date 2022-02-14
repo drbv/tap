@@ -12,41 +12,34 @@ import {OfficialSchema} from '../../shared/schemas/official.schema';
 import {TeamSchema} from '../../shared/schemas/team.schema';
 import {AcroSchema} from '../../shared/schemas/acro.schema';
 import {AppointmentSchema} from '../../shared/schemas/appointment.schema';
+import {CompetitionSchema} from '../../shared/schemas/competition.schema';
 
 addRxPlugin(RxDBServerPlugin)
 addPouchPlugin(pouchdb_adapter_node_websql)
 
 export class Database {
     private static dbList = new Map<string, RxDatabase>();
-    private static currentCompetition: string;
+    public static currentCompetition: string = "";
     private static db: RxDatabase;
-    private static app: any;
+    private static app: any = null;
 
     public static async getCompetitionDatabaseApp(): Promise<any> {
-        if (!this.db) {
-            this.db = await Database.createCompetitionDB('init');
+        if (this.db) {
+            const serverResponse = await this.db.server({
+                startServer: false,
+                cors: true,
+            });
+
+            this.app = serverResponse.app;
+            return this.app
         }
-
-        await this.setCompetitionDatabaseApp();
-
-        return this.app;
-    }
-
-    private static async setCompetitionDatabaseApp() {
-        const serverResponse = await this.db.server({
-            startServer: false,
-            cors: true,
-        });
-
-        this.app = serverResponse.app;
+        return null
     }
 
     public static async setCurrentCompetitionDB(name: string): Promise<RxDatabase>{
         try{
             this.db = await this.getCompetitionDB(name);
             this.currentCompetition = name;
-            await this.setCompetitionDatabaseApp();
-
             return this.db;
         }
         catch(e){
@@ -71,7 +64,7 @@ export class Database {
     public static async getCompetitionDB(name: string): Promise<RxDatabase> {
         // get database from dbList by name
         let db = this.dbList.get(name);
-        if (db !== null) {
+        if (db != null) {
             // return db if exist
             return db;
         }
@@ -88,7 +81,7 @@ export class Database {
 
         // get database from dbList by name
         let db = this.dbList.get(name);
-        if (db !== null) {
+        if (db != null) {
             // return db if exist
             return db;
         }
@@ -133,6 +126,9 @@ export class Database {
                 // competition: {
                 //     schema: CompetitionSchema,
                 // },
+                competition: {
+                    schema: CompetitionSchema,
+                },
             });
         } catch (e) {
             console.log('error: ', e);
