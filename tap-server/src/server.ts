@@ -66,8 +66,4 @@ async function initialize() {
     server = mainApp.listen(port, () => console.log(`Server listening on port ${port}`));
 }
 
-async function addDb(mainApp: any, name: string) {
-    mainApp.use("/db/" + name, )
-}
-
 initialize();
