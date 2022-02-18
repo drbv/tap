@@ -13,6 +13,9 @@ import {TeamSchema} from '../../shared/schemas/team.schema';
 import {AcroSchema} from '../../shared/schemas/acro.schema';
 import {AppointmentSchema} from '../../shared/schemas/appointment.schema';
 import {CompetitionSchema} from '../../shared/schemas/competition.schema';
+import {RoundSchema} from '../../shared/schemas/round.schema';
+import {ResultSchema} from '../../shared/schemas/result.schema';
+import {ScoringRuleSchema} from '../../shared/schemas/scoringRule.schema';
 
 addRxPlugin(RxDBServerPlugin)
 addPouchPlugin(pouchdb_adapter_node_websql)
@@ -129,6 +132,15 @@ export class Database {
                 competition: {
                     schema: CompetitionSchema,
                 },
+                round: {
+                    schema: RoundSchema,
+                },
+                result: {
+                    schema: ResultSchema,
+                },
+                scoringRule: {
+                    schema: ScoringRuleSchema,
+                }
             });
         } catch (e) {
             console.log('error: ', e);
