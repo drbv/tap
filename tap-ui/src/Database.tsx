@@ -19,6 +19,7 @@ import {
     CompetitionSchema
 } from "../../shared/schemas/competition.schema"
 import { RoundSchema } from "../../shared/schemas/round.schema"
+import { ScoringRuleSchema } from "../../shared/schemas/scoringRule.schema"
 import { userSchema } from "./schema"
 
 addRxPlugin(RxDBReplicationCouchDBPlugin)
@@ -101,25 +102,12 @@ async function _create() {
     })
 
     await db.addCollections({
-        athletes: {
-            schema: AthleteSchema,
-        },
-        teams: {
-            schema: TeamSchema,
-        },
-        officials: {
-            schema: OfficialSchema,
-        },
-        acros: {
-            schema: AcroSchema,
-        },
-        appointments: {
-            schema: AppointmentSchema,
-        },
-
         //new data
         rounds: {
             schema: RoundSchema,
+        },
+        scoringrule: {
+            schema: ScoringRuleSchema,
         },
 
         //old data

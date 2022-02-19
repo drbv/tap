@@ -1,12 +1,12 @@
 //HOC and util
-import React from 'react'
-import { PropTypes } from 'prop-types'
-import withStyles from '@material-ui/core/es/styles/withStyles'
+import React from "react";
+import { PropTypes } from "prop-types";
+import withStyles from "@material-ui/core/es/styles/withStyles";
 
-import { isRxCollection, isRxDatabase, isRxDocument } from 'rxdb'
+import { isRxCollection, isRxDatabase, isRxDocument } from "rxdb";
 
-import withProps from '../../components/HOC'
-import * as Database from '../../Database'
+import withProps from "../../components/HOC";
+import * as Database from "../../Database";
 
 //components and libraries
 import {
@@ -29,9 +29,9 @@ import {
     FormControl,
     CircularProgress,
     Checkbox,
-} from '@material-ui/core'
-import { Delete, Add } from '@material-ui/icons'
-import { Tooltip } from '@material-ui/core'
+} from "@material-ui/core";
+import { Delete, Add } from "@material-ui/icons";
+import { Tooltip } from "@material-ui/core";
 
 const styles = (theme) => ({
     header: {
@@ -39,94 +39,94 @@ const styles = (theme) => ({
     },
     root: {
         padding: theme.spacing(2),
-        display: 'flex',
-        flexDirection: 'column',
-        margin: '11px',
+        display: "flex",
+        flexDirection: "column",
+        margin: "11px",
     },
     row: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'flex-end',
-        justifyContent: 'flex-start',
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "flex-end",
+        justifyContent: "flex-start",
     },
     flexboxContainer: {
-        display: 'flex',
-        'align-items': 'center',
+        display: "flex",
+        "align-items": "center",
     },
-})
+});
 
 class EvaluationDialog extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             localEvaluation: null,
             numberCouples: null,
             suggestedNumber: null,
-        }
-        this.subs = []
+        };
+        this.subs = [];
     }
 
     async componentDidMount() {
-        this.setState({ db: await Database.getClientDb() })
+        this.setState({ db: await Database.getClientDb() });
     }
 
     async componentDidUpdate(prevProps, prevState) {
         if (prevProps.open !== this.props.open) {
             if (this.props.evaluationToEdit) {
-                this.setState({ localEvaluation: this.props.evaluationToEdit })
+                this.setState({ localEvaluation: this.props.evaluationToEdit });
             } else {
                 this.setState({
                     localEvaluation: {
                         id: Date.now().toString(),
-                        name: '',
-                        stationId: '',
+                        name: "",
+                        stationId: "",
                         categories: null,
                         boni: null,
                     },
-                })
+                });
             }
         }
     }
 
     async upsertEvaluation() {
-        await this.state.db.evaluations.upsert(this.state.localEvaluation)
+        await this.state.db.scoringrule.upsert(this.state.localEvaluation);
     }
 
     render() {
-        const { classes } = this.props
-        const { localEvaluation } = this.state
+        const { classes } = this.props;
+        const { localEvaluation } = this.state;
 
         return localEvaluation ? (
             <div>
                 <Dialog
                     open={this.props.open}
                     onClose={() => this.props.handleClose()}
-                    aria-labelledby="form-dialog-title"
-                    scroll="body"
+                    aria-labelledby='form-dialog-title'
+                    scroll='body'
                 >
-                    <DialogTitle id="form-dialog-title">
+                    <DialogTitle id='form-dialog-title'>
                         Wertungsbogen erstellen / bearbeiten
                     </DialogTitle>
                     <DialogContent dividers>
                         <div className={classes.inputContent}>
                             <TextField
-                                margin="dense"
-                                id="name"
-                                name="name"
+                                margin='dense'
+                                id='name'
+                                name='name'
                                 Title
                                 value={localEvaluation.name}
                                 required={true}
                                 onChange={(e) => {
-                                    let localEvaluationCopy = localEvaluation
-                                    localEvaluationCopy.name = e.target.value
+                                    let localEvaluationCopy = localEvaluation;
+                                    localEvaluationCopy.name = e.target.value;
                                     this.setState({
                                         localEvaluation: localEvaluationCopy,
-                                    })
+                                    });
                                 }}
-                                helperText="Name des Wertungsbogens"
-                                label="Name"
-                                type="text"
+                                helperText='Name des Wertungsbogens'
+                                label='Name'
+                                type='text'
                                 fullWidth
                                 className={classes.inputContent}
                             />
@@ -140,35 +140,35 @@ class EvaluationDialog extends React.Component {
                                         return (
                                             <div className={classes.row}>
                                                 <TextField
-                                                    margin="dense"
-                                                    id="name"
-                                                    name="name"
-                                                    style={{ width: '1000px' }}
+                                                    margin='dense'
+                                                    id='name'
+                                                    name='name'
+                                                    style={{ width: "1000px" }}
                                                     Title
                                                     value={category.name}
                                                     required={true}
                                                     onChange={(e) => {
                                                         let localEvaluationCopy =
-                                                            localEvaluation
+                                                            localEvaluation;
                                                         localEvaluationCopy.categories[
                                                             index
-                                                        ].name = e.target.value
+                                                        ].name = e.target.value;
                                                         this.setState({
                                                             localEvaluation:
                                                                 localEvaluationCopy,
-                                                        })
+                                                        });
                                                     }}
-                                                    label="Kategorie"
-                                                    type="text"
+                                                    label='Kategorie'
+                                                    type='text'
                                                     fullWidth
                                                     className={
                                                         classes.inputContent
                                                     }
                                                 />
                                                 <TextField
-                                                    margin="dense"
-                                                    id="min"
-                                                    name="min"
+                                                    margin='dense'
+                                                    id='min'
+                                                    name='min'
                                                     Title
                                                     value={category.min}
                                                     required={true}
@@ -178,26 +178,26 @@ class EvaluationDialog extends React.Component {
                                                                 JSON.stringify(
                                                                     localEvaluation
                                                                 )
-                                                            )
+                                                            );
                                                         localEvaluationCopy.categories[
                                                             index
-                                                        ].min = e.target.value
+                                                        ].min = e.target.value;
                                                         this.setState({
                                                             localEvaluation:
                                                                 localEvaluationCopy,
-                                                        })
+                                                        });
                                                     }}
-                                                    label="Min"
-                                                    type="number"
+                                                    label='Min'
+                                                    type='number'
                                                     fullWidth
                                                     className={
                                                         classes.inputContent
                                                     }
                                                 />
                                                 <TextField
-                                                    margin="dense"
-                                                    id="max"
-                                                    name="max"
+                                                    margin='dense'
+                                                    id='max'
+                                                    name='max'
                                                     Title
                                                     value={category.max}
                                                     required={true}
@@ -207,26 +207,26 @@ class EvaluationDialog extends React.Component {
                                                                 JSON.stringify(
                                                                     localEvaluation
                                                                 )
-                                                            )
+                                                            );
                                                         localEvaluationCopy.categories[
                                                             index
-                                                        ].max = e.target.value
+                                                        ].max = e.target.value;
                                                         this.setState({
                                                             localEvaluation:
                                                                 localEvaluationCopy,
-                                                        })
+                                                        });
                                                     }}
-                                                    label="Max"
-                                                    type="number"
+                                                    label='Max'
+                                                    type='number'
                                                     fullWidth
                                                     className={
                                                         classes.inputContent
                                                     }
                                                 />
                                                 <TextField
-                                                    margin="dense"
-                                                    id="name"
-                                                    name="name"
+                                                    margin='dense'
+                                                    id='name'
+                                                    name='name'
                                                     Title
                                                     value={category.step}
                                                     required={true}
@@ -236,23 +236,23 @@ class EvaluationDialog extends React.Component {
                                                                 JSON.stringify(
                                                                     localEvaluation
                                                                 )
-                                                            )
+                                                            );
                                                         localEvaluationCopy.categories[
                                                             index
-                                                        ].step = e.target.value
+                                                        ].step = e.target.value;
                                                         this.setState({
                                                             localEvaluation:
                                                                 localEvaluationCopy,
-                                                        })
+                                                        });
                                                     }}
-                                                    label="Abstufung in %"
-                                                    type="number"
+                                                    label='Abstufung in %'
+                                                    type='number'
                                                     fullWidth
                                                     className={
                                                         classes.inputContent
                                                     }
                                                 />
-                                                <Tooltip title="Entfernen">
+                                                <Tooltip title='Entfernen'>
                                                     <IconButton
                                                         onClick={() => {
                                                             let localEvaluationCopy =
@@ -260,34 +260,34 @@ class EvaluationDialog extends React.Component {
                                                                     JSON.stringify(
                                                                         localEvaluation
                                                                     )
-                                                                )
+                                                                );
                                                             localEvaluationCopy.categories.splice(
                                                                 index,
                                                                 1
-                                                            )
+                                                            );
                                                             this.setState({
                                                                 localEvaluation:
                                                                     localEvaluationCopy,
-                                                            })
+                                                            });
                                                         }}
                                                     >
                                                         <Delete />
                                                     </IconButton>
                                                 </Tooltip>
                                             </div>
-                                        )
+                                        );
                                     }
                                 )}
-                            <Tooltip title="Weitere Kategorie">
+                            <Tooltip title='Weitere Kategorie'>
                                 <IconButton
                                     onClick={() => {
                                         let localEvaluationCopy = JSON.parse(
                                             JSON.stringify(localEvaluation)
-                                        )
+                                        );
                                         localEvaluationCopy.categories
                                             ? localEvaluationCopy.categories.push(
                                                   {
-                                                      name: '',
+                                                      name: "",
                                                       min: 0,
                                                       max: 1,
                                                       step: 1,
@@ -296,16 +296,16 @@ class EvaluationDialog extends React.Component {
                                             : (localEvaluationCopy.categories =
                                                   [
                                                       {
-                                                          name: '',
+                                                          name: "",
                                                           min: 0,
                                                           max: 1,
                                                           step: 1,
                                                       },
-                                                  ])
+                                                  ]);
                                         this.setState({
                                             localEvaluation:
                                                 localEvaluationCopy,
-                                        })
+                                        });
                                     }}
                                 >
                                     <Add />
@@ -320,10 +320,10 @@ class EvaluationDialog extends React.Component {
                                     return (
                                         <div className={classes.row}>
                                             <TextField
-                                                margin="dense"
-                                                id="name"
-                                                name="name"
-                                                style={{ width: '1000px' }}
+                                                margin='dense'
+                                                id='name'
+                                                name='name'
+                                                style={{ width: "1000px" }}
                                                 Title
                                                 value={bonus.name}
                                                 required={true}
@@ -333,24 +333,24 @@ class EvaluationDialog extends React.Component {
                                                             JSON.stringify(
                                                                 localEvaluation
                                                             )
-                                                        )
+                                                        );
                                                     localEvaluationCopy.boni[
                                                         index
-                                                    ].name = e.target.value
+                                                    ].name = e.target.value;
                                                     this.setState({
                                                         localEvaluation:
                                                             localEvaluationCopy,
-                                                    })
+                                                    });
                                                 }}
-                                                label="Abzug / Bonus"
-                                                type="text"
+                                                label='Abzug / Bonus'
+                                                type='text'
                                                 fullWidth
                                                 className={classes.inputContent}
                                             />
                                             <TextField
-                                                margin="dense"
-                                                id="value"
-                                                name="value"
+                                                margin='dense'
+                                                id='value'
+                                                name='value'
                                                 Title
                                                 value={bonus.value}
                                                 required={true}
@@ -360,33 +360,33 @@ class EvaluationDialog extends React.Component {
                                                             JSON.stringify(
                                                                 localEvaluation
                                                             )
-                                                        )
+                                                        );
                                                     localEvaluationCopy.boni[
                                                         index
-                                                    ].value = e.target.value
+                                                    ].value = e.target.value;
                                                     if (e.target.value < 0) {
                                                         localEvaluationCopy.boni[
                                                             index
-                                                        ].color = 'red'
+                                                        ].color = "red";
                                                     } else {
                                                         localEvaluationCopy.boni[
                                                             index
-                                                        ].color = 'green'
+                                                        ].color = "green";
                                                     }
                                                     this.setState({
                                                         localEvaluation:
                                                             localEvaluationCopy,
-                                                    })
+                                                    });
                                                 }}
-                                                label="Value"
-                                                type="number"
+                                                label='Value'
+                                                type='number'
                                                 fullWidth
                                                 className={classes.inputContent}
                                             />
                                             <TextField
-                                                margin="dense"
-                                                id="limit"
-                                                name="limit"
+                                                margin='dense'
+                                                id='limit'
+                                                name='limit'
                                                 Title
                                                 value={bonus.limit}
                                                 required={true}
@@ -396,21 +396,21 @@ class EvaluationDialog extends React.Component {
                                                             JSON.stringify(
                                                                 localEvaluation
                                                             )
-                                                        )
+                                                        );
                                                     localEvaluationCopy.boni[
                                                         index
-                                                    ].limit = e.target.value
+                                                    ].limit = e.target.value;
                                                     this.setState({
                                                         localEvaluation:
                                                             localEvaluationCopy,
-                                                    })
+                                                    });
                                                 }}
-                                                label="Limit"
-                                                type="number"
+                                                label='Limit'
+                                                type='number'
                                                 fullWidth
                                                 className={classes.inputContent}
                                             />
-                                            <Tooltip title="Entfernen">
+                                            <Tooltip title='Entfernen'>
                                                 <IconButton
                                                     onClick={() => {
                                                         let localEvaluationCopy =
@@ -418,46 +418,46 @@ class EvaluationDialog extends React.Component {
                                                                 JSON.stringify(
                                                                     localEvaluation
                                                                 )
-                                                            )
+                                                            );
                                                         localEvaluationCopy.boni.splice(
                                                             index,
                                                             1
-                                                        )
+                                                        );
                                                         this.setState({
                                                             localEvaluation:
                                                                 localEvaluationCopy,
-                                                        })
+                                                        });
                                                     }}
                                                 >
                                                     <Delete />
                                                 </IconButton>
                                             </Tooltip>
                                         </div>
-                                    )
+                                    );
                                 })}
-                            <Tooltip title="Abzug / Bonus hinzufügen">
+                            <Tooltip title='Abzug / Bonus hinzufügen'>
                                 <IconButton
                                     onClick={() => {
                                         let localEvaluationCopy = JSON.parse(
                                             JSON.stringify(localEvaluation)
-                                        )
+                                        );
                                         localEvaluationCopy.boni
                                             ? localEvaluationCopy.boni.push({
-                                                  name: '',
+                                                  name: "",
                                                   value: 0,
                                                   limit: 0,
                                               })
                                             : (localEvaluationCopy.boni = [
                                                   {
-                                                      name: '',
+                                                      name: "",
                                                       value: 0,
                                                       limit: 0,
                                                   },
-                                              ])
+                                              ]);
                                         this.setState({
                                             localEvaluation:
                                                 localEvaluationCopy,
-                                        })
+                                        });
                                     }}
                                 >
                                     <Add />
@@ -468,21 +468,21 @@ class EvaluationDialog extends React.Component {
                     <DialogActions>
                         <Button
                             onClick={() => {
-                                this.props.handleClose()
+                                this.props.handleClose();
                             }}
-                            color="secondary"
-                            variant="contained"
+                            color='secondary'
+                            variant='contained'
                         >
                             abbrechen
                         </Button>
                         <Button
                             disabled={this.state.disabled}
                             onClick={() => {
-                                this.upsertEvaluation()
-                                this.props.handleClose()
+                                this.upsertEvaluation();
+                                this.props.handleClose();
                             }}
-                            color="primary"
-                            variant="contained"
+                            color='primary'
+                            variant='contained'
                         >
                             speichern
                         </Button>
@@ -490,8 +490,8 @@ class EvaluationDialog extends React.Component {
                 </Dialog>
             </div>
         ) : (
-            ''
-        )
+            ""
+        );
     }
 }
 
@@ -504,8 +504,8 @@ EvaluationDialog.propTypes = {
      * function to close dialog
      */
     handleClose: PropTypes.func.isRequired,
-}
+};
 
 export default withStyles(styles, { withTheme: true })(
     withProps(EvaluationDialog)
-)
+);

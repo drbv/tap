@@ -138,7 +138,7 @@ export class Database {
                 result: {
                     schema: ResultSchema,
                 },
-                scoringRule: {
+                scoringrule: {
                     schema: ScoringRuleSchema,
                 }
             });

@@ -132,9 +132,8 @@ class OfficialData extends Component {
                             },
                         ]}
                         options={{
-                            responsive: "scrollFullHeight",
                             selectableRows: "none",
-                            rowsPerPageOptions: [50, 100, 250],
+                            rowsPerPageOptions: [10, 50, 100, 250],
                         }}
                     ></MUIDataTable>
                 ) : (

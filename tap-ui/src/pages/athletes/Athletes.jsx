@@ -1,21 +1,21 @@
-import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
-import MUIDataTable from 'mui-datatables'
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import MUIDataTable from "mui-datatables";
 import {
     LinearProgress,
     Paper,
     Button,
     Tooltip,
     IconButton,
-} from '@material-ui/core'
-import { Edit, Delete } from '@material-ui/icons'
-import withStyles from '@material-ui/core/es/styles/withStyles'
+} from "@material-ui/core";
+import { Edit, Delete } from "@material-ui/icons";
+import withStyles from "@material-ui/core/es/styles/withStyles";
 
-import { isRxDatabase, isRxCollection } from 'rxdb'
+import { isRxDatabase, isRxCollection } from "rxdb";
 
-import withProps from '../../components/HOC'
-import { getCollection, closeCollection } from '../../Database'
-import CoupleDialog from './AthleteDialog'
+import withProps from "../../components/HOC";
+import { getCollection, closeCollection } from "../../Database";
+import CoupleDialog from "./AthleteDialog";
 
 const styles = (theme) => ({
     root: {
@@ -23,76 +23,76 @@ const styles = (theme) => ({
         padding: 30,
     },
     table: {
-        margin: '11px',
-        marginBottom: '80px',
+        margin: "11px",
+        marginBottom: "80px",
     },
     newCoupleField: {
-        margin: '11px',
+        margin: "11px",
     },
     newCoupleButton: {
         margin: 10,
     },
-})
+});
 
 class Athletes extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             newCoupleOpen: false,
             coupleToEdit: null,
             Athletes: null,
-        }
+        };
 
-        this.subs = []
+        this.subs = [];
     }
 
     async componentDidMount() {
-        let collection = await getCollection('athletes')
+        let collection = await getCollection("athletes");
         let sub = await collection.find().$.subscribe((Athletes) => {
             if (!Athletes) {
-                return
+                return;
             }
-            console.log('reload Athletes-list ')
-            console.dir(Athletes)
+            console.log("reload Athletes-list ");
+            console.dir(Athletes);
             this.setState({
                 Athletes,
-            })
-        })
+            });
+        });
 
-        this.subs.push(sub)
+        this.subs.push(sub);
     }
 
     componentWillUnmount() {
         // Unsubscribe from all subscriptions
-        this.subs.forEach((sub) => sub.unsubscribe())
+        this.subs.forEach((sub) => sub.unsubscribe());
     }
 
     async deleteCouple(rfid) {
-        let collection = await getCollection('athletes')
+        let collection = await getCollection("athletes");
         collection
             .findOne({
                 selector: {
                     rfid: rfid,
                 },
             })
-            .remove()
+            .remove();
     }
 
     render() {
-        const { classes } = this.props
-        const { Athletes, newCoupleOpen, coupleToEdit } = this.state
+        const { classes } = this.props;
+        const { Athletes, newCoupleOpen, coupleToEdit } = this.state;
 
         return (
             <div>
                 <Paper className={classes.newCoupleField}>
                     <Button
                         className={classes.newCoupleButton}
-                        color="inherit"
-                        variant="outlined"
-                        color="primary"
+                        color='inherit'
+                        variant='outlined'
+                        color='primary'
                         onClick={() => {
-                            this.setState({ newCoupleOpen: true })
+                            this.setState({ newCoupleOpen: true });
                         }}
                     >
                         Tanzpaar hinzufügen
@@ -114,75 +114,75 @@ class Athletes extends Component {
                         data={Athletes}
                         columns={[
                             {
-                                name: 'rfid',
+                                name: "rfid",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: 'book_id',
+                                name: "book_id",
                                 options: {
                                     filter: true,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'pre_name',
+                                name: "pre_name",
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'family_name',
+                                name: "family_name",
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'birth_year',
+                                name: "birth_year",
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'sex',
+                                name: "sex",
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'club_id',
+                                name: "club_id",
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'club_name_short',
+                                name: "club_name_short",
                                 options: {
                                     excluded: true,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'organization',
+                                name: "organization",
                                 options: {
                                     excluded: true,
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'sport',
+                                name: "sport",
                                 options: {
                                     sort: true,
                                 },
                             },
                             {
-                                name: 'Aktionen',
+                                name: "Aktionen",
                                 options: {
                                     sort: false,
                                     customBodyRender: (
@@ -239,14 +239,14 @@ class Athletes extends Component {
                                                             </IconButton>
                                                         </span>
                                                     </Tooltip>*/}
-                                                    <Tooltip title="Entfernen">
+                                                    <Tooltip title='Entfernen'>
                                                         <span>
                                                             <IconButton
                                                                 onClick={() => {
                                                                     this.deleteCouple(
                                                                         tableMeta
                                                                             .rowData[0]
-                                                                    )
+                                                                    );
                                                                 }}
                                                             >
                                                                 <Delete />
@@ -254,25 +254,24 @@ class Athletes extends Component {
                                                         </span>
                                                     </Tooltip>
                                                 </div>
-                                            )
+                                            );
                                         }
                                     },
                                 },
                             },
                         ]}
                         options={{
-                            responsive: 'scrollFullHeight',
                             filter: false,
                             print: false,
-                            selectableRows: 'none',
-                            rowsPerPageOptions: [10, 25, 50, 100, 250],
+                            selectableRows: "none",
+                            rowsPerPageOptions: [10, 50, 100, 250],
                         }}
                     />
                 ) : (
                     <LinearProgress />
                 )}
             </div>
-        )
+        );
     }
 }
 
@@ -281,8 +280,8 @@ Athletes.defaultProps = {
     routes: {
         routes: [
             {
-                name: 'default',
-                path: '/Athletes',
+                name: "default",
+                path: "/Athletes",
                 exact: true,
                 component: <LinearProgress />,
                 admin: false,
@@ -291,8 +290,8 @@ Athletes.defaultProps = {
             },
         ],
     },
-}
+};
 
 export default withStyles(styles, { withTheme: true })(
     withRouter(withProps(Athletes))
-)
+);

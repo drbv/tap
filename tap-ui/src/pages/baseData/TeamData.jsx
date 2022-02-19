@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
 import {
     withStyles,
@@ -8,57 +8,57 @@ import {
     Tooltip,
     IconButton,
     Typography,
-} from '@material-ui/core'
-import MUIDataTable from 'mui-datatables'
+} from "@material-ui/core";
+import MUIDataTable from "mui-datatables";
 
-import { getBaseCollection } from '../../Database'
+import { getBaseCollection } from "../../Database";
 
 const styles = (theme) => ({
     root: {
         padding: theme.spacing(2),
-        margin: '11px',
+        margin: "11px",
     },
     table: {
-        margin: '11px',
-        marginBottom: '80px',
+        margin: "11px",
+        marginBottom: "80px",
     },
-})
+});
 
 class TeamData extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             Teams: null,
-        }
+        };
 
-        this.subs = []
+        this.subs = [];
     }
 
     async componentDidMount() {
-        getBaseCollection('teams').then(async (collection) => {
+        getBaseCollection("teams").then(async (collection) => {
             const sub = await collection.find().$.subscribe((Teams) => {
                 if (!Teams) {
-                    return
+                    return;
                 }
-                console.log('reload Team-list')
-                console.dir(Teams)
+                console.log("reload Team-list");
+                console.dir(Teams);
                 this.setState({
                     Teams,
-                })
-            })
-            this.subs.push(sub)
-        })
+                });
+            });
+            this.subs.push(sub);
+        });
     }
 
     componentWillUnmount() {
         // Unsubscribe from all subscriptions
-        this.subs.forEach((sub) => sub.unsubscribe)
+        this.subs.forEach((sub) => sub.unsubscribe);
     }
 
     render() {
-        const { classes } = this.props
-        const { Teams } = this.state
+        const { classes } = this.props;
+        const { Teams } = this.state;
         return (
             <div>
                 {Teams != null ? (
@@ -67,66 +67,65 @@ class TeamData extends Component {
                         data={Teams}
                         columns={[
                             {
-                                name: 'book_id',
+                                name: "book_id",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: 'team_name',
+                                name: "team_name",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: 'club_id',
+                                name: "club_id",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: 'club_name_short',
+                                name: "club_name_short",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: 'organization',
+                                name: "organization",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: 'sport',
+                                name: "sport",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: 'league',
+                                name: "league",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: 'members',
+                                name: "members",
                                 options: {
                                     filter: false,
                                 },
                             },
                         ]}
                         options={{
-                            responsive: 'scrollFullHeight',
-                            selectableRows: 'none',
-                            rowsPerPageOptions: [50, 100, 250],
+                            selectableRows: "none",
+                            rowsPerPageOptions: [10, 50, 100, 250],
                         }}
                     ></MUIDataTable>
                 ) : (
                     <LinearProgress />
                 )}
             </div>
-        )
+        );
     }
 }
 
-export default withStyles(styles, { withTheme: true })(TeamData)
+export default withStyles(styles, { withTheme: true })(TeamData);
