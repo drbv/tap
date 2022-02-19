@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 
 import {
     withStyles,
@@ -8,57 +8,57 @@ import {
     Tooltip,
     IconButton,
     Typography,
-} from '@material-ui/core'
-import MUIDataTable from 'mui-datatables'
+} from "@material-ui/core";
+import MUIDataTable from "mui-datatables";
 
-import { getBaseCollection } from '../../Database'
+import { getBaseCollection } from "../../Database";
 
 const styles = (theme) => ({
     root: {
         padding: theme.spacing(2),
-        margin: '11px',
+        margin: "11px",
     },
     table: {
-        margin: '11px',
-        marginBottom: '80px',
+        margin: "11px",
+        marginBottom: "80px",
     },
-})
+});
 
 class AppointmentData extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             Appointments: null,
-        }
+        };
 
-        this.subs = []
+        this.subs = [];
     }
 
     async componentDidMount() {
-        getBaseCollection('appointments').then(async (collection) => {
+        getBaseCollection("appointments").then(async (collection) => {
             const sub = await collection.find().$.subscribe((Appointments) => {
                 if (!Appointments) {
-                    return
+                    return;
                 }
-                console.log('reload Appointment-list')
-                console.dir(Appointments)
+                console.log("reload Appointment-list");
+                console.dir(Appointments);
                 this.setState({
                     Appointments,
-                })
-            })
-            this.subs.push(sub)
-        })
+                });
+            });
+            this.subs.push(sub);
+        });
     }
 
     componentWillUnmount() {
         // Unsubscribe from all subscriptions
-        this.subs.forEach((sub) => sub.unsubscribe)
+        this.subs.forEach((sub) => sub.unsubscribe);
     }
 
     render() {
-        const { classes } = this.props
-        const { Appointments } = this.state
+        const { classes } = this.props;
+        const { Appointments } = this.state;
         return (
             <div>
                 {Appointments != null ? (
@@ -67,13 +67,13 @@ class AppointmentData extends Component {
                         data={Appointments}
                         columns={[
                             {
-                                name: 'appointment_id',
+                                name: "appointment_id",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: 'date',
+                                name: "date",
                                 options: {
                                     filter: false,
                                 },
@@ -109,7 +109,7 @@ class AppointmentData extends Component {
                                 },
                             },*/
                             {
-                                name: 'city',
+                                name: "city",
                                 options: {
                                     filter: false,
                                 },
@@ -176,30 +176,29 @@ class AppointmentData extends Component {
                             },*/
                             {
                                 // only set by server
-                                name: 'isActive',
+                                name: "isActive",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: 'createState',
+                                name: "createState",
                                 options: {
                                     filter: false,
                                 },
                             },
                         ]}
                         options={{
-                            responsive: 'scrollFullHeight',
-                            selectableRows: 'none',
-                            rowsPerPageOptions: [50, 100, 250],
+                            selectableRows: "none",
+                            rowsPerPageOptions: [10, 50, 100, 250],
                         }}
                     ></MUIDataTable>
                 ) : (
                     <LinearProgress />
                 )}
             </div>
-        )
+        );
     }
 }
 
-export default withStyles(styles, { withTheme: true })(AppointmentData)
+export default withStyles(styles, { withTheme: true })(AppointmentData);

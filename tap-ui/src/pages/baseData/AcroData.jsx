@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { Component } from "react";
 
 import {
     withStyles,
@@ -8,10 +8,10 @@ import {
     Tooltip,
     IconButton,
     Typography,
-} from "@material-ui/core"
-import MUIDataTable from "mui-datatables"
+} from "@material-ui/core";
+import MUIDataTable from "mui-datatables";
 
-import { getBaseCollection } from "../../Database"
+import { getBaseCollection } from "../../Database";
 
 const styles = (theme) => ({
     root: {
@@ -22,18 +22,18 @@ const styles = (theme) => ({
         margin: "11px",
         marginBottom: "80px",
     },
-})
+});
 
 class AcroData extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             Acros: null,
             tab: 0,
-        }
+        };
 
-        this.subs = []
+        this.subs = [];
     }
 
     async componentDidMount() {
@@ -43,25 +43,25 @@ class AcroData extends Component {
                 .limit(200)
                 .$.subscribe((Acros) => {
                     if (!Acros) {
-                        return
+                        return;
                     }
-                    console.log("reload Acro-list")
+                    console.log("reload Acro-list");
                     this.setState({
                         Acros,
-                    })
-                })
-            this.subs.push(sub)
-        })
+                    });
+                });
+            this.subs.push(sub);
+        });
     }
 
     componentWillUnmount() {
         // Unsubscribe from all subscriptions
-        this.subs.forEach((sub) => sub.unsubscribe)
+        this.subs.forEach((sub) => sub.unsubscribe);
     }
 
     render() {
-        const { classes } = this.props
-        const { Acros } = this.state
+        const { classes } = this.props;
+        const { Acros } = this.state;
         return (
             <div>
                 {Acros != null ? (
@@ -116,17 +116,16 @@ class AcroData extends Component {
                             },
                         ]}
                         options={{
-                            responsive: "scrollFullHeight",
                             selectableRows: "none",
-                            rowsPerPageOptions: [50, 100, 250],
+                            rowsPerPageOptions: [10, 50, 100, 250],
                         }}
                     ></MUIDataTable>
                 ) : (
                     <LinearProgress />
                 )}
             </div>
-        )
+        );
     }
 }
 
-export default withStyles(styles, { withTheme: true })(AcroData)
+export default withStyles(styles, { withTheme: true })(AcroData);

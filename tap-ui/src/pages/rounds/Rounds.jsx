@@ -276,11 +276,10 @@ class Rounds extends Component {
                             },
                         ]}
                         options={{
-                            responsive: "scrollFullHeight",
                             filter: false,
                             print: false,
                             selectableRows: "none",
-                            rowsPerPageOptions: [10, 25, 50, 100, 250],
+                            rowsPerPageOptions: [10, 50, 100, 250],
                         }}
                     />
                 ) : (

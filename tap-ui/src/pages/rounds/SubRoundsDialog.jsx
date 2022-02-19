@@ -1,15 +1,15 @@
 //HOC and util
-import React from 'react'
-import { PropTypes } from 'prop-types'
-import withStyles from '@material-ui/core/es/styles/withStyles'
+import React from "react";
+import { PropTypes } from "prop-types";
+import withStyles from "@material-ui/core/es/styles/withStyles";
 
-import { isRxCollection, isRxDatabase, isRxDocument } from 'rxdb'
+import { isRxCollection, isRxDatabase, isRxDocument } from "rxdb";
 
-import withProps from '../../components/HOC'
-import * as Database from '../../Database'
-import NewSubRoundDialog from './NewSubRoundDialog'
+import withProps from "../../components/HOC";
+import * as Database from "../../Database";
+import NewSubRoundDialog from "./NewSubRoundDialog";
 
-import MUIDataTable from 'mui-datatables'
+import MUIDataTable from "mui-datatables";
 
 //components and libraries
 import {
@@ -28,28 +28,28 @@ import {
     IconButton,
     Paper,
     Grid,
-} from '@material-ui/core'
+} from "@material-ui/core";
 
-import { BlurOn, Edit, Delete } from '@material-ui/icons'
-import { Tooltip } from '@material-ui/core'
-import { Autocomplete } from '@material-ui/lab'
+import { BlurOn, Edit, Delete } from "@material-ui/icons";
+import { Tooltip } from "@material-ui/core";
+import { Autocomplete } from "@material-ui/lab";
 
 const styles = (theme) => ({
     inputContent: {
         marginTop: 20,
     },
     flexboxContainer: {
-        display: 'flex',
-        'align-items': 'center',
+        display: "flex",
+        "align-items": "center",
     },
     newSubRoundButton: {
         marginBottom: 10,
     },
-})
+});
 
 class SubRoundsDialog extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             round: null,
@@ -58,18 +58,18 @@ class SubRoundsDialog extends React.Component {
             newSubRoundOpen: false,
             subRoundToEdit: null,
             roundId: null,
-        }
-        this.subs = []
+        };
+        this.subs = [];
     }
 
     async componentDidMount() {
-        this.setState({ db: await Database.getClientDb() })
+        this.setState({ db: await Database.getClientDb() });
     }
 
     async componentDidUpdate(prevProps, prevState) {
         if (prevProps.open !== this.props.open) {
             if (this.props.subRoundPropId) {
-                this.setState({ roundId: this.props.subRoundPropId })
+                this.setState({ roundId: this.props.subRoundPropId });
 
                 const sub = await this.state.db.rounds
                     .findOne({
@@ -77,63 +77,63 @@ class SubRoundsDialog extends React.Component {
                     })
                     .$.subscribe((round) => {
                         if (!round) {
-                            return
+                            return;
                         }
-                        console.log('reload round-object')
-                        console.dir(round)
+                        console.log("reload round-object");
+                        console.dir(round);
                         this.setState({
                             round,
-                        })
-                    })
-                this.subs.push(sub)
+                        });
+                    });
+                this.subs.push(sub);
 
                 if (this.state.round && this.state.round.judgeId) {
                     const sub0 = await this.state.db.users
                         .find({
                             selector: {
-                                role: 'judge',
+                                role: "judge",
                             },
                         })
                         .$.subscribe((judges) => {
                             if (!judges) {
-                                return
+                                return;
                             }
-                            console.log('reload judge-list')
-                            console.dir(judges)
+                            console.log("reload judge-list");
+                            console.dir(judges);
                             this.setState({
                                 judges,
-                            })
-                        })
-                    this.subs.push(sub0)
+                            });
+                        });
+                    this.subs.push(sub0);
                 }
 
                 const sub1 = await this.state.db.subrounds
                     .find({ selector: { roundId: this.props.subRoundPropId } })
                     .$.subscribe((subrounds) => {
                         if (!subrounds) {
-                            return
+                            return;
                         }
-                        console.log('reload subrounds-list ')
-                        console.dir(subrounds)
+                        console.log("reload subrounds-list ");
+                        console.dir(subrounds);
                         this.setState({
                             subrounds,
-                        })
-                    })
-                this.subs.push(sub1)
+                        });
+                    });
+                this.subs.push(sub1);
             } else {
-                this.props.handleClose()
+                this.props.handleClose();
             }
         }
     }
 
     async upsertSubRounds() {
-        await this.state.db.subrounds.upsert(this.state.subrounds)
+        await this.state.db.subrounds.upsert(this.state.subrounds);
     }
 
     render() {
-        const { classes, subRoundPropId } = this.props
+        const { classes, subRoundPropId } = this.props;
         const { subrounds, newSubRoundOpen, subRoundToEdit, judges } =
-            this.state
+            this.state;
 
         return (
             <div>
@@ -141,28 +141,28 @@ class SubRoundsDialog extends React.Component {
                     fullScreen
                     open={this.props.open}
                     onClose={() => this.props.handleClose()}
-                    aria-labelledby="form-dialog-title"
-                    scroll="body"
+                    aria-labelledby='form-dialog-title'
+                    scroll='body'
                 >
-                    <DialogTitle id="form-dialog-title">
+                    <DialogTitle id='form-dialog-title'>
                         Teilrunden bearbeiten / hinzufügen
                     </DialogTitle>
                     <DialogContent dividers>
                         <Paper>
                             <Grid
                                 container
-                                alignItems="center"
-                                justifyContent="flex-start"
+                                alignItems='center'
+                                justifyContent='flex-start'
                             >
                                 <Grid item>
                                     <Button
                                         className={classes.newSubRoundButton}
-                                        variant="outlined"
-                                        color="primary"
+                                        variant='outlined'
+                                        color='primary'
                                         onClick={() => {
                                             this.setState({
                                                 newSubRoundOpen: true,
-                                            })
+                                            });
                                         }}
                                     >
                                         Teilrunde erstellen
@@ -171,12 +171,12 @@ class SubRoundsDialog extends React.Component {
                                 <Grid item>
                                     <Button
                                         className={classes.newSubRoundButton}
-                                        variant="outlined"
-                                        color="primary"
+                                        variant='outlined'
+                                        color='primary'
                                         onClick={() => {
                                             this.setState({
                                                 roundJudgeOpen: true,
-                                            })
+                                            });
                                         }}
                                     ></Button>
                                 </Grid>
@@ -186,7 +186,7 @@ class SubRoundsDialog extends React.Component {
                                             <Autocomplete
                                                 className={classes.margin}
                                                 id={
-                                                    'judgeSelector' +
+                                                    "judgeSelector" +
                                                     this.state.round.id
                                                 }
                                                 options={this.state.judges}
@@ -196,7 +196,7 @@ class SubRoundsDialog extends React.Component {
                                                 onChange={(event, newValue) => {
                                                     this.setState({
                                                         newJudge: newValue.id,
-                                                    })
+                                                    });
                                                 }}
                                                 autoComplete
                                                 autoSelect
@@ -205,8 +205,8 @@ class SubRoundsDialog extends React.Component {
                                                 renderInput={(params) => (
                                                     <TextField
                                                         {...params}
-                                                        label="Name"
-                                                        variant="outlined"
+                                                        label='Name'
+                                                        variant='outlined'
                                                     />
                                                 )}
                                             />
@@ -231,30 +231,29 @@ class SubRoundsDialog extends React.Component {
                                 data={judges}
                                 columns={[
                                     {
-                                        name: 'id',
+                                        name: "id",
                                         options: {
                                             filter: false,
                                         },
                                     },
                                     {
-                                        name: 'name',
+                                        name: "name",
                                         options: {
                                             filter: false,
                                         },
                                     },
                                     {
-                                        name: 'role',
+                                        name: "role",
                                         options: {
                                             filter: false,
                                         },
                                     },
                                 ]}
                                 options={{
-                                    responsive: 'scrollFullHeight',
                                     filter: false,
                                     print: false,
-                                    selectableRows: 'none',
-                                    rowsPerPageOptions: [10, 25, 50, 100, 250],
+                                    selectableRows: "none",
+                                    rowsPerPageOptions: [10, 50, 100, 250],
                                 }}
                             />
                         )}
@@ -264,27 +263,27 @@ class SubRoundsDialog extends React.Component {
                                 data={subrounds}
                                 columns={[
                                     {
-                                        name: 'id',
+                                        name: "id",
                                         options: {
                                             filter: false,
                                         },
                                     },
                                     {
-                                        name: 'roundId',
-                                        options: {
-                                            filter: false,
-                                            sort: true,
-                                        },
-                                    },
-                                    {
-                                        name: 'number',
+                                        name: "roundId",
                                         options: {
                                             filter: false,
                                             sort: true,
                                         },
                                     },
                                     {
-                                        name: 'coupleIds',
+                                        name: "number",
+                                        options: {
+                                            filter: false,
+                                            sort: true,
+                                        },
+                                    },
+                                    {
+                                        name: "coupleIds",
                                         options: {
                                             filter: false,
                                             excluded: true,
@@ -292,14 +291,14 @@ class SubRoundsDialog extends React.Component {
                                         },
                                     },
                                     {
-                                        name: 'status',
+                                        name: "status",
                                         options: {
                                             filter: false,
                                             sort: true,
                                         },
                                     },
                                     {
-                                        name: 'Aktionen',
+                                        name: "Aktionen",
                                         options: {
                                             filter: false,
                                             sort: false,
@@ -311,7 +310,7 @@ class SubRoundsDialog extends React.Component {
                                                 if (tableMeta.rowData != null) {
                                                     return (
                                                         <div>
-                                                            <Tooltip title="Bearbeiten">
+                                                            <Tooltip title='Bearbeiten'>
                                                                 <span>
                                                                     <IconButton
                                                                         onClick={() => {
@@ -335,21 +334,21 @@ class SubRoundsDialog extends React.Component {
                                                                                                 .rowData[4],
                                                                                         },
                                                                                 }
-                                                                            )
+                                                                            );
                                                                         }}
                                                                     >
                                                                         <Edit />
                                                                     </IconButton>
                                                                 </span>
                                                             </Tooltip>
-                                                            <Tooltip title="Entfernen">
+                                                            <Tooltip title='Entfernen'>
                                                                 <span>
                                                                     <IconButton
                                                                         onClick={() => {
                                                                             this.deleteUser(
                                                                                 tableMeta
                                                                                     .rowData[0]
-                                                                            )
+                                                                            );
                                                                         }}
                                                                     >
                                                                         <Delete />
@@ -357,18 +356,17 @@ class SubRoundsDialog extends React.Component {
                                                                 </span>
                                                             </Tooltip>
                                                         </div>
-                                                    )
+                                                    );
                                                 }
                                             },
                                         },
                                     },
                                 ]}
                                 options={{
-                                    responsive: 'scrollFullHeight',
                                     filter: false,
                                     print: false,
-                                    selectableRows: 'none',
-                                    rowsPerPageOptions: [10, 25, 50, 100, 250],
+                                    selectableRows: "none",
+                                    rowsPerPageOptions: [10, 50, 100, 250],
                                 }}
                             />
                         ) : (
@@ -378,17 +376,17 @@ class SubRoundsDialog extends React.Component {
                     <DialogActions>
                         <Button
                             onClick={() => {
-                                this.props.handleClose()
+                                this.props.handleClose();
                             }}
-                            color="secondary"
-                            variant="contained"
+                            color='secondary'
+                            variant='contained'
                         >
                             schließen
                         </Button>
                     </DialogActions>
                 </Dialog>
             </div>
-        )
+        );
     }
 }
 
@@ -401,8 +399,8 @@ SubRoundsDialog.propTypes = {
      * function to close dialog
      */
     handleClose: PropTypes.func.isRequired,
-}
+};
 
 export default withStyles(styles, { withTheme: true })(
     withProps(SubRoundsDialog)
-)
+);
