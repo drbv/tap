@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@babel/polyfill": "^7.12.1",
+        "@mui/lab": "^5.0.0-alpha.69",
         "axios": "^0.25.0",
         "config": "^3.3.6",
         "cookie-parser": "~1.4.5",
