@@ -15,6 +15,7 @@ import { TeamSchema } from "../../shared/schemas/team.schema"
 import { OfficialSchema } from "../../shared/schemas/official.schema"
 import { AcroSchema } from "../../shared/schemas/acro.schema"
 import { AppointmentSchema } from "shared/schemas/appointment.schema"
+import { PhaseSchema} from "shared/schemas/phase.schema"
 import {
     CompetitionSchema
 } from "../../shared/schemas/competition.schema"
@@ -105,6 +106,9 @@ async function _create() {
         //new data
         rounds: {
             schema: RoundSchema,
+        },
+        phase: {
+            schema: PhaseSchema,
         },
         scoringrule: {
             schema: ScoringRuleSchema,

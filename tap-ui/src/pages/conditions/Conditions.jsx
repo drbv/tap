@@ -1,34 +1,36 @@
-import React, { Component, lazy } from 'react'
-import { Route, withRouter } from 'react-router-dom'
+import React, { Component, lazy } from "react";
+import { Route, withRouter } from "react-router-dom";
 
-import { withStyles, Tabs, Tab, Typography, Paper } from '@material-ui/core'
+import { withStyles, Tabs, Tab, Typography, Paper } from "@material-ui/core";
 
-const Competition = lazy(() => import('./Competition'))
+const Competition = lazy(() => import("./Competition"));
+const Evaluation = lazy(() => import("./Evaluation"));
+const Phase = lazy(() => import("./Phase"));
 
 const styles = (theme) => ({
     root: {
-        display: 'flex',
-        flexDirection: 'column',
-        margin: '11px',
+        display: "flex",
+        flexDirection: "column",
+        margin: "11px",
     },
     tablabel: {
-        'text-transform': 'none',
+        "text-transform": "none",
     },
-})
+});
 
 function a11yProps(index) {
     return {
         id: `scrollable-prevent-tab-${index}`,
-        'aria-controls': `scrollable-prevent-tabpanel-${index}`,
-    }
+        "aria-controls": `scrollable-prevent-tabpanel-${index}`,
+    };
 }
 
 function TabPanel(props) {
-    const { children, value, index, ...other } = props
+    const { children, value, index, ...other } = props;
 
     return (
         <div
-            role="tabpanel"
+            role='tabpanel'
             hidden={value !== index}
             id={`scrollable-prevent-tabpanel-${index}`}
             aria-labelledby={`scrollable-prevent-tab-${index}`}
@@ -36,23 +38,23 @@ function TabPanel(props) {
         >
             {value === index && <div>{children}</div>}
         </div>
-    )
+    );
 }
 
 class Conditions extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             tab: 0,
-        }
+        };
     }
     render() {
-        const { classes } = this.props
+        const { classes } = this.props;
         return (
             <div>
                 <Route
                     exact
-                    path="/conditions"
+                    path='/conditions'
                     render={() => {
                         return (
                             <div>
@@ -60,18 +62,18 @@ class Conditions extends Component {
                                     <Tabs
                                         value={this.state.tab}
                                         onChange={(e, value) => {
-                                            this.setState({ tab: value })
+                                            this.setState({ tab: value });
                                         }}
-                                        indicatorColor="secondary"
-                                        textColor="secondary"
-                                        variant="fullWidth"
+                                        indicatorColor='secondary'
+                                        textColor='secondary'
+                                        variant='fullWidth'
                                     >
                                         <Tab
                                             label={
                                                 <Typography
                                                     className={classes.tablabel}
-                                                    color="textPrimary"
-                                                    display="initial"
+                                                    color='textPrimary'
+                                                    display='initial'
                                                 >
                                                     1: Turnierauswahl
                                                 </Typography>
@@ -79,28 +81,28 @@ class Conditions extends Component {
                                             {...a11yProps(0)}
                                         />
                                         <Tab
-                                            disabled
                                             label={
                                                 <Typography
                                                     className={classes.tablabel}
-                                                    color="textPrimary"
+                                                    color='textPrimary'
                                                 >
-                                                    2: Wertungsvorschriften
+                                                    2: Stationen
                                                 </Typography>
                                             }
                                             {...a11yProps(1)}
                                         />
-                                        {/*<Tab
+                                        <Tab
                                             label={
                                                 <Typography
                                                     className={classes.tablabel}
-                                                    color="textPrimary"
+                                                    color='textPrimary'
                                                 >
-                                                    Athleten
+                                                    3: Wertungsvorschriften
                                                 </Typography>
                                             }
                                             {...a11yProps(2)}
                                         />
+                                        {/*
                                         <Tab
                                             label={
                                                 <Typography
@@ -128,10 +130,13 @@ class Conditions extends Component {
                                 <TabPanel value={this.state.tab} index={0}>
                                     <Competition />
                                 </TabPanel>
-                                {/*<TabPanel value={this.state.tab} index={1}>
-                    <AppointmentData />
-                </TabPanel>
-                <TabPanel value={this.state.tab} index={2}>
+                                <TabPanel value={this.state.tab} index={1}>
+                                    <Phase />
+                                </TabPanel>
+                                <TabPanel value={this.state.tab} index={2}>
+                                    <Evaluation />
+                                </TabPanel>
+                                {/*<TabPanel value={this.state.tab} index={2}>
                     <AthleteData />
                 </TabPanel>
                 <TabPanel value={this.state.tab} index={3}>
@@ -141,12 +146,12 @@ class Conditions extends Component {
                     <TeamData />
                 </TabPanel>*/}
                             </div>
-                        )
+                        );
                     }}
                 />
             </div>
-        )
+        );
     }
 }
 
-export default withStyles(styles)(withRouter(Conditions))
+export default withStyles(styles)(withRouter(Conditions));
