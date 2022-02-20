@@ -1,10 +1,10 @@
-import React, { lazy } from "react"
-import ReactDOM from "react-dom"
-import { createTheme, MuiThemeProvider } from "@material-ui/core"
-import Provider from "./components/Provider"
-import App from "./components/App"
-import blue from "@material-ui/core/es/colors/blue"
-import red from "@material-ui/core/colors/red"
+import React, { lazy } from "react";
+import ReactDOM from "react-dom";
+import { createTheme, MuiThemeProvider } from "@material-ui/core";
+import Provider from "./components/Provider";
+import App from "./components/App";
+import blue from "@material-ui/core/es/colors/blue";
+import red from "@material-ui/core/colors/red";
 import {
     AccountTree,
     Apps,
@@ -16,18 +16,18 @@ import {
     Description,
     AccountBalance,
     ModelTraining,
-} from "@mui/icons-material"
-import { green, yellow } from "@material-ui/core/colors"
+} from "@mui/icons-material";
+import { green, yellow } from "@material-ui/core/colors";
 
-const BaseData = lazy(() => import("./pages/baseData/BaseData"))
-const Conditions = lazy(() => import("./pages/conditions/Conditions"))
-const Users = lazy(() => import("./pages/users/Users"))
-const Athletes = lazy(() => import("./pages/athletes/Athletes"))
-const Rounds = lazy(() => import("./pages/rounds/Rounds"))
-const Results = lazy(() => import("./pages/results/Results"))
-const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"))
-const Beamer = lazy(() => import("./pages/beamer/Beamer"))
-const Current = lazy(() => import("./pages/current/Current"))
+const BaseData = lazy(() => import("./pages/baseData/BaseData"));
+const Conditions = lazy(() => import("./pages/conditions/Conditions"));
+const Users = lazy(() => import("./pages/users/Users"));
+const Athletes = lazy(() => import("./pages/athletes/Athletes"));
+const Rounds = lazy(() => import("./pages/rounds/Rounds"));
+const Results = lazy(() => import("./pages/results/Results"));
+const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
+const Beamer = lazy(() => import("./pages/beamer/Beamer"));
+const Current = lazy(() => import("./pages/current/Current"));
 
 /**
  * A theme with custom primary and secondary color.
@@ -71,7 +71,7 @@ const theme = createTheme({
             },
         },
     },
-})
+});
 
 const Routes = [
     {
@@ -89,14 +89,6 @@ const Routes = [
     icon: <Airplay />,
   },ModelTraining*/,
 
-    /*{
-        name: "Wertungsbögen",
-        path: "/evaluations",
-        exact: true,
-        component: <Evaluations />,
-        admin: true,
-        icon: <PlaylistAddCheck />,
-    },*/
     {
         name: "Aktivenportal-Daten",
         path: "/base",
@@ -122,22 +114,6 @@ const Routes = [
         icon: <PeopleAlt />,
     },
     {
-        name: "Nutzerverwaltung",
-        path: "/user",
-        exact: true,
-        component: <Users />,
-        admin: true,
-        icon: <AccountBox />,
-    },
-    {
-        name: "Laufende Runden",
-        path: "/current",
-        exact: true,
-        component: <Current />,
-        admin: false,
-        icon: <Apps />,
-    },
-    {
         name: "Rundeneinstellungen",
         path: "/round",
         exact: true,
@@ -146,17 +122,33 @@ const Routes = [
         icon: <AccountTree />,
     },
     {
-        name: "Ergebnisse",
-        path: "/results",
+        name: "Nutzerverwaltung",
+        path: "/user",
         exact: true,
-        component: <Results />,
-        admin: false,
-        icon: <Description />,
+        component: <Users />,
+        admin: true,
+        icon: <AccountBox />,
     },
-]
+    // {
+    //     name: "Laufende Runden",
+    //     path: "/current",
+    //     exact: true,
+    //     component: <Current />,
+    //     admin: false,
+    //     icon: <Apps />,
+    // },
+    // {
+    //     name: "Ergebnisse",
+    //     path: "/results",
+    //     exact: true,
+    //     component: <Results />,
+    //     admin: false,
+    //     icon: <Description />,
+    // },
+];
 
 function ReactIsInDevelomentMode() {
-    return "_self" in React.createElement("div")
+    return "_self" in React.createElement("div");
 }
 
 ReactDOM.render(
@@ -168,6 +160,6 @@ ReactDOM.render(
         </React.StrictMode>
     </MuiThemeProvider>,
     document.getElementById("root")
-)
+);
 
-if (ReactIsInDevelomentMode()) module.hot.accept()
+if (ReactIsInDevelomentMode()) module.hot.accept();

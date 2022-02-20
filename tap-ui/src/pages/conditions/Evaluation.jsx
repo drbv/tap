@@ -231,4 +231,4 @@ Evaluation.defaultProps = {
     },
 };
 
-export default withStyles(styles, { withTheme: true })(withRouter(Evaluation));
+export default withStyles(styles, { withTheme: true })(Evaluation);

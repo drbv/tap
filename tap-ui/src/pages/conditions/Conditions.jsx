@@ -1,7 +1,9 @@
 import React, { Component, lazy } from "react";
 import { Route, withRouter } from "react-router-dom";
 
-import { withStyles, Tabs, Tab, Typography, Paper } from "@material-ui/core";
+import { withStyles } from "@mui/styles";
+import { Tab, Typography, Paper } from "@mui/material";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
 
 const Competition = lazy(() => import("./Competition"));
 const Evaluation = lazy(() => import("./Evaluation"));
@@ -18,34 +20,11 @@ const styles = (theme) => ({
     },
 });
 
-function a11yProps(index) {
-    return {
-        id: `scrollable-prevent-tab-${index}`,
-        "aria-controls": `scrollable-prevent-tabpanel-${index}`,
-    };
-}
-
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <div
-            role='tabpanel'
-            hidden={value !== index}
-            id={`scrollable-prevent-tabpanel-${index}`}
-            aria-labelledby={`scrollable-prevent-tab-${index}`}
-            {...other}
-        >
-            {value === index && <div>{children}</div>}
-        </div>
-    );
-}
-
 class Conditions extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tab: 0,
+            tab: "1",
         };
     }
     render() {
@@ -58,93 +37,38 @@ class Conditions extends Component {
                     render={() => {
                         return (
                             <div>
-                                <Paper className={classes.root}>
-                                    <Tabs
-                                        value={this.state.tab}
-                                        onChange={(e, value) => {
-                                            this.setState({ tab: value });
-                                        }}
-                                        indicatorColor='secondary'
-                                        textColor='secondary'
-                                        variant='fullWidth'
-                                    >
-                                        <Tab
-                                            label={
-                                                <Typography
-                                                    className={classes.tablabel}
-                                                    color='textPrimary'
-                                                    display='initial'
-                                                >
-                                                    1: Turnierauswahl
-                                                </Typography>
+                                <TabContext value={this.state.tab}>
+                                    <Paper className={classes.root}>
+                                        <TabList
+                                            onChange={(e, newValue) =>
+                                                this.setState({ tab: newValue })
                                             }
-                                            {...a11yProps(0)}
-                                        />
-                                        <Tab
-                                            label={
-                                                <Typography
-                                                    className={classes.tablabel}
-                                                    color='textPrimary'
-                                                >
-                                                    2: Stationen
-                                                </Typography>
-                                            }
-                                            {...a11yProps(1)}
-                                        />
-                                        <Tab
-                                            label={
-                                                <Typography
-                                                    className={classes.tablabel}
-                                                    color='textPrimary'
-                                                >
-                                                    3: Wertungsvorschriften
-                                                </Typography>
-                                            }
-                                            {...a11yProps(2)}
-                                        />
-                                        {/*
-                                        <Tab
-                                            label={
-                                                <Typography
-                                                    className={classes.tablabel}
-                                                    color="textPrimary"
-                                                >
-                                                    Offizielle
-                                                </Typography>
-                                            }
-                                            {...a11yProps(3)}
-                                        />
-                                        <Tab
-                                            label={
-                                                <Typography
-                                                    className={classes.tablabel}
-                                                    color="textPrimary"
-                                                >
-                                                    Teams
-                                                </Typography>
-                                            }
-                                            {...a11yProps(4)}
-                                        />*/}
-                                    </Tabs>
-                                </Paper>
-                                <TabPanel value={this.state.tab} index={0}>
-                                    <Competition />
-                                </TabPanel>
-                                <TabPanel value={this.state.tab} index={1}>
-                                    <Phase />
-                                </TabPanel>
-                                <TabPanel value={this.state.tab} index={2}>
-                                    <Evaluation />
-                                </TabPanel>
-                                {/*<TabPanel value={this.state.tab} index={2}>
-                    <AthleteData />
-                </TabPanel>
-                <TabPanel value={this.state.tab} index={3}>
-                    <OfficialData />
-                </TabPanel>
-                <TabPanel value={this.state.tab} index={4}>
-                    <TeamData />
-                </TabPanel>*/}
+                                            aria-label='lab API tabs example'
+                                        >
+                                            <Tab
+                                                label='1: Turnierauswahl'
+                                                value='1'
+                                            />
+                                            <Tab
+                                                label='2: Stationen'
+                                                value='2'
+                                            />
+                                            <Tab
+                                                label='3: Wertungsvorschriften'
+                                                value='3'
+                                            />
+                                        </TabList>
+                                    </Paper>
+                                    <TabPanel value='1'>
+                                        <Competition />
+                                    </TabPanel>
+                                    <TabPanel value='2'>
+                                        <Phase />
+                                    </TabPanel>
+                                    <TabPanel value='3'>
+                                        <Evaluation />
+                                    </TabPanel>
+                                </TabContext>
                             </div>
                         );
                     }}

@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { Component } from "react";
 
 import {
     withStyles,
@@ -10,12 +10,12 @@ import {
     Typography,
     TextField,
     Grid,
-} from "@material-ui/core"
-import MUIDataTable from "mui-datatables"
-import axios from "axios"
+} from "@material-ui/core";
+import MUIDataTable from "mui-datatables";
+import axios from "axios";
 
-import { getBaseCollection, getCollection } from "../../Database"
-import { Autocomplete } from "@mui/material"
+import { getBaseCollection, getCollection } from "../../Database";
+import { Autocomplete } from "@mui/material";
 
 const styles = (theme) => ({
     root: {
@@ -25,60 +25,66 @@ const styles = (theme) => ({
     text: {
         "text-transform": "none",
     },
-})
+});
 
 class Competition extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             selectedAppointment: null,
             Appointments: null,
-        }
+        };
 
-        this.subs = []
+        this.subs = [];
     }
 
     async componentDidMount() {
         getBaseCollection("appointments").then(async (collection) => {
             const sub = await collection.find().$.subscribe((Appointments) => {
                 if (!Appointments) {
-                    return
+                    return;
                 }
-                console.log("reload Appointment-list")
-                console.dir(Appointments)
+                console.log("reload Appointment-list");
+                console.dir(Appointments);
                 this.setState({
                     Appointments,
-                })
-            })
-            this.subs.push(sub)
-        })
+                });
+            });
+            this.subs.push(sub);
+        });
     }
 
     componentWillUnmount() {
         // Unsubscribe from all subscriptions
-        this.subs.forEach((sub) => sub.unsubscribe)
+        this.subs.forEach((sub) => sub.unsubscribe);
     }
 
     render() {
-        const { classes } = this.props
-        const { Appointments, selectedAppointment } = this.state
+        const { classes } = this.props;
+        const { Appointments, selectedAppointment } = this.state;
         return (
             <div>
                 <Paper className={classes.root}>
                     <Typography
                         className={classes.text}
-                        color="textPrimary"
-                        display="initial"
+                        color='textPrimary'
+                        display='initial'
                     >
                         Bitte im folgenden das Turnier auswählen
                     </Typography>
-                    <Grid container spacing={3} alignItems="flex-end">
+                    <Grid
+                        container
+                        spacing={3}
+                        direction='row'
+                        justifyContent='flex-end'
+                        alignItems='center'
+                    >
                         <Grid
                             item
                             xs={
                                 selectedAppointment && selectedAppointment != ""
-                                    ? 8
+                                    ? 10
                                     : 12
                             }
                         >
@@ -91,7 +97,7 @@ class Competition extends Component {
                                         newValue &&
                                         this.setState({
                                             selectedAppointment: newValue,
-                                        })
+                                        });
                                 }}
                                 getOptionLabel={(option) =>
                                     option.date +
@@ -100,23 +106,23 @@ class Competition extends Component {
                                     " - " +
                                     option.competition_name
                                 }
-                                id="Turnierauswahl"
+                                id='Turnierauswahl'
                                 debug
                                 renderInput={(params) => (
                                     <TextField
                                         {...params}
-                                        label="Turniere"
-                                        margin="normal"
+                                        label='Turniere'
+                                        margin='normal'
                                     />
                                 )}
                             />
                         </Grid>
                         {selectedAppointment && selectedAppointment != "" && (
-                            <Grid item xs={4}>
+                            <Grid item xs={2}>
                                 <Button
                                     className={classes.newEvaluationButton}
-                                    variant="contained"
-                                    color="secondary"
+                                    variant='contained'
+                                    color='secondary'
                                     onClick={async () => {
                                         axios
                                             .get(
@@ -124,11 +130,11 @@ class Competition extends Component {
                                                     selectedAppointment.appointment_id
                                             )
                                             .then((response) => {
-                                                console.dir(response)
+                                                console.dir(response);
                                             })
                                             .catch((error) => {
-                                                console.log(error)
-                                            })
+                                                console.log(error);
+                                            });
                                     }}
                                 >
                                     Dieses Turnier verwenden
@@ -138,8 +144,8 @@ class Competition extends Component {
                     </Grid>
                 </Paper>
             </div>
-        )
+        );
     }
 }
 
-export default withStyles(styles, { withTheme: true })(Competition)
+export default withStyles(styles, { withTheme: true })(Competition);

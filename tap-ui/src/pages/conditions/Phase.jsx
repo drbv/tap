@@ -198,4 +198,4 @@ Phase.defaultProps = {
     },
 };
 
-export default withStyles(styles, { withTheme: true })(withRouter(Phase));
+export default withStyles(styles, { withTheme: true })(Phase);
