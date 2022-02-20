@@ -1,4 +1,3 @@
-import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import MUIDataTable from "mui-datatables";
 import {
@@ -8,36 +7,33 @@ import {
     Tooltip,
     IconButton,
 } from "@material-ui/core";
-import { Edit, Delete } from "@material-ui/icons";
+import { Component } from "react";
 import * as Database from "../../Database";
-import EvaluationDialog from "./EvaluationDialog";
+import PhaseDialog from "./PhaseDialog";
+import { Edit, Delete } from "@material-ui/icons";
 import withStyles from "@material-ui/core/es/styles/withStyles";
 
 const styles = (theme) => ({
-    root: {
-        flexGrow: 1,
-        padding: 30,
-    },
     table: {
         margin: "11px",
         marginBottom: "80px",
     },
-    newEvaluationField: {
+    newPhaseField: {
         margin: "11px",
     },
-    newEvaluationButton: {
+    newPhaseButton: {
         margin: 10,
     },
 });
 
-class Evaluations extends Component {
+class Phase extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            newEvaluationOpen: false,
-            evaluationToEdit: null,
-            evaluations: null,
+            newPhaseOpen: false,
+            phaseToEdit: null,
+            PhaseList: null,
         };
 
         this.subs = [];
@@ -46,18 +42,16 @@ class Evaluations extends Component {
     async componentDidMount() {
         this.setState({ db: await Database.getClientDb() });
 
-        const sub = this.state.db.scoringrule
-            .find()
-            .$.subscribe((evaluations) => {
-                if (!evaluations) {
-                    return;
-                }
-                console.log("reload evaluations-list ");
-                console.dir(evaluations);
-                this.setState({
-                    evaluations,
-                });
+        const sub = this.state.db.phase.find().$.subscribe((PhaseList) => {
+            if (!PhaseList) {
+                return;
+            }
+            console.log("reload Phase-list ");
+            console.dir(PhaseList);
+            this.setState({
+                PhaseList,
             });
+        });
         this.subs.push(sub);
     }
 
@@ -66,76 +60,53 @@ class Evaluations extends Component {
         this.subs.forEach((sub) => sub.unsubscribe());
     }
 
-    async deleteEvaluation(id) {
-        await this.state.db.scoringrule
-            .findOne({
-                selector: {
-                    id: id,
-                },
-            })
-            .remove();
+    async deletePhase(id) {
+        await this.state.db.phase.findOne({ selector: { id: id } }).remove();
     }
 
     render() {
         const { classes } = this.props;
-        const { evaluations, newEvaluationOpen, evaluationToEdit } = this.state;
+        const { PhaseList, newPhaseOpen, phaseToEdit } = this.state;
 
         return (
             <div>
-                <Paper className={classes.newEvaluationField}>
+                <Paper className={classes.newPhaseField}>
                     <Button
-                        className={classes.newEvaluationButton}
+                        className={classes.newPhaseButton}
                         color='inherit'
                         variant='outlined'
                         color='primary'
                         onClick={() => {
-                            this.setState({ newEvaluationOpen: true });
+                            this.setState({ newPhaseOpen: true });
                         }}
                     >
-                        Wertungsbogen erstellen
+                        Station hinzufügen
                     </Button>
                 </Paper>
-                <EvaluationDialog
-                    open={newEvaluationOpen}
-                    evaluationToEdit={evaluationToEdit}
+                <PhaseDialog
+                    open={newPhaseOpen}
+                    phaseToEdit={phaseToEdit}
                     handleClose={() =>
                         this.setState({
-                            newEvaluationOpen: false,
-                            evaluationToEdit: null,
+                            newPhaseOpen: false,
+                            phaseToEdit: null,
                         })
                     }
                 />
-                {evaluations != null ? (
+                {PhaseList != null ? (
                     <MUIDataTable
                         className={classes.table}
-                        data={evaluations}
+                        data={PhaseList}
                         columns={[
                             {
-                                name: "id",
+                                name: "phase_id",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
                                 name: "name",
-                                options: {
-                                    filter: false,
-                                    sort: true,
-                                },
-                            },
-                            {
-                                name: "categories",
-                                options: {
-                                    display: "excluded",
-                                    filter: false,
-                                },
-                            },
-                            {
-                                name: "boni",
-                                options: {
-                                    display: "excluded",
-                                    filter: false,
-                                },
+                                options: { filter: false, sort: true },
                             },
                             {
                                 name: "aktionen",
@@ -156,19 +127,15 @@ class Evaluations extends Component {
                                                                 onClick={() => {
                                                                     this.setState(
                                                                         {
-                                                                            newEvaluationOpen:
-                                                                                !newEvaluationOpen,
-                                                                            evaluationToEdit:
+                                                                            newPhaseOpen:
+                                                                                !newPhaseOpen,
+                                                                            PhaseToEdit:
                                                                                 {
-                                                                                    id: tableMeta
-                                                                                        .rowData[0],
+                                                                                    phase_id:
+                                                                                        tableMeta
+                                                                                            .rowData[0],
                                                                                     name: tableMeta
                                                                                         .rowData[1],
-                                                                                    categories:
-                                                                                        tableMeta
-                                                                                            .rowData[2],
-                                                                                    boni: tableMeta
-                                                                                        .rowData[3],
                                                                                 },
                                                                         }
                                                                     );
@@ -182,7 +149,7 @@ class Evaluations extends Component {
                                                         <span>
                                                             <IconButton
                                                                 onClick={() => {
-                                                                    this.deleteEvaluation(
+                                                                    this.deletePhase(
                                                                         tableMeta
                                                                             .rowData[0]
                                                                     );
@@ -207,7 +174,7 @@ class Evaluations extends Component {
                         }}
                     />
                 ) : (
-                    <div />
+                    <LinearProgress />
                 )}
             </div>
         );
@@ -215,12 +182,12 @@ class Evaluations extends Component {
 }
 
 // Specifies the default values for props:
-Evaluations.defaultProps = {
+Phase.defaultProps = {
     routes: {
         routes: [
             {
                 name: "default",
-                path: "/evaluations",
+                path: "/Phase",
                 exact: true,
                 component: <LinearProgress />,
                 admin: false,
@@ -231,4 +198,4 @@ Evaluations.defaultProps = {
     },
 };
 
-export default withStyles(styles, { withTheme: true })(withRouter(Evaluations));
+export default withStyles(styles, { withTheme: true })(withRouter(Phase));

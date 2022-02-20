@@ -15,6 +15,7 @@ import {AppointmentSchema} from '../../shared/schemas/appointment.schema';
 import {CompetitionSchema} from '../../shared/schemas/competition.schema';
 import {RoundSchema} from '../../shared/schemas/round.schema';
 import {ResultSchema} from '../../shared/schemas/result.schema';
+import {PhaseSchema} from '../../shared/schemas/phase.schema';
 import {ScoringRuleSchema} from '../../shared/schemas/scoringRule.schema';
 
 addRxPlugin(RxDBServerPlugin)
@@ -137,6 +138,9 @@ export class Database {
                 },
                 result: {
                     schema: ResultSchema,
+                },
+                phase: {
+                    schema: PhaseSchema,
                 },
                 scoringrule: {
                     schema: ScoringRuleSchema,
