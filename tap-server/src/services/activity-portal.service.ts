@@ -553,12 +553,12 @@ export class ActivityPortalService {
             try {
                 await database.competition.upsert({
                     competition_id: Date.now().toString(),
-                    appointment_id: row.Turniernr ? row.Turniernr.toString() : "",
+                    // appointment_id: row.Turniernr ? row.Turniernr.toString() : "",
                     series: row.Cup_Serie ? row.Cup_Serie : "",
                     league: row.Startkl ? row.Startkl : "",
                     club_id: row.Verein_nr ? row.Verein_nr.toString() : "",
                     book_id: row.Startbuch ? row.Startbuch.toString() : "",
-                    team_member_count: row.Anz_Taenzer ? parseInt(row.Anz_Taenzer) : 0,
+                    // team_member_count: row.Anz_Taenzer ? parseInt(row.Anz_Taenzer) : 0,
                     acros: [
                         {
                             round: 'VR',

@@ -103,13 +103,6 @@ class Athletes extends Component {
                         data={Athletes}
                         columns={[
                             {
-                                name: "appointment_id",
-                                options: {
-                                    filter: false,
-                                    sort: true,
-                                },
-                            },
-                            {
                                 name: "series",
                                 options: {
                                     filter: true,
@@ -138,86 +131,43 @@ class Athletes extends Component {
                                 },
                             },
                             {
-                                name: "team_member_count",
+                                name: "acros",
                                 options: {
-                                    filter: false,
-                                    sort: true,
-                                },
-                            },
-                            {
-                                name: "Aktionen",
-                                options: {
-                                    sort: false,
                                     customBodyRender: (
                                         value,
                                         tableMeta,
                                         updateValue
                                     ) => {
-                                        if (tableMeta.rowData != null) {
-                                            return (
-                                                <div>
-                                                    {/*<Tooltip title="Bearbeiten">
-                                                        <span>
-                                                            <IconButton
-                                                                onClick={() => {
-                                                                    this.setState(
-                                                                        {
-                                                                            newCoupleOpen:
-                                                                                !newCoupleOpen,
-                                                                            coupleToEdit:
-                                                                                {
-                                                                                    id: tableMeta
-                                                                                        .rowData[0],
-                                                                                    class: tableMeta
-                                                                                        .rowData[1],
-                                                                                    number: tableMeta
-                                                                                        .rowData[2],
-                                                                                    nameOneFirst:
-                                                                                        tableMeta
-                                                                                            .rowData[3],
-                                                                                    nameOneSecond:
-                                                                                        tableMeta
-                                                                                            .rowData[4],
-                                                                                    nameTwoFirst:
-                                                                                        tableMeta
-                                                                                            .rowData[5],
-                                                                                    nameTwoSecond:
-                                                                                        tableMeta
-                                                                                            .rowData[6],
-                                                                                    clubNumber:
-                                                                                        tableMeta
-                                                                                            .rowData[7],
-                                                                                    clubName:
-                                                                                        tableMeta
-                                                                                            .rowData[8],
-                                                                                    coupleNumber:
-                                                                                        tableMeta
-                                                                                            .rowData[9],
-                                                                                },
-                                                                        }
-                                                                    )
-                                                                }}
-                                                            >
-                                                                <Edit />
-                                                            </IconButton>
-                                                        </span>
-                                                    </Tooltip>*/}
-                                                    <Tooltip title='Entfernen'>
-                                                        <span>
-                                                            <IconButton
-                                                                onClick={() => {
-                                                                    this.deleteCouple(
-                                                                        tableMeta
-                                                                            .rowData[0]
-                                                                    );
-                                                                }}
-                                                            >
-                                                                <Delete />
-                                                            </IconButton>
-                                                        </span>
-                                                    </Tooltip>
-                                                </div>
-                                            );
+                                        if (value != null) {
+                                            return JSON.stringify(value);
+                                        }
+                                    },
+                                },
+                            },
+                            {
+                                name: "replacement_acros",
+                                options: {
+                                    customBodyRender: (
+                                        value,
+                                        tableMeta,
+                                        updateValue
+                                    ) => {
+                                        if (value != null) {
+                                            return JSON.stringify(value);
+                                        }
+                                    },
+                                },
+                            },
+                            {
+                                name: "music",
+                                options: {
+                                    customBodyRender: (
+                                        value,
+                                        tableMeta,
+                                        updateValue
+                                    ) => {
+                                        if (value != null) {
+                                            return JSON.stringify(value);
                                         }
                                     },
                                 },
