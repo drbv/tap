@@ -48,7 +48,7 @@ class Athletes extends Component {
     }
 
     async componentDidMount() {
-        let collection = await getCollection("athletes");
+        let collection = await getCollection("competition");
         let sub = await collection.find().$.subscribe((Athletes) => {
             if (!Athletes) {
                 return;
@@ -68,24 +68,13 @@ class Athletes extends Component {
         this.subs.forEach((sub) => sub.unsubscribe());
     }
 
-    async deleteCouple(rfid) {
-        let collection = await getCollection("athletes");
-        collection
-            .findOne({
-                selector: {
-                    rfid: rfid,
-                },
-            })
-            .remove();
-    }
-
     render() {
         const { classes } = this.props;
         const { Athletes, newCoupleOpen, coupleToEdit } = this.state;
 
         return (
             <div>
-                <Paper className={classes.newCoupleField}>
+                {/* <Paper className={classes.newCoupleField}>
                     <Button
                         className={classes.newCoupleButton}
                         color='inherit'
@@ -97,8 +86,8 @@ class Athletes extends Component {
                     >
                         Tanzpaar hinzufügen
                     </Button>
-                </Paper>
-                <CoupleDialog
+                </Paper> */}
+                {/* <CoupleDialog
                     open={newCoupleOpen}
                     coupleToEdit={coupleToEdit}
                     handleClose={() =>
@@ -107,48 +96,28 @@ class Athletes extends Component {
                             coupleToEdit: null,
                         })
                     }
-                />
+                /> */}
                 {Athletes != null ? (
                     <MUIDataTable
                         className={classes.table}
                         data={Athletes}
                         columns={[
                             {
-                                name: "rfid",
+                                name: "appointment_id",
                                 options: {
                                     filter: false,
+                                    sort: true,
                                 },
                             },
                             {
-                                name: "book_id",
+                                name: "series",
                                 options: {
                                     filter: true,
                                     sort: true,
                                 },
                             },
                             {
-                                name: "pre_name",
-                                options: {
-                                    filter: false,
-                                    sort: true,
-                                },
-                            },
-                            {
-                                name: "family_name",
-                                options: {
-                                    filter: false,
-                                    sort: true,
-                                },
-                            },
-                            {
-                                name: "birth_year",
-                                options: {
-                                    filter: false,
-                                    sort: true,
-                                },
-                            },
-                            {
-                                name: "sex",
+                                name: "league",
                                 options: {
                                     filter: false,
                                     sort: true,
@@ -162,22 +131,16 @@ class Athletes extends Component {
                                 },
                             },
                             {
-                                name: "club_name_short",
+                                name: "book_id",
                                 options: {
-                                    excluded: true,
+                                    filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: "organization",
+                                name: "team_member_count",
                                 options: {
-                                    excluded: true,
-                                    sort: true,
-                                },
-                            },
-                            {
-                                name: "sport",
-                                options: {
+                                    filter: false,
                                     sort: true,
                                 },
                             },

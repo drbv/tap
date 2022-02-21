@@ -29,17 +29,6 @@ async function initialize() {
         mainApp.use("/basedb", app)
     })
 
-    mainApp.use("/competitiondb", (req, res) => {
-        if (Database.currentCompetition != "") {
-            Database.getCompetitionDatabaseApp().then((app) => {
-                mainApp.use('/db/' + Database.currentCompetition, app)
-                res.redirect('/db/' + Database.currentCompetition)
-            })
-        } else {
-            res.status(400).send("No current competitionDb")
-        }
-    })
-
     const activityPortalService = new ActivityPortalService();
 
     mainApp.use("/import", (req, res) => {
@@ -58,6 +47,13 @@ async function initialize() {
             await activityPortalService.fetchAppointmentDataFromPortal(id);
 
             res.send("Database " + id + " activated.");
+        }
+
+        if (Database.currentCompetition != "") {
+            Database.getCompetitionDatabaseApp().then((app) => {
+                mainApp.use('/db/' + Database.currentCompetition, app)
+                res.redirect('/db/' + Database.currentCompetition)
+            })
         }
 
         res.status(404);
