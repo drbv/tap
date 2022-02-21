@@ -21,6 +21,7 @@ import { DrbvAcroData } from '../../../shared/models/drbv-acro-data.model'
 import { StartDataAppointmentData } from '../../../shared/models/start-data-appointment-data.model'
 import { CompetitionData } from '../../../shared/models/competition-data.model'
 import * as https from 'https'
+import { time } from 'console'
 
 export class ActivityPortalService {
     private db: RxDatabaseBase<any, any> &
@@ -539,47 +540,48 @@ export class ActivityPortalService {
         for (const row of csvData) {
             try {
                 await database.competition.upsert({
-                    appointment_id: row.Turniernr,
-                    series: row.Cup_Serie,
-                    league: row.Startkl,
-                    club_id: row.Verein_nr,
-                    book_id: row.Startbuch,
-                    team_member_count: row.Anz_Taenzer,
+                    competition_id: Date.now().toString(),
+                    appointment_id: row.Turniernr ? row.Turniernr.toString() : "",
+                    series: row.Cup_Serie ? row.Cup_Serie : "",
+                    league: row.Startkl ? row.Startkl : "",
+                    club_id: row.Verein_nr ? row.Verein_nr.toString() : "",
+                    book_id: row.Startbuch ? row.Startbuch.toString() : "",
+                    team_member_count: row.Anz_Taenzer ? parseInt(row.Anz_Taenzer) : 0,
                     acros: [
                         {
                             round: 'VR',
                             acro: [
                                 {
-                                    acro_short_text: row.Akro1_VR,
-                                    points: row.Wert1_VR,
+                                    acro_short_text: row.Akro1_VR ? row.Akro1_VR : "",
+                                    points: row.Wert1_VR ? parseFloat(row.Wert1_VR) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro2_VR,
-                                    points: row.Wert2_VR,
+                                    acro_short_text:row.Akro2_VR ? row.Akro2_VR : "",
+                                    points: row.Wert2_VR ? parseFloat(row.Wert2_VR) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro3_VR,
-                                    points: row.Wert3_VR,
+                                    acro_short_text: row.Akro3_VR ? row.Akro3_VR : "",
+                                    points: row.Wert3_VR ? parseFloat(row.Wert3_VR) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro4_VR,
-                                    points: row.Wert4_VR,
+                                    acro_short_text: row.Akro4_VR ? row.Akro4_VR : "",
+                                    points: row.Wert4_VR ? parseFloat(row.Wert4_VR) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro5_VR,
-                                    points: row.Wert5_VR,
+                                    acro_short_text: row.Akro5_VR ? row.Akro5_VR : "",
+                                    points: row.Wert5_VR ? parseFloat(row.Wert5_VR) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro6_VR,
-                                    points: row.Wert6_VR,
+                                    acro_short_text: row.Akro6_VR ? row.Akro6_VR : "",
+                                    points: row.Wert6_VR ? parseFloat(row.Wert6_VR) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro7_VR,
-                                    points: row.Wert7_VR,
+                                    acro_short_text: row.Akro7_VR ? row.Akro7_VR : "",
+                                    points: row.Wert7_VR ? parseFloat(row.Wert7_VR) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro8_VR,
-                                    points: row.Wert8_VR,
+                                    acro_short_text: row.Akro8_VR ? row.Akro8_VR : "",
+                                    points: row.Wert8_VR ? parseFloat(row.Wert8_VR) : 0,
                                 },
                             ],
                         },
@@ -587,36 +589,36 @@ export class ActivityPortalService {
                             name: 'ZR',
                             acros: [
                                 {
-                                    acro_short_text: row.Akro1_ZR,
-                                    points: row.Wert1_ZR,
+                                    acro_short_text: row.Akro1_ZR ? row.Akro1_ZR : "",
+                                    points: row.Wert1_ZR ? parseFloat(row.Wert1_ZR) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro2_ZR,
-                                    points: row.Wert2_ZR,
+                                    acro_short_text: row.Akro2_ZR ? row.Akro2_ZR : "",
+                                    points: row.Wert2_ZR ? parseFloat(row.Wert2_ZR) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro3_ZR,
-                                    points: row.Wert3_ZR,
+                                    acro_short_text: row.Akro3_ZR ? row.Akro3_ZR : "",
+                                    points: row.Wert3_ZR ? parseFloat(row.Wert3_ZR) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro4_ZR,
-                                    points: row.Wert4_ZR,
+                                    acro_short_text: row.Akro4_ZR ? row.Akro4_ZR : "",
+                                    points: row.Wert4_ZR ? parseFloat(row.Wert4_ZR) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro5_ZR,
-                                    points: row.Wert5_ZR,
+                                    acro_short_text: row.Akro5_ZR ? row.Akro5_ZR : "",
+                                    points: row.Wert5_ZR ? parseFloat(row.Wert5_ZR) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro6_ZR,
-                                    points: row.Wert6_ZR,
+                                    acro_short_text: row.Akro6_ZR ? row.Akro6_ZR : "",
+                                    points: row.Wert6_ZR ? parseFloat(row.Wert6_ZR) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro7_ZR,
-                                    points: row.Wert7_ZR,
+                                    acro_short_text: row.Akro7_ZR ? row.Akro7_ZR : "",
+                                    points: row.Wert7_ZR ? parseFloat(row.Wert7_ZR) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro8_ZR,
-                                    points: row.Wert8_ZR,
+                                    acro_short_text: row.Akro8_ZR ? row.Akro8_ZR : "",
+                                    points: row.Wert8_ZR ? parseFloat(row.Wert8_ZR) : 0,
                                 },
                             ],
                         },
@@ -624,36 +626,36 @@ export class ActivityPortalService {
                             name: 'ER',
                             acros: [
                                 {
-                                    acro_short_text: row.Akro1_ER,
-                                    points: row.Wert1_ER,
+                                    acro_short_text: row.Akro1_ER ? row.Akro1_ER : "",
+                                    points: row.Wert1_ER ? parseFloat(row.Wert1_ER) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro2_ER,
-                                    points: row.Wert2_ER,
+                                    acro_short_text: row.Akro2_ER ? row.Akro2_ER : "",
+                                    points: row.Wert2_ER ? parseFloat(row.Wert2_ER) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro3_ER,
-                                    points: row.Wert3_ER,
+                                    acro_short_text: row.Akro3_ER ? row.Akro3_ER : "",
+                                    points: row.Wert3_ER ? parseFloat(row.Wert3_ER) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro4_ER,
-                                    points: row.Wert4_ER,
+                                    acro_short_text: row.Akro4_ER ? row.Akro4_ER : "",
+                                    points: row.Wert4_ER ? parseFloat(row.Wert4_ER) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro5_ER,
-                                    points: row.Wert5_ER,
+                                    acro_short_text: row.Akro5_ER ? row.Akro5_ER : "",
+                                    points: row.Wert5_ER ? parseFloat(row.Wert5_ER) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro6_ER,
-                                    points: row.Wert6_ER,
+                                    acro_short_text: row.Akro6_ER ? row.Akro6_ER : "",
+                                    points: row.Wert6_ER ? parseFloat(row.Wert6_ER) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro7_ER,
-                                    points: row.Wert7_ER,
+                                    acro_short_text: row.Akro7_ER ? row.Akro7_ER : "",
+                                    points: row.Wert7_ER ? parseFloat(row.Wert7_ER) : 0,
                                 },
                                 {
-                                    acro_short_text: row.Akro8_ER,
-                                    points: row.Wert8_ER,
+                                    acro_short_text: row.Akro8_ER ? row.Akro8_ER : "",
+                                    points: row.Wert8_ER ? parseFloat(row.Wert8_ER) : 0,
                                 },
                             ],
                         },
@@ -663,12 +665,12 @@ export class ActivityPortalService {
                             round: 'VR',
                             acro: [
                                 {
-                                    acro_short_text: row.E_Akro1_VR,
-                                    points: row.E_Wert1_VR,
+                                    acro_short_text: row.E_Akro1_VR ? row.E_Akro1_VR : "",
+                                    points: row.E_Wert1_VR ? parseFloat(row.E_Wert1_VR) : 0,
                                 },
                                 {
-                                    acro_short_text: row.E_Akro2_VR,
-                                    points: row.E_Wert2_VR,
+                                    acro_short_text: row.E_Akro2_VR ? row.E_Akro2_VR : "",
+                                    points: row.E_Wert2_VR ? parseFloat(row.E_Wert2_VR) : 0,
                                 },
                             ],
                         },
@@ -676,12 +678,12 @@ export class ActivityPortalService {
                             name: 'ZR',
                             acros: [
                                 {
-                                    acro_short_text: row.E_Akro1_ZR,
-                                    points: row.E_Wert1_ZR,
+                                    acro_short_text: row.E_Akro1_ZR ? row.E_Akro1_ZR : "",
+                                    points: row.E_Wert1_ZR ? parseFloat(row.E_Wert1_ZR) : 0,
                                 },
                                 {
-                                    acro_short_text: row.E_Akro2_ZR,
-                                    points: row.E_Wert2_ZR,
+                                    acro_short_text: row.E_Akro2_ZR ? row.E_Akro2_ZR : "",
+                                    points: row.E_Wert2_ZR ? parseFloat(row.E_Wert2_ZR) : 0,
                                 },
                             ],
                         },
@@ -689,27 +691,27 @@ export class ActivityPortalService {
                             name: 'ER',
                             acros: [
                                 {
-                                    acro_short_text: row.E_Akro1_ER,
-                                    points: row.E_Wert1_ER,
+                                    acro_short_text: row.E_Akro1_ER ? row.E_Akro1_ER : "",
+                                    points: row.E_Wert1_ER ? parseFloat(row.E_Wert1_ER) : 0,
                                 },
                                 {
-                                    acro_short_text: row.E_Akro2_ER,
-                                    points: row.E_Wert2_ER,
+                                    acro_short_text: row.E_Akro2_ER ? row.E_Akro2_ER : "",
+                                    points: row.E_Wert2_ER ? parseFloat(row.E_Wert2_ER) : 0,
                                 },
                             ],
                         },
                     ],
                     music: {
-                        dance: row.Musik_FT,
-                        acro: row.Musik_Akro,
-                        team_preparation: row.Musik_Stell,
-                        team_competition: row.Musik_Form,
-                        team_ceremony: row.Musik_Sieg,
-                        team_preparation_short: row.Musik_Stell_kurz,
-                        team_competition_short: row.Musik_Form_kurz,
-                        team_ceremony_short: row.Musik_Sieg_kurz,
-                    }
-                });
+                        dance: row.Musik_FT ? row.Musik_FT : "",
+                        acro: row.Musik_Akro ? row.Musik_Akro : "",
+                        team_preparation: row.Musik_Stell ? row.Musik_Stell : "",
+                        team_competition: row.Musik_Form ? row.Musik_Form : "",
+                        team_ceremony: row.Musik_Sieg ? row.Musik_Sieg : "",
+                        team_preparation_short: row.Musik_Stell_kurz ? row.Musik_Stell_kurz : "",
+                        team_competition_short: row.Musik_Form_kurz ? row.Musik_Form_kurz : "",
+                        team_ceremony_short: row.Musik_Sieg_kurz ? row.Musik_Sieg_kurz : "",
+                    },
+                })
             } catch (e) {
                 console.error(e);
             }

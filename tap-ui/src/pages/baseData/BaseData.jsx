@@ -1,13 +1,13 @@
-import React, { Component, lazy } from "react"
-import { Route, withRouter } from "react-router-dom"
+import React, { Component, lazy } from "react";
+import { Route, withRouter } from "react-router-dom";
 
-import { withStyles, Tabs, Tab, Typography, Paper } from "@material-ui/core"
+import { withStyles, Tabs, Tab, Typography, Paper } from "@material-ui/core";
 
-const AcroData = lazy(() => import("./AcroData"))
-const AthleteData = lazy(() => import("./AthleteData"))
-const AppointmentData = lazy(() => import("./AppointmentData"))
-const OfficialData = lazy(() => import("./OfficialData"))
-const TeamData = lazy(() => import("./TeamData"))
+const AcroData = lazy(() => import("./AcroData"));
+const AthleteData = lazy(() => import("./AthleteData"));
+const AppointmentData = lazy(() => import("./AppointmentData"));
+const OfficialData = lazy(() => import("./OfficialData"));
+const TeamData = lazy(() => import("./TeamData"));
 
 const styles = (theme) => ({
     root: {
@@ -18,21 +18,21 @@ const styles = (theme) => ({
     tablabel: {
         "text-transform": "none",
     },
-})
+});
 
 function a11yProps(index) {
     return {
         id: `scrollable-prevent-tab-${index}`,
         "aria-controls": `scrollable-prevent-tabpanel-${index}`,
-    }
+    };
 }
 
 function TabPanel(props) {
-    const { children, value, index, ...other } = props
+    const { children, value, index, ...other } = props;
 
     return (
         <div
-            role="tabpanel"
+            role='tabpanel'
             hidden={value !== index}
             id={`scrollable-prevent-tabpanel-${index}`}
             aria-labelledby={`scrollable-prevent-tab-${index}`}
@@ -40,24 +40,24 @@ function TabPanel(props) {
         >
             {value === index && <div>{children}</div>}
         </div>
-    )
+    );
 }
 
 class BaseData extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             tab: 0,
-        }
+        };
     }
 
     render() {
-        const { classes } = this.props
+        const { classes } = this.props;
         return (
             <div>
                 <Route
                     exact
-                    path="/base"
+                    path='/base'
                     render={() => {
                         return (
                             <div>
@@ -65,11 +65,11 @@ class BaseData extends Component {
                                     <Tabs
                                         value={this.state.tab}
                                         onChange={(e, value) => {
-                                            this.setState({ tab: value })
+                                            this.setState({ tab: value });
                                         }}
-                                        indicatorColor="secondary"
-                                        textColor="secondary"
-                                        variant="fullWidth"
+                                        indicatorColor='secondary'
+                                        textColor='secondary'
+                                        variant='fullWidth'
                                     >
                                         {/* <Tab
                                             label={
@@ -87,7 +87,7 @@ class BaseData extends Component {
                                             label={
                                                 <Typography
                                                     className={classes.tablabel}
-                                                    color="textPrimary"
+                                                    color='textPrimary'
                                                 >
                                                     Turniere
                                                 </Typography>
@@ -98,7 +98,7 @@ class BaseData extends Component {
                                             label={
                                                 <Typography
                                                     className={classes.tablabel}
-                                                    color="textPrimary"
+                                                    color='textPrimary'
                                                 >
                                                     Athleten
                                                 </Typography>
@@ -109,7 +109,7 @@ class BaseData extends Component {
                                             label={
                                                 <Typography
                                                     className={classes.tablabel}
-                                                    color="textPrimary"
+                                                    color='textPrimary'
                                                 >
                                                     Offizielle
                                                 </Typography>
@@ -120,7 +120,7 @@ class BaseData extends Component {
                                             label={
                                                 <Typography
                                                     className={classes.tablabel}
-                                                    color="textPrimary"
+                                                    color='textPrimary'
                                                 >
                                                     Teams
                                                 </Typography>
@@ -145,12 +145,12 @@ class BaseData extends Component {
                                     <TeamData />
                                 </TabPanel>
                             </div>
-                        )
+                        );
                     }}
                 />
             </div>
-        )
+        );
     }
 }
 
-export default withStyles(styles)(withRouter(BaseData))
+export default withStyles(styles)(withRouter(BaseData));

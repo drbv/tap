@@ -3,15 +3,18 @@ export const CompetitionSchema = {
     title: 'competition data',
     description: 'Database schema for one competition',
     version: 0,
-    primaryKey: 'appointment_id',
+    primaryKey: 'competition_id',
     type: 'object',
     properties: {
+        competition_id: {
+            type: 'string',
+            finally: true
+        },
         appointment_id: {
             type: 'string',
-            final: true,
         },
         series: {
-            type: 'boolean',
+            type: 'string',
         },
         league: {
             type: 'string',
@@ -34,8 +37,18 @@ export const CompetitionSchema = {
                         type: 'string',
                     },
                     acro: {
-                        ref: 'CompetitionAcroSchema',
-                        type: 'string',
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                acro_short_text: {
+                                    type: 'string',
+                                },
+                                points: {
+                                    type: 'number',
+                                },
+                            }
+                        }
                     },
                 }
             }
@@ -49,8 +62,18 @@ export const CompetitionSchema = {
                         type: 'string',
                     },
                     acro: {
-                        ref: 'CompetitionAcroSchema',
-                        type: 'string',
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                acro_short_text: {
+                                    type: 'string',
+                                },
+                                points: {
+                                    type: 'number',
+                                },
+                            }
+                        }
                     },
                 }
             }
@@ -85,5 +108,5 @@ export const CompetitionSchema = {
             }
         },
     },
-    required: ['appointment_id', 'league', 'club_id', 'book_id'],
+    required: ['competition_id'],
 }

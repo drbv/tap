@@ -48,7 +48,7 @@ export async function getCollection(collection: string) {
 
     // sync local collection with server
     var repState = rxCollection.syncCouchDB({
-        remote: "http://localhost:5000/competitiondb/" + collection,
+        remote: "http://localhost:5000/db/1220200" + collection,
         options: {
             live: true,
             retry: true,
@@ -113,13 +113,13 @@ async function _create() {
         scoringrule: {
             schema: ScoringRuleSchema,
         },
+        competition: {
+            schema: CompetitionSchema,
+        },
 
         //old data
         users: {
             schema: userSchema,
-        },
-        competition: {
-            schema: CompetitionSchema,
         },
     })
 
