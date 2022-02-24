@@ -137,14 +137,14 @@ const Routes = [
     //     admin: false,
     //     icon: <Apps />,
     // },
-    // {
-    //     name: "Ergebnisse",
-    //     path: "/results",
-    //     exact: true,
-    //     component: <Results />,
-    //     admin: false,
-    //     icon: <Description />,
-    // },
+    {
+        name: "Ergebnisse",
+        path: "/results",
+        exact: true,
+        component: <Results />,
+        admin: false,
+        icon: <Description />,
+    },
 ];
 
 function ReactIsInDevelomentMode() {

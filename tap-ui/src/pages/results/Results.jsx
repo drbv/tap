@@ -11,7 +11,7 @@ import {
 import { Edit, Delete } from "@material-ui/icons";
 import withStyles from "@material-ui/core/es/styles/withStyles";
 import withProps from "../../components/HOC";
-import * as Database from "../../Database";
+import { getCollection } from "../../Database";
 
 const styles = (theme) => ({
     root: {
@@ -36,19 +36,14 @@ class Results extends Component {
 
         this.state = {
             results: null,
-            couples: null,
-            resultsets: null,
         };
 
         this.subs = [];
     }
 
     async componentDidMount() {
-        this.setState({ db: await Database.getClientDb() });
-
-        const resultSub = this.state.db.results
-            .find()
-            .$.subscribe((results) => {
+        getCollection("rounds").then(async (collection) => {
+            const sub = await collection.find().$.subscribe((results) => {
                 if (!results) {
                     return;
                 }
@@ -57,26 +52,9 @@ class Results extends Component {
                 this.setState({
                     results,
                 });
-
-                this.createResultSets();
             });
-        this.subs.push(resultSub);
-
-        const coupleSub = await this.state.db.couples
-            .find()
-            .$.subscribe((couples) => {
-                if (!couples) {
-                    return;
-                }
-                console.log("reload couples-list ");
-                console.dir(couples);
-                this.setState({
-                    couples,
-                });
-
-                this.createResultSets();
-            });
-        this.subs.push(coupleSub);
+            this.subs.push(sub);
+        });
     }
 
     componentWillUnmount() {
@@ -84,100 +62,71 @@ class Results extends Component {
         this.subs.forEach((sub) => sub.unsubscribe());
     }
 
-    createResultSets() {
-        const { couples, results } = this.state;
-        let resultsets = [];
-
-        if (couples) {
-            couples.map((couple) => {
-                let matchingResult = null;
-
-                if (results) {
-                    matchingResult = results.find(
-                        (result) => result.coupleId == couple.id
-                    );
-                }
-
-                if (matchingResult) {
-                    resultsets.push({
-                        id: matchingResult.id,
-                        coupleId: couple.id,
-                        nameOneFirst: couple.nameOneFirst,
-                        nameOneSecond: couple.nameOneSecond,
-                        nameTwoFirst: couple.nameTwoFirst,
-                        nameTwoSecond: couple.nameTwoSecond,
-                        result: matchingResult.result,
-                    });
-                } else {
-                    resultsets.push({
-                        id: "?",
-                        coupleId: couple.id,
-                        nameOneFirst: couple.nameOneFirst,
-                        nameOneSecond: couple.nameOneSecond,
-                        nameTwoFirst: couple.nameTwoFirst,
-                        nameTwoSecond: couple.nameTwoSecond,
-                        result: "?",
-                    });
-                }
-            });
-        }
-        this.setState(resultsets);
-    }
-
     render() {
         const { classes } = this.props;
-        const { resultsets } = this.state;
+        const { results } = this.state;
 
         return (
             <div>
                 {this.state.results != null ? (
                     <MUIDataTable
                         className={classes.table}
-                        data={this.state.results}
+                        data={results}
                         columns={[
                             {
-                                name: "id",
+                                name: "book_id",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: "coupleId",
-                                options: {
-                                    filter: false,
-                                    sort: true,
-                                },
-                            },
-                            {
-                                name: "nameOneFirst",
+                                name: "round_id",
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: "nameOneSecond",
+                                name: "judge_id",
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: "nameTwoFirst",
+                                name: "categories",
                                 options: {
                                     filter: false,
                                     sort: true,
+                                    customBodyRender: (value) => {
+                                        var returnString = "";
+                                        value.map((elem) => {
+                                            returnString +=
+                                                elem.name + elem.value;
+                                        });
+                                        return returnString;
+                                    },
                                 },
                             },
                             {
-                                name: "nameTwoSecond",
+                                name: "boni",
                                 options: {
                                     filter: false,
                                     sort: true,
+                                    customBodyRender: (value) => {
+                                        var returnString = "";
+                                        value.map((elem) => {
+                                            returnString +=
+                                                elem.name +
+                                                elem.value +
+                                                elem.amount;
+                                        });
+                                        return returnString;
+                                    },
                                 },
                             },
                             {
-                                name: "result",
+                                name: "ready",
                                 options: {
                                     filter: false,
                                     sort: true,

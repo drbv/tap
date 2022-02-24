@@ -136,23 +136,26 @@ class Rounds extends Component {
                         data={Rounds}
                         columns={[
                             {
-                                name: "id",
+                                name: "round_id",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: "name",
+                                name: "round_name",
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: "numberSubRounds",
+                                name: "subrounds",
                                 options: {
                                     filter: false,
                                     sort: true,
+                                    customBodyRender: (value) => {
+                                        return value.length();
+                                    },
                                 },
                             },
                             {
