@@ -80,7 +80,6 @@ class EvaluationDialog extends React.Component {
                     localEvaluation: {
                         id: Date.now().toString(),
                         name: "",
-                        stationId: "",
                         categories: null,
                         boni: null,
                     },
@@ -363,7 +362,9 @@ class EvaluationDialog extends React.Component {
                                                         );
                                                     localEvaluationCopy.boni[
                                                         index
-                                                    ].value = e.target.value;
+                                                    ].value = parseFloat(
+                                                        e.target.value
+                                                    );
                                                     if (e.target.value < 0) {
                                                         localEvaluationCopy.boni[
                                                             index
