@@ -108,7 +108,7 @@ class Rounds extends Component {
                         Runde erstellen
                     </Button>
                 </Paper>
-                {/* <RoundSetDialog
+                <RoundSetDialog
                     open={newRoundSetOpen}
                     handleClose={() =>
                         this.setState({
@@ -129,7 +129,7 @@ class Rounds extends Component {
                             subRoundsOpen: false,
                         })
                     }
-                /> */}
+                />
                 {Rounds != null ? (
                     <MUIDataTable
                         className={classes.table}
