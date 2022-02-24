@@ -48,7 +48,7 @@ export async function getCollection(collection: string) {
 
     // sync local collection with server
     var repState = rxCollection.syncCouchDB({
-        remote: "http://localhost:5000/db/1220200" + collection,
+        remote: "http://localhost:5000/db/1220200/" + collection,
         options: {
             live: true,
             retry: true,
@@ -75,6 +75,10 @@ export async function getBaseCollection(collection: string) {
     // sync local collection with server
     var repState = rxCollection.syncCouchDB({
         remote: "http://localhost:5000/basedb/" + collection,
+        direction: {                          // direction (optional) to specify sync-directions
+            pull: true, // default=true
+            push: false  // default=true
+        },
         options: {
             live: true,
             retry: true,

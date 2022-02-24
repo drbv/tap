@@ -1,6 +1,6 @@
-import React, { Fragment, Component } from 'react'
-import classnames from 'classnames'
-import PropTypes from 'prop-types'
+import React, { Fragment, Component } from "react";
+import classnames from "classnames";
+import PropTypes from "prop-types";
 import {
     Collapse,
     Navbar,
@@ -9,8 +9,8 @@ import {
     Nav,
     NavItem,
     Container,
-} from 'reactstrap'
-import { makeStyles, withStyles } from '@material-ui/core/styles'
+} from "reactstrap";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import {
     AppBar,
     MenuItem,
@@ -18,63 +18,63 @@ import {
     InputLabel,
     Select,
     ListItemText,
-} from '@material-ui/core'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import Button from '@material-ui/core/Button'
-import IconButton from '@material-ui/core/IconButton'
-import BubbleChartIcon from '@material-ui/icons/BubbleChart'
-import MenuIcon from '@material-ui/icons/Menu'
+} from "@material-ui/core";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import BubbleChartIcon from "@material-ui/icons/BubbleChart";
+import MenuIcon from "@material-ui/icons/Menu";
 
-import withProps from './HOC'
+import withProps from "./HOC";
 
 //colors
-import grey from '@material-ui/core/colors/grey'
-import amber from '@material-ui/core/colors/amber'
+import grey from "@material-ui/core/colors/grey";
+import amber from "@material-ui/core/colors/amber";
 
-const drawerWidth = 240
+const drawerWidth = 240;
 
 const styles = (theme) => ({
     grow: {
         flexGrow: 1,
     },
     flexboxContainer: {
-        display: 'flex',
-        'align-items': 'center',
+        display: "flex",
+        "align-items": "center",
     },
     contentShift: {
         marginLeft: +200,
-        transition: theme.transitions.create('margin', {
+        transition: theme.transitions.create("margin", {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
     },
     appBar: {
-        '-webkit-app-region': 'drag',
+        "-webkit-app-region": "drag",
     },
     appBarToolbox: {
-        '-webkit-app-region': 'no-drag',
+        "-webkit-app-region": "no-drag",
         marginRight: 9,
     },
     Offline: {
         backgroundColor: grey[700],
         color: grey[100],
     },
-})
+});
 
 class AppNavbar extends Component {
     constructor(props) {
-        super(props)
+        super(props);
     }
 
     render() {
-        const { classes } = this.props
+        const { classes } = this.props;
         return (
-            <AppBar position="static" className={classes.appBar}>
+            <AppBar position='static' className={classes.appBar}>
                 <Toolbar>
                     <IconButton
-                        color="inherit"
-                        aria-label="Menu"
+                        color='inherit'
+                        aria-label='Menu'
                         onClick={() => this.props.handleDrawerToggle(true)}
                     >
                         <MenuIcon />
@@ -91,29 +91,29 @@ class AppNavbar extends Component {
                         )}
                     >
                         <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="menu"
+                            edge='start'
+                            color='inherit'
+                            aria-label='menu'
                         >
                             <BubbleChartIcon />
                         </IconButton>
-                        <Typography variant="h6" color="inherit">
+                        <Typography variant='h6' color='inherit'>
                             Wertungs-App
                         </Typography>
                     </div>
                     {this.props.user && (
                         <div>
-                            <Typography variant="text" color="inherit">
-                                {'Eingeloggt: '}
+                            <Typography variant='body2' color='inherit'>
+                                {"Eingeloggt: "}
                             </Typography>
-                            <Typography variant="text" color="inherit">
+                            <Typography variant='body2' color='inherit'>
                                 {this.props.user.name}
                             </Typography>
                             <Button
-                                variant="contained"
-                                color="secondary"
+                                variant='contained'
+                                color='secondary'
                                 onClick={this.props.logout}
-                                style={{ marginLeft: '10px' }}
+                                style={{ marginLeft: "10px" }}
                             >
                                 Ausloggen
                             </Button>
@@ -121,7 +121,7 @@ class AppNavbar extends Component {
                     )}
                 </Toolbar>
             </AppBar>
-        )
+        );
     }
 }
 
@@ -132,6 +132,6 @@ AppNavbar.propTypes = {
     handleDrawerToggle: PropTypes.func,
     handleOrderListReload: PropTypes.func,
     drawerOpen: PropTypes.bool,
-}
+};
 
-export default withStyles(styles, { withTheme: true })(withProps(AppNavbar))
+export default withStyles(styles, { withTheme: true })(withProps(AppNavbar));

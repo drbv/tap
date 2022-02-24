@@ -112,6 +112,15 @@ class TeamData extends Component {
                                 name: "members",
                                 options: {
                                     filter: false,
+                                    customBodyRender: (value) => {
+                                        var resultString = "";
+                                        value.map(
+                                            (elem) =>
+                                                (resultString +=
+                                                    elem.member_id + " ")
+                                        );
+                                        return resultString;
+                                    },
                                 },
                             },
                         ]}

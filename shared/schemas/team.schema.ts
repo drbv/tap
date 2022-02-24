@@ -30,10 +30,13 @@ export const TeamSchema = {
         },
         members: {
             type: 'array',
-            properties: {
-                member_id: {
-                    type: 'string',
-                },
+            items: {
+                type: 'object',
+                properties: {
+                    member_id: {
+                        type: 'string',
+                    },
+                }
             }
         },
     },
