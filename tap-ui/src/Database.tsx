@@ -22,6 +22,7 @@ import {
 import { RoundSchema } from "../../shared/schemas/round.schema"
 import { ScoringRuleSchema } from "../../shared/schemas/scoringRule.schema"
 import { UserSchema } from "../../shared/schemas/user.schema"
+import { ResultSchema } from "../../shared/schemas/result.schema"
 import { EvaluationSchema} from "../../shared/schemas/evaluation.schema"
 
 addRxPlugin(RxDBReplicationCouchDBPlugin)
@@ -123,6 +124,9 @@ async function _create() {
         },
         users: {
             schema: UserSchema,
+        },
+        results: {
+            schema: ResultSchema,
         },
     })
 

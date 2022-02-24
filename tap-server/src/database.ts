@@ -7,6 +7,7 @@ import {
 } from 'rxdb'
 import {RxDBServerPlugin} from 'rxdb/plugins/server'
 import pouchdb_adapter_node_websql from 'pouchdb-adapter-node-websql'
+
 import {AthleteSchema} from '../../shared/schemas/athlete.schema';
 import {OfficialSchema} from '../../shared/schemas/official.schema';
 import {TeamSchema} from '../../shared/schemas/team.schema';
