@@ -550,6 +550,9 @@ export class ActivityPortalService {
             return
         }
         for (const row of csvData) {
+            if (!row.Startbuch) {
+                continue
+            }
             try {
                 await database.competition.upsert({
                     competition_id: Date.now().toString(),
