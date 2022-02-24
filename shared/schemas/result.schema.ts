@@ -6,8 +6,48 @@ export const ResultSchema = {
     type: 'object',
     properties: {
         book_id: {
-            type: 'string',
-            final: true,
+            type: "string",
+            primary: true,
+        },
+        round_id: {
+            type: "string",
+        },
+        judge_id: {
+            type: "string",
+        },
+        categories: {
+            type: "array",
+            items: {
+                type: "object",
+                properties: {
+                    name: {
+                        type: "string",
+                    },
+                    value: {
+                        type: "number",
+                    },
+                },
+            },
+        },
+        boni: {
+            type: "array",
+            items: {
+                type: "object",
+                properties: {
+                    name: {
+                        type: "string",
+                    },
+                    value: {
+                        type: "number",
+                    },
+                    amount: {
+                        type: "number",
+                    },
+                },
+            },
+        },
+        ready: {
+            type: "boolean",
         },
     },
     required: ['book_id'],

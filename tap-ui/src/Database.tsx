@@ -21,7 +21,8 @@ import {
 } from "../../shared/schemas/competition.schema"
 import { RoundSchema } from "../../shared/schemas/round.schema"
 import { ScoringRuleSchema } from "../../shared/schemas/scoringRule.schema"
-import { userSchema } from "./schema"
+import { UserSchema } from "../../shared/schemas/user.schema"
+import { EvaluationSchema} from "../../shared/schemas/evaluation.schema"
 
 addRxPlugin(RxDBReplicationCouchDBPlugin)
 addRxPlugin(RxDBNoValidatePlugin)
@@ -120,10 +121,8 @@ async function _create() {
         competition: {
             schema: CompetitionSchema,
         },
-
-        //old data
         users: {
-            schema: userSchema,
+            schema: UserSchema,
         },
     })
 

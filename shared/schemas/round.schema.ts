@@ -1,16 +1,16 @@
 export const RoundSchema = {
-    title: 'rounds data',
-    description: 'Database schema for storing round information',
+    title: "Schema for rounds",
+    description: "Database schema for storing round information",
     version: 0,
-    primaryKey: 'round_id',
-    type: 'object',
+    primaryKey: "round_id",
+    type: "object",
     properties: {
         round_id: {
-            type: 'string',
-            final: true,
+            type: "string",
+            primary: true,
         },
         round_name: {
-            type: 'string',
+            type: "string",
         },
         subrounds: {
             type: 'array',
@@ -22,13 +22,31 @@ export const RoundSchema = {
                         items: {
                             type: 'string',
                         }
-                    }
+                    },
+                    status: {
+                        type: "string",
+                    },
                 },
             }
         },
-        begin_time: {
-            type: 'string',
+        evaluationTemplateId: {
+            type: "string",
+        },
+        judgeIds: {
+            type: "array",
+            items: {
+                type: "string",
+            },
+        },
+        observerIds: {
+            type: "array",
+            items: {
+                type: "string",
+            },
+        },
+        status: {
+            type: "string",
         },
     },
-    required: ['round_id', 'round_name', 'begin_time'],
+    required: ['round_id', 'round_name'],
 }
