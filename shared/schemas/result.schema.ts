@@ -7,7 +7,7 @@ export const ResultSchema = {
     properties: {
         book_id: {
             type: "string",
-            primary: true,
+            final: true,
         },
         round_id: {
             type: "string",

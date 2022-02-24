@@ -2,14 +2,14 @@ export const RoundSchema = {
     title: "Schema for rounds",
     description: "Database schema for storing round information",
     version: 0,
-    primaryKey: "round_id",
+    primaryKey: "roundId",
     type: "object",
     properties: {
-        round_id: {
+        roundId: {
             type: "string",
-            primary: true,
+            final: true,
         },
-        round_name: {
+        roundName: {
             type: "string",
         },
         subrounds: {
@@ -48,5 +48,5 @@ export const RoundSchema = {
             type: "string",
         },
     },
-    required: ['round_id', 'round_name'],
+    required: ['roundId', 'roundName'],
 }

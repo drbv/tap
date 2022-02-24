@@ -24,7 +24,7 @@ import {
     FormControl,
     CircularProgress,
     Tooltip,
-} from "@mui/material";
+} from "@material-ui/core";
 
 import { BlurOn, Delete, Add } from "@material-ui/icons";
 import { Divider } from "@material-ui/core";
@@ -85,6 +85,20 @@ class RoundDialog extends React.Component {
             });
             this.subs.push(sub);
         });
+
+        getCollection("competition").then(async (collection) => {
+            const sub = await collection.find().$.subscribe((competition) => {
+                if (!competition) {
+                    return;
+                }
+                console.log("reload competition-list ");
+                console.dir(competition);
+                this.setState({
+                    competition,
+                });
+            });
+            this.subs.push(sub);
+        });
     }
 
     async componentDidUpdate(prevProps, prevState) {
@@ -94,7 +108,7 @@ class RoundDialog extends React.Component {
             } else {
                 this.setState({
                     localRound: {
-                        round_id: Date.now().toString(),
+                        roundId: Date.now().toString(),
                     },
                 });
             }
@@ -106,9 +120,9 @@ class RoundDialog extends React.Component {
         this.subs.forEach((sub) => sub.unsubscribe());
     }
 
-    async upsertRound() {
+    async upsertRound(object) {
         getCollection("rounds").then(async (collection) => {
-            collection.upsert(this.state.localRound);
+            collection.upsert(object);
         });
     }
 
@@ -132,23 +146,22 @@ class RoundDialog extends React.Component {
                             margin='dense'
                             id='name'
                             name='name'
-                            Title
-                            value={localRound.round_name}
+                            defaultValue={localRound.roundName}
                             required={true}
-                            onChange={(e, newValue) => {
+                            onChange={(e) => {
+                                let newValue = e.target.value;
                                 this.setState((prevState) => {
                                     let localRound = Object.assign(
                                         {},
                                         prevState.localRound
                                     ); // creating copy of state variable
-                                    localRound.round_name = newValue; // update the name property, assign a new value
+                                    localRound.roundName = newValue; // update the name property, assign a new value
                                     return { localRound }; // return new object
                                 });
                             }}
                             helperText='Name der Runde'
                             label='Name'
                             type='text'
-                            autoComplete='name'
                             fullWidth
                             className={classes.inputContent}
                         />
@@ -220,7 +233,7 @@ class RoundDialog extends React.Component {
                                 <MenuItem value='blocked'>Fehlerhaft</MenuItem>
                                 <MenuItem value='waiting'>Vorbereitet</MenuItem>
                                 <MenuItem value='running'>Laufend</MenuItem>
-                                <MenuItem value='dome'>Abgeschlossen</MenuItem>
+                                <MenuItem value='done'>Abgeschlossen</MenuItem>
                             </Select>
                         </div>
                         {/* Section to select users as judges */}
@@ -374,6 +387,147 @@ class RoundDialog extends React.Component {
                                 <Add />
                             </IconButton>
                         </Tooltip>
+                        <Divider />
+                        {/* Section to select teams inside rounds*/}
+                        <div className={classes.inputContent}>
+                            <InputLabel
+                                required={true}
+                                shrink={true}
+                                className={classes.inputContent}
+                                htmlFor='role-select'
+                            >
+                                Tanzpaare
+                            </InputLabel>
+                            {localRound.subrounds &&
+                                localRound.subrounds.map(
+                                    (singleSubround, index) => {
+                                        return (
+                                            <div>
+                                                <Select
+                                                    fullWidth
+                                                    inputProps={{
+                                                        name: "participant",
+                                                        id: "participant-select",
+                                                    }}
+                                                    value={
+                                                        singleSubround.participants &&
+                                                        singleSubround
+                                                            .participants[0]
+                                                    }
+                                                    onChange={(e) => {
+                                                        this.setState(
+                                                            (prevState) => {
+                                                                let localRound =
+                                                                    JSON.parse(
+                                                                        JSON.stringify(
+                                                                            this
+                                                                                .state
+                                                                                .localRound
+                                                                        )
+                                                                    ); // creating copy of state variable
+                                                                localRound.subrounds[
+                                                                    index
+                                                                ].participants[0] =
+                                                                    e.target.value; // update the name property, assign a new value
+                                                                return {
+                                                                    localRound,
+                                                                }; // return new object
+                                                            }
+                                                        );
+                                                    }}
+                                                >
+                                                    {this.state.competition &&
+                                                        this.state.competition.map(
+                                                            (competition) => {
+                                                                return (
+                                                                    <MenuItem
+                                                                        value={
+                                                                            competition.book_id
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            competition.book_id
+                                                                        }
+                                                                    </MenuItem>
+                                                                );
+                                                            }
+                                                        )}
+                                                </Select>
+                                                <Select
+                                                    fullWidth
+                                                    inputProps={{
+                                                        name: "status",
+                                                        id: "status-select",
+                                                    }}
+                                                    value={
+                                                        singleSubround.status
+                                                    }
+                                                    onChange={(e) => {
+                                                        this.setState(
+                                                            (prevState) => {
+                                                                let localRound =
+                                                                    JSON.parse(
+                                                                        JSON.stringify(
+                                                                            this
+                                                                                .state
+                                                                                .localRound
+                                                                        )
+                                                                    );
+                                                                // creating copy of state variable
+                                                                localRound.subrounds[
+                                                                    index
+                                                                ].status =
+                                                                    e.target.value; // update the name property, assign a new value
+                                                                return {
+                                                                    localRound,
+                                                                }; // return new object
+                                                            }
+                                                        );
+                                                    }}
+                                                >
+                                                    <MenuItem value='blocked'>
+                                                        Fehlerhaft
+                                                    </MenuItem>
+                                                    <MenuItem value='waiting'>
+                                                        Vorbereitet
+                                                    </MenuItem>
+                                                    <MenuItem value='running'>
+                                                        Laufend
+                                                    </MenuItem>
+                                                    <MenuItem value='done'>
+                                                        Abgeschlossen
+                                                    </MenuItem>
+                                                </Select>
+                                            </div>
+                                        );
+                                    }
+                                )}
+                        </div>
+                        <Tooltip title='Weiterere Teilrunde'>
+                            <IconButton
+                                onClick={() => {
+                                    let localRoundCopy = JSON.parse(
+                                        JSON.stringify(localRound)
+                                    );
+                                    localRoundCopy.subrounds
+                                        ? localRoundCopy.subrounds.push({
+                                              participants: [""],
+                                              status: "blocked",
+                                          })
+                                        : (localRoundCopy.subrounds = [
+                                              {
+                                                  participants: [""],
+                                                  status: "blocked",
+                                              },
+                                          ]);
+                                    this.setState({
+                                        localRound: localRoundCopy,
+                                    });
+                                }}
+                            >
+                                <Add />
+                            </IconButton>
+                        </Tooltip>
                     </DialogContent>
                     <DialogActions>
                         <Button
@@ -387,9 +541,10 @@ class RoundDialog extends React.Component {
                         </Button>
                         <Button
                             disabled={this.state.disabled}
-                            onClick={() => {
-                                this.upsertRound();
-                                this.props.handleClose();
+                            onClick={async () => {
+                                this.upsertRound(localRound).then(
+                                    this.props.handleClose()
+                                );
                             }}
                             color='primary'
                             variant='contained'
