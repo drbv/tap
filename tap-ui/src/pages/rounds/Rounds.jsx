@@ -13,7 +13,6 @@ import { Edit, Delete, PeopleAlt } from "@material-ui/icons";
 import { getCollection } from "../../Database";
 import RoundSetDialog from "./RoundSetDialog";
 import RoundDialog from "./RoundDialog";
-import SubRoundsDialog from "./SubRoundsDialog";
 
 const styles = (theme) => ({
     root: {
@@ -121,28 +120,19 @@ class Rounds extends Component {
                     roundToEdit={roundToEdit}
                     handleClose={() => this.setState({ newRoundOpen: false })}
                 />
-                <SubRoundsDialog
-                    open={subRoundsOpen}
-                    subRoundPropId={subRoundPropId}
-                    handleClose={() =>
-                        this.setState({
-                            subRoundsOpen: false,
-                        })
-                    }
-                />
                 {Rounds != null ? (
                     <MUIDataTable
                         className={classes.table}
                         data={Rounds}
                         columns={[
                             {
-                                name: "round_id",
+                                name: "roundId",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: "round_name",
+                                name: "roundName",
                                 options: {
                                     filter: false,
                                     sort: true,
@@ -154,7 +144,7 @@ class Rounds extends Component {
                                     filter: false,
                                     sort: true,
                                     customBodyRender: (value) => {
-                                        return value.length();
+                                        return JSON.stringify(value);
                                     },
                                 },
                             },
@@ -201,25 +191,6 @@ class Rounds extends Component {
                                         if (tableMeta.rowData != null) {
                                             return (
                                                 <div>
-                                                    <Tooltip title='Paare hinzufügen'>
-                                                        <span>
-                                                            <IconButton
-                                                                onClick={() => {
-                                                                    this.setState(
-                                                                        {
-                                                                            subRoundPropId:
-                                                                                tableMeta
-                                                                                    .rowData[0],
-                                                                            subRoundsOpen:
-                                                                                !subRoundsOpen,
-                                                                        }
-                                                                    );
-                                                                }}
-                                                            >
-                                                                <PeopleAlt />
-                                                            </IconButton>
-                                                        </span>
-                                                    </Tooltip>
                                                     <Tooltip title='Bearbeiten'>
                                                         <span>
                                                             <IconButton
@@ -230,11 +201,13 @@ class Rounds extends Component {
                                                                                 !newRoundOpen,
                                                                             roundToEdit:
                                                                                 {
-                                                                                    id: tableMeta
-                                                                                        .rowData[0],
-                                                                                    name: tableMeta
-                                                                                        .rowData[1],
-                                                                                    numberSubRounds:
+                                                                                    roundId:
+                                                                                        tableMeta
+                                                                                            .rowData[0],
+                                                                                    roundName:
+                                                                                        tableMeta
+                                                                                            .rowData[1],
+                                                                                    subrounds:
                                                                                         tableMeta
                                                                                             .rowData[2],
                                                                                     evaluationTemplateId:

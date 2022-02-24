@@ -7,7 +7,7 @@ export const UserSchema = {
   properties: {
       id: {
           type: "string",
-          primary: true,
+          final: true,
       },
       name: {
           type: "string",

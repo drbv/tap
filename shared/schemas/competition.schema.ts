@@ -8,7 +8,7 @@ export const CompetitionSchema = {
     properties: {
         competition_id: {
             type: 'string',
-            finally: true
+            final: true
         },
         appointment_id: {
             type: 'string',

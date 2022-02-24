@@ -8,7 +8,7 @@ export const ScoringRuleSchema = {
   properties: {
     id: {
       type: 'string',
-      primary: true,
+      final: true,
     },
     name: {
       type: 'string',
