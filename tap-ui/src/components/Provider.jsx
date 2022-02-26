@@ -1,15 +1,14 @@
-import React, { Component } from "react"
-import ls from "local-storage"
-import { withLocalize } from "react-localize-redux"
+import React, { Component } from "react";
+import ls from "local-storage";
+import { withLocalize } from "react-localize-redux";
 
-import * as Database from "../Database"
-import { isRxDatabase } from "rxdb"
+import { getCollection } from "../Database";
 
-export const Context = React.createContext()
+export const Context = React.createContext();
 
 class Provider extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             isLoggedIn: null,
@@ -18,72 +17,71 @@ class Provider extends Component {
             loadUser: (id, key) => this.loadUser(id, key),
             logout: () => this.logout(),
             appointment: null,
-        }
-        this.subs = []
+        };
+        this.subs = [];
     }
 
     async componentDidMount() {
-        this.setState({ db: await Database.getClientDb() })
-        this.checkAuth()
+        this.checkAuth();
     }
 
     componentWillUnmount() {
         // Unsubscribe from all subscriptions
-        this.subs.forEach((sub) => sub.unsubscribe())
+        this.subs.forEach((sub) => sub.unsubscribe());
     }
 
     checkAuth() {
-        console.log("Checking Authentication for user")
+        console.log("Checking Authentication for user");
         //check if the user has logged in before
         if (ls("userID") !== null && ls("userKey") !== null) {
-            console.log("Load user from last session")
-            let userID = ls("userID").toString()
-            let userKey = ls("userKey").toString()
+            console.log("Load user from last session");
+            let userID = ls("userID").toString();
+            let userKey = ls("userKey").toString();
 
             //load current User
-            this.loadUser(userID, userKey)
+            this.loadUser(userID, userKey);
         } else {
-            this.logout()
+            this.logout();
         }
     }
 
     logout() {
-        localStorage.removeItem("userID")
-        localStorage.removeItem("userKey")
+        localStorage.removeItem("userID");
+        localStorage.removeItem("userKey");
         this.setState({
             user: null,
             isLoggedIn: false,
             loginError: null,
-        })
+        });
     }
 
     async loadUser(id, key) {
-        if (await this.state.db) {
-            let currentUser = await this.state.db.users
+        let currentUser = await getCollection("users").then((collection) =>
+            collection
                 .findOne({
                     selector: { id: id, key: key },
                 })
                 .exec()
+        );
 
-            console.dir(currentUser)
+        console.dir(currentUser);
 
-            if (!currentUser) {
-                console.log("Error: User with crendentials not found")
-                this.logout()
-                this.setState({
-                    loginError: "Nutzer oder Schlüssel falsch",
-                })
-            } else {
-                this.setState({
-                    user: currentUser,
-                    isLoggedIn: true,
-                    loginError: "",
-                })
-                localStorage.setItem("userID", currentUser.id)
-                localStorage.setItem("userKey", currentUser.key)
+        if (!currentUser) {
+            console.log("Error: User with crendentials not found");
+            this.logout();
+            this.setState({
+                loginError: "Nutzer oder Schlüssel falsch",
+            });
+        } else {
+            this.setState({
+                user: currentUser,
+                isLoggedIn: true,
+                loginError: "",
+            });
+            localStorage.setItem("userID", currentUser.id);
+            localStorage.setItem("userKey", currentUser.key);
 
-                console.log("Successful logged in user")
-            }
+            console.log("Successful logged in user");
         }
     }
 
@@ -92,8 +90,8 @@ class Provider extends Component {
             <Context.Provider value={this.state}>
                 {this.props.children}
             </Context.Provider>
-        )
+        );
     }
 }
 
-export default withLocalize(Provider)
+export default withLocalize(Provider);

@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import {
     LinearProgress,
     Grid,
@@ -7,408 +7,315 @@ import {
     Slider,
     Typography,
     Button,
-} from '@material-ui/core'
-import withStyles from '@material-ui/core/es/styles/withStyles'
+} from "@material-ui/core";
+import withStyles from "@material-ui/core/es/styles/withStyles";
 
-import withProps from '../../components/HOC'
-import * as Database from '../../Database'
+import withProps from "../../components/HOC";
+import { getCollection } from "../../Database";
 
 const styles = {
     root: {
         flexGrow: 1,
-        margin: '11px',
+        margin: "11px",
     },
     paper: {
         padding: 10,
         height: 700,
         width: 800,
     },
-}
+};
 
 class Current extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             results: null,
-            subround: null,
-            round: null,
-            couples: null,
-            evaluation: null,
-        }
+            rounds: null,
+            evaluations: null,
+        };
 
-        this.subs = []
+        this.subs = [];
     }
 
     async componentDidMount() {
-        this.setState({ db: await Database.getClientDb() })
-
-        const sub = await this.state.db.subrounds
-            .findOne({ selector: { status: 'running' } })
-            .$.subscribe(async (subround) => {
-                if (!subround) {
-                    return
-                }
-
-                console.log('reload subrounds-list ')
-                console.dir(subround)
-                this.setState({
-                    subround,
-                })
-
-                await this.state.db.rounds
-                    .findOne({ selector: { id: subround.roundId } })
-                    .exec()
-                    .then((localRound) => {
-                        console.log('reload round ')
-                        console.dir(localRound)
-                        const localCopy = JSON.parse(JSON.stringify(localRound))
-                        localCopy.judgeIds = ['1631412137716', '1631412525617']
-                        this.setState({
-                            round: localCopy,
-                        })
-                    })
-
-                await this.state.db.couples
-                    .find({
-                        selector: { id: { $in: subround.coupleIds } },
-                    })
-                    .exec()
-                    .then((localCouples) => {
-                        this.setState({
-                            couples: localCouples,
-                        })
-                    })
-
-                await this.state.db.evaluations
-                    .findOne({
-                        selector: { id: this.state.round.evaluationTemplateId },
-                    })
-                    .exec()
-                    .then((localEvaluation) =>
-                        this.setState({
-                            evaluation: localEvaluation,
-                        })
-                    )
-
-                await this.prepaireResults()
-            })
-        this.subs.push(sub)
-    }
-
-    async prepaireResults() {
-        this.state.couples.map(async (couple, index) => {
-            const sub = await this.state.db.results
+        getCollection("rounds").then(async (collection) => {
+            let sub = await collection
                 .find({
                     selector: {
-                        coupleId: couple.id,
-                        roundId: this.state.round.id,
+                        status: "running",
                     },
                 })
-                .$.subscribe(async (results) => {
-                    if (
-                        !results ||
-                        !results.find(
-                            (result) => result.judgeId == this.props.user.id
-                        )
-                    ) {
-                        //create an empty result
-                        await this.state.db.results.insert({
-                            coupleId: couple.id,
-                            roundId: this.state.round.id,
-                            judgeId: this.props.user.id,
-                            categories: [],
-                            ready: false,
-                        })
-                    } else {
-                        this.setState({
-                            results: results,
-                            ['result' + index]: results.find(
-                                (result) => result.judgeId == this.props.user.id
-                            ),
-                        })
+                .$.subscribe((rounds) => {
+                    if (!rounds) {
+                        return;
                     }
+                    console.log("reload Rounds");
+                    console.dir(rounds);
+                    let currentRound =
+                        rounds[0] &&
+                        rounds[0].subrounds &&
+                        rounds[0].subrounds.find(
+                            (value) => value.status == "running"
+                        );
+                    this.setState({
+                        rounds,
+                        currentRound: currentRound,
+                    });
+
+                    if (currentRound != undefined) {
+                        this.prepaireResults(
+                            currentRound.participants[0],
+                            rounds[0].roundId
+                        );
+                    }
+                });
+            this.subs.push(sub);
+        });
+
+        getCollection("scoringrule").then(async (collection) => {
+            let sub = await collection.find().$.subscribe((evaluations) => {
+                if (!evaluations) {
+                    return;
+                }
+                console.log("reload Evaluations");
+                console.dir(evaluations);
+                this.setState({
+                    evaluations,
+                });
+            });
+            this.subs.push(sub);
+        });
+    }
+
+    async prepaireResults(bookId, roundId) {
+        getCollection("results").then(async (collection) => {
+            let currentResult = await collection
+                .findOne({
+                    selector: {
+                        bookId: bookId,
+                        roundId: roundId,
+                        judgeId: this.props.user.id,
+                    },
                 })
-            this.subs.push(sub)
-        })
+                .exec();
+            if (currentResult != null) {
+                this.setState({ currentResult });
+            } else {
+                let currentResult = await collection.upsert({
+                    resultId: Date.now().toString() + this.props.user.id,
+                    bookId: bookId,
+                    roundId: roundId,
+                    judgeId: this.props.user.id,
+                    ready: false,
+                });
+                this.setState({ currentResult });
+            }
+        });
     }
 
     async updateResult(result) {
-        await this.state.db.results.upsert(result)
-        console.dir(result)
+        getCollection("results").then(async (collection) => {
+            await collection.upsert(result);
+            console.dir(result);
+        });
+        this.setState({ currentResult: result });
     }
 
     render() {
-        const { classes } = this.props
-        const { subround, round, couples, evaluation } = this.state
+        const { classes } = this.props;
+        const { rounds, evaluations, currentResult, currentRound } = this.state;
 
-        return subround ? (
+        const currentEvaluation = evaluations && evaluations[0];
+
+        return currentRound ? (
             <div>
                 <Grid className={classes.root} spacing={2}>
-                    <Grid container justifyContent="center" spacing={1}>
+                    <Grid container justifyContent='center' spacing={1}>
                         <Grid item xs={12}>
-                            {couples &&
-                                couples.map((couple, index) => {
-                                    if (
-                                        this.state['result' + index] &&
-                                        this.state['result' + index].ready ==
-                                            false
-                                    ) {
-                                        return (
-                                            <Grid item xs={6}>
-                                                <Paper
-                                                    className={classes.paper}
-                                                >
-                                                    <Typography
-                                                        id="discrete-slider"
-                                                        gutterBottom
-                                                    >
-                                                        {'Startnummer ' +
-                                                            couple.number +
-                                                            ': ' +
-                                                            couple.nameOneFirst +
-                                                            ' ' +
-                                                            couple.nameOneSecond +
-                                                            ' und ' +
-                                                            couple.nameTwoFirst +
-                                                            ' ' +
-                                                            couple.nameTwoSecond}
-                                                    </Typography>
-                                                    {evaluation &&
-                                                        evaluation.categories &&
-                                                        evaluation.categories.map(
-                                                            (category) => {
-                                                                return (
-                                                                    <div>
-                                                                        <Typography
-                                                                            id="discrete-slider"
-                                                                            gutterBottom
-                                                                        >
-                                                                            {
-                                                                                category.name
-                                                                            }
-                                                                        </Typography>
-                                                                        <Slider
-                                                                            defaultValue={
-                                                                                this
-                                                                                    .state[
-                                                                                    'result' +
-                                                                                        index
-                                                                                ] &&
-                                                                                this
-                                                                                    .state[
-                                                                                    'result' +
-                                                                                        index
-                                                                                ]
-                                                                                    .categories &&
-                                                                                this.state[
-                                                                                    'result' +
-                                                                                        index
-                                                                                ].categories.find(
-                                                                                    (
-                                                                                        result
-                                                                                    ) =>
-                                                                                        result.name ==
-                                                                                        category.name
-                                                                                ) !=
-                                                                                    null
-                                                                                    ? this.state[
-                                                                                          'result' +
-                                                                                              index
-                                                                                      ].categories.find(
-                                                                                          (
-                                                                                              result
-                                                                                          ) =>
-                                                                                              result.name ==
-                                                                                              category.name
-                                                                                      )
-                                                                                          .value
-                                                                                    : 0.5 *
-                                                                                      category.max
-                                                                            }
-                                                                            aria-labelledby="discrete-slider-small-steps"
-                                                                            step={
-                                                                                category.max /
-                                                                                10
-                                                                            }
-                                                                            marks
-                                                                            min={
-                                                                                category.min
-                                                                            }
-                                                                            max={
-                                                                                category.max
-                                                                            }
-                                                                            valueLabelDisplay="auto"
-                                                                            onChange={(
-                                                                                e,
-                                                                                newValue
-                                                                            ) => {
-                                                                                const localResult =
-                                                                                    JSON.parse(
-                                                                                        JSON.stringify(
-                                                                                            this
-                                                                                                .state[
-                                                                                                'result' +
-                                                                                                    index
-                                                                                            ]
-                                                                                        )
-                                                                                    )
-
-                                                                                if (
-                                                                                    localResult.categories &&
-                                                                                    localResult.categories.find(
-                                                                                        (
-                                                                                            result
-                                                                                        ) =>
-                                                                                            result.name ==
-                                                                                            category.name
-                                                                                    ) !=
-                                                                                        null
-                                                                                ) {
-                                                                                    localResult.categories.find(
-                                                                                        (
-                                                                                            result
-                                                                                        ) =>
-                                                                                            result.name ==
-                                                                                            category.name
-                                                                                    ).value =
-                                                                                        newValue
-
-                                                                                    this.setState(
-                                                                                        {
-                                                                                            ['result' +
-                                                                                            index]:
-                                                                                                localResult,
-                                                                                        }
-                                                                                    )
-                                                                                    this.updateResult(
-                                                                                        localResult
-                                                                                    )
-                                                                                } else {
-                                                                                    localResult.categories
-                                                                                        ? localResult.categories.push(
-                                                                                              {
-                                                                                                  name: category.name,
-                                                                                                  value: newValue,
-                                                                                              }
-                                                                                          )
-                                                                                        : (localResult.categories =
-                                                                                              [
-                                                                                                  {
-                                                                                                      name: category.name,
-                                                                                                      value: newValue,
-                                                                                                  },
-                                                                                              ])
-
-                                                                                    this.setState(
-                                                                                        {
-                                                                                            ['result' +
-                                                                                            index]:
-                                                                                                localResult,
-                                                                                        }
-                                                                                    )
-
-                                                                                    this.updateResult(
-                                                                                        localResult
-                                                                                    )
-                                                                                }
-                                                                            }}
-                                                                        />
-                                                                    </div>
-                                                                )
-                                                            }
-                                                        )}
-                                                    <Grid
-                                                        container
-                                                        justifyContent="center"
-                                                        spacing={1}
-                                                    >
-                                                        {evaluation &&
-                                                            evaluation.boni &&
-                                                            evaluation.boni.map(
-                                                                (bonus) => {
-                                                                    return (
-                                                                        <Grid
-                                                                            item
-                                                                            xs={
-                                                                                2
-                                                                            }
-                                                                        >
-                                                                            <Button
-                                                                                variant="contained"
-                                                                                color="red"
-                                                                                onClick={() => {}}
-                                                                            >
-                                                                                <Typography
-                                                                                    id="discrete-slider"
-                                                                                    gutterBottom
-                                                                                >
-                                                                                    {
-                                                                                        bonus.name
-                                                                                    }
-                                                                                </Typography>
-                                                                            </Button>
-                                                                        </Grid>
-                                                                    )
+                            {currentResult && currentResult.ready == false ? (
+                                <Grid item xs={6}>
+                                    <Paper className={classes.paper}>
+                                        <Typography
+                                            id='discrete-slider'
+                                            gutterBottom
+                                        >
+                                            {"Startnummer " +
+                                                currentResult.bookId}
+                                        </Typography>
+                                        {currentEvaluation &&
+                                            currentEvaluation.categories &&
+                                            currentEvaluation.categories.map(
+                                                (category) => {
+                                                    return (
+                                                        <div>
+                                                            <Typography
+                                                                id='discrete-slider'
+                                                                gutterBottom
+                                                            >
+                                                                {category.name}
+                                                            </Typography>
+                                                            <Slider
+                                                                defaultValue={
+                                                                    currentResult.categories &&
+                                                                    currentResult.categories.find(
+                                                                        (
+                                                                            result
+                                                                        ) =>
+                                                                            result.name ==
+                                                                            category.name
+                                                                    ) != null
+                                                                        ? currentResult.categories.find(
+                                                                              (
+                                                                                  result
+                                                                              ) =>
+                                                                                  result.name ==
+                                                                                  category.name
+                                                                          )
+                                                                              .value
+                                                                        : 0.5 *
+                                                                          category.max
                                                                 }
-                                                            )}
-                                                        <Button
-                                                            variant="contained"
-                                                            color="secondary"
-                                                            style={{
-                                                                marginLeft:
-                                                                    '10px',
-                                                            }}
-                                                            onClick={() => {
-                                                                const localResult =
-                                                                    JSON.parse(
-                                                                        JSON.stringify(
-                                                                            this
-                                                                                .state[
-                                                                                'result' +
-                                                                                    index
-                                                                            ]
-                                                                        )
-                                                                    )
+                                                                aria-labelledby='discrete-slider-small-steps'
+                                                                step={
+                                                                    category.max /
+                                                                    10
+                                                                }
+                                                                marks
+                                                                min={
+                                                                    category.min
+                                                                }
+                                                                max={
+                                                                    category.max
+                                                                }
+                                                                valueLabelDisplay='auto'
+                                                                onChange={(
+                                                                    e,
+                                                                    newValue
+                                                                ) => {
+                                                                    const localResult =
+                                                                        JSON.parse(
+                                                                            JSON.stringify(
+                                                                                currentResult
+                                                                            )
+                                                                        );
 
-                                                                localResult.ready = true
-
-                                                                this.updateResult(
-                                                                    localResult
-                                                                )
-                                                            }}
-                                                        >
-                                                            Wertungen abschicken
-                                                        </Button>
-                                                    </Grid>
-                                                </Paper>
-                                            </Grid>
-                                        )
-                                    } else {
-                                        return (
-                                            <div>
-                                                <Typography>
-                                                    Wertung bereits abgesendet
-                                                </Typography>
-                                                {round && (
-                                                    <Button
-                                                        variant="outlined"
-                                                        color="success"
-                                                    >
-                                                        1631412137716
-                                                    </Button>
+                                                                    if (
+                                                                        localResult.categories &&
+                                                                        localResult.categories.find(
+                                                                            (
+                                                                                result
+                                                                            ) =>
+                                                                                result.name ==
+                                                                                category.name
+                                                                        ) !=
+                                                                            null
+                                                                    ) {
+                                                                        localResult.categories.find(
+                                                                            (
+                                                                                result
+                                                                            ) =>
+                                                                                result.name ==
+                                                                                category.name
+                                                                        ).value =
+                                                                            newValue;
+                                                                        this.updateResult(
+                                                                            localResult
+                                                                        );
+                                                                    } else {
+                                                                        localResult.categories
+                                                                            ? localResult.categories.push(
+                                                                                  {
+                                                                                      name: category.name,
+                                                                                      value: newValue,
+                                                                                  }
+                                                                              )
+                                                                            : (localResult.categories =
+                                                                                  [
+                                                                                      {
+                                                                                          name: category.name,
+                                                                                          value: newValue,
+                                                                                      },
+                                                                                  ]);
+                                                                        this.updateResult(
+                                                                            localResult
+                                                                        );
+                                                                    }
+                                                                }}
+                                                            />
+                                                        </div>
+                                                    );
+                                                }
+                                            )}
+                                        <Grid
+                                            container
+                                            justifyContent='center'
+                                            spacing={1}
+                                        >
+                                            {currentEvaluation &&
+                                                currentEvaluation.boni &&
+                                                currentEvaluation.boni.map(
+                                                    (bonus) => {
+                                                        return (
+                                                            <Grid item xs={2}>
+                                                                <Button
+                                                                    variant='contained'
+                                                                    color='red'
+                                                                    onClick={() => {}}
+                                                                >
+                                                                    <Typography
+                                                                        id='discrete-slider'
+                                                                        gutterBottom
+                                                                    >
+                                                                        {
+                                                                            bonus.name
+                                                                        }
+                                                                    </Typography>
+                                                                </Button>
+                                                            </Grid>
+                                                        );
+                                                    }
                                                 )}
-                                            </div>
-                                        )
-                                    }
-                                })}
+                                            <Button
+                                                variant='contained'
+                                                color='secondary'
+                                                style={{
+                                                    marginLeft: "10px",
+                                                }}
+                                                onClick={() => {
+                                                    const localResult =
+                                                        JSON.parse(
+                                                            JSON.stringify(
+                                                                currentResult
+                                                            )
+                                                        );
+
+                                                    localResult.ready = true;
+
+                                                    this.updateResult(
+                                                        localResult
+                                                    );
+                                                }}
+                                            >
+                                                Wertungen abschicken
+                                            </Button>
+                                        </Grid>
+                                    </Paper>
+                                </Grid>
+                            ) : (
+                                <div>
+                                    <Typography>
+                                        Wertung bereits abgesendet
+                                    </Typography>
+                                </div>
+                            )}
                         </Grid>
                     </Grid>
                 </Grid>
             </div>
         ) : (
             <Typography>Runde startet gleich</Typography>
-        )
+        );
     }
 }
 
@@ -417,8 +324,8 @@ Current.defaultProps = {
     routes: {
         routes: [
             {
-                name: 'default',
-                path: '/current',
+                name: "default",
+                path: "/current",
                 exact: true,
                 component: <LinearProgress />,
                 admin: false,
@@ -427,6 +334,6 @@ Current.defaultProps = {
             },
         ],
     },
-}
+};
 
-export default withStyles(styles, { withTheme: true })(withProps(Current))
+export default withStyles(styles, { withTheme: true })(withProps(Current));

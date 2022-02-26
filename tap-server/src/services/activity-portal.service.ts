@@ -184,7 +184,10 @@ export class ActivityPortalService {
 
             try {
                 await this.db.athletes.upsert({
-                    rfid: row.RFID !== null ? row.RFID.toString() : this.fixRfidIsNull(row).toString(),
+                    rfid:
+                        row.RFID !== null
+                            ? row.RFID.toString()
+                            : this.fixRfidIsNull(row).toString(),
                     book_id: row.Buchnr,
                     pre_name: row.Vorname,
                     family_name: row.Nachname,
@@ -548,7 +551,7 @@ export class ActivityPortalService {
                     series: row.Cup_Serie ? row.Cup_Serie : "",
                     league: row.Startkl ? row.Startkl : "",
                     club_id: row.Verein_nr ? row.Verein_nr.toString() : "",
-                    book_id: row.Startbuch ? row.Startbuch.toString() : "",
+                    bookId: row.Startbuch ? row.Startbuch.toString() : "",
                     // team_member_count: row.Anz_Taenzer ? parseInt(row.Anz_Taenzer) : 0,
                     acros: [
                         {

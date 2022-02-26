@@ -73,7 +73,7 @@ class AthleteData extends Component {
                                 },
                             },
                             {
-                                name: "book_id",
+                                name: "bookId",
                                 options: {
                                     filter: false,
                                 },

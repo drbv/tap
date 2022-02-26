@@ -3,10 +3,10 @@ export const TeamSchema = {
     title: 'team data',
     description: 'Database schema for storing team information',
     version: 0,
-    primaryKey: 'book_id',
+    primaryKey: 'bookId',
     type: 'object',
     properties: {
-        book_id: {
+        bookId: {
             type: 'string',
             final: true,
         },
@@ -40,5 +40,5 @@ export const TeamSchema = {
             }
         },
     },
-    required: ['book_id', 'club_id', 'club_name_short', 'organization', 'sport', 'members'],
+    required: ['bookId', 'club_id', 'club_name_short', 'organization', 'sport', 'members'],
 }

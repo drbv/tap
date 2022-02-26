@@ -2,17 +2,20 @@ export const ResultSchema = {
     title: 'result data',
     description: 'Database schema for storing result information',
     version: 0,
-    primaryKey: 'book_id',
+    primaryKey: 'resultId',
     type: 'object',
     properties: {
-        book_id: {
+        resultId: {
             type: "string",
             final: true,
         },
-        round_id: {
+        bookId: {
             type: "string",
         },
-        judge_id: {
+        roundId: {
+            type: "string",
+        },
+        judgeId: {
             type: "string",
         },
         categories: {
@@ -50,5 +53,5 @@ export const ResultSchema = {
             type: "boolean",
         },
     },
-    required: ['book_id'],
+    required: ['bookId'],
 }

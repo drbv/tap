@@ -442,11 +442,11 @@ class RoundDialog extends React.Component {
                                                                 return (
                                                                     <MenuItem
                                                                         value={
-                                                                            competition.book_id
+                                                                            competition.bookId
                                                                         }
                                                                     >
                                                                         {
-                                                                            competition.book_id
+                                                                            competition.bookId
                                                                         }
                                                                     </MenuItem>
                                                                 );
