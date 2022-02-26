@@ -129,14 +129,14 @@ const Routes = [
         admin: true,
         icon: <AccountBox />,
     },
-    // {
-    //     name: "Laufende Runden",
-    //     path: "/current",
-    //     exact: true,
-    //     component: <Current />,
-    //     admin: false,
-    //     icon: <Apps />,
-    // },
+    {
+        name: "Laufende Runden",
+        path: "/current",
+        exact: true,
+        component: <Current />,
+        admin: false,
+        icon: <Apps />,
+    },
     {
         name: "Ergebnisse",
         path: "/results",

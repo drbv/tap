@@ -10,7 +10,7 @@ export const AthleteSchema = {
             type: 'string',
             final: true,
         },
-        book_id: {
+        bookId: {
             type: 'number',
         },
         pre_name: {
@@ -38,5 +38,5 @@ export const AthleteSchema = {
             type: 'string',
         }
     },
-    required: ['rfid', 'book_id', 'pre_name', 'family_name', 'sex', 'club_id', 'club_name_short', 'organization', 'sport'],
+    required: ['rfid', 'bookId', 'pre_name', 'family_name', 'sex', 'club_id', 'club_name_short', 'organization', 'sport'],
 }

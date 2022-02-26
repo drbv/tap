@@ -67,7 +67,7 @@ class TeamData extends Component {
                         data={Teams}
                         columns={[
                             {
-                                name: "book_id",
+                                name: "bookId",
                                 options: {
                                     filter: false,
                                 },

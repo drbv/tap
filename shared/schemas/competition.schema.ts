@@ -22,7 +22,7 @@ export const CompetitionSchema = {
         club_id: {
             type: 'string',
         },
-        book_id: {
+        bookId: {
             type: 'string',
         },
         team_member_count: {

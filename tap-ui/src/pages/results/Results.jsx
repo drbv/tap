@@ -42,7 +42,7 @@ class Results extends Component {
     }
 
     async componentDidMount() {
-        getCollection("rounds").then(async (collection) => {
+        getCollection("results").then(async (collection) => {
             const sub = await collection.find().$.subscribe((results) => {
                 if (!results) {
                     return;
@@ -62,6 +62,18 @@ class Results extends Component {
         this.subs.forEach((sub) => sub.unsubscribe());
     }
 
+    async deleteResult(id) {
+        getCollection("results").then(async (collection) => {
+            await collection
+                .findOne({
+                    selector: {
+                        resultId: id,
+                    },
+                })
+                .remove();
+        });
+    }
+
     render() {
         const { classes } = this.props;
         const { results } = this.state;
@@ -74,20 +86,26 @@ class Results extends Component {
                         data={results}
                         columns={[
                             {
-                                name: "book_id",
+                                name: "resultId",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
-                                name: "round_id",
+                                name: "bookId",
+                                options: {
+                                    filter: false,
+                                },
+                            },
+                            {
+                                name: "roundId",
                                 options: {
                                     filter: false,
                                     sort: true,
                                 },
                             },
                             {
-                                name: "judge_id",
+                                name: "judgeId",
                                 options: {
                                     filter: false,
                                     sort: true,
@@ -99,12 +117,7 @@ class Results extends Component {
                                     filter: false,
                                     sort: true,
                                     customBodyRender: (value) => {
-                                        var returnString = "";
-                                        value.map((elem) => {
-                                            returnString +=
-                                                elem.name + elem.value;
-                                        });
-                                        return returnString;
+                                        return JSON.stringify(value);
                                     },
                                 },
                             },
@@ -114,14 +127,7 @@ class Results extends Component {
                                     filter: false,
                                     sort: true,
                                     customBodyRender: (value) => {
-                                        var returnString = "";
-                                        value.map((elem) => {
-                                            returnString +=
-                                                elem.name +
-                                                elem.value +
-                                                elem.amount;
-                                        });
-                                        return returnString;
+                                        return JSON.stringify(value);
                                     },
                                 },
                             },
@@ -130,6 +136,39 @@ class Results extends Component {
                                 options: {
                                     filter: false,
                                     sort: true,
+                                },
+                            },
+                            {
+                                name: "Aktionen",
+                                options: {
+                                    filter: false,
+                                    sort: false,
+                                    customBodyRender: (
+                                        value,
+                                        tableMeta,
+                                        updateValue
+                                    ) => {
+                                        if (tableMeta.rowData != null) {
+                                            return (
+                                                <div>
+                                                    <Tooltip title='Entfernen'>
+                                                        <span>
+                                                            <IconButton
+                                                                onClick={() => {
+                                                                    this.deleteResult(
+                                                                        tableMeta
+                                                                            .rowData[0]
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <Delete />
+                                                            </IconButton>
+                                                        </span>
+                                                    </Tooltip>
+                                                </div>
+                                            );
+                                        }
+                                    },
                                 },
                             },
                         ]}

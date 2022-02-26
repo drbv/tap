@@ -124,7 +124,7 @@ class Athletes extends Component {
                                 },
                             },
                             {
-                                name: "book_id",
+                                name: "bookId",
                                 options: {
                                     filter: false,
                                     sort: true,

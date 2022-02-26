@@ -148,7 +148,11 @@ class EvaluationDialog extends React.Component {
                                                     required={true}
                                                     onChange={(e) => {
                                                         let localEvaluationCopy =
-                                                            localEvaluation;
+                                                            JSON.parse(
+                                                                JSON.stringify(
+                                                                    localEvaluation
+                                                                )
+                                                            );
                                                         localEvaluationCopy.categories[
                                                             index
                                                         ].name = e.target.value;
@@ -180,7 +184,9 @@ class EvaluationDialog extends React.Component {
                                                             );
                                                         localEvaluationCopy.categories[
                                                             index
-                                                        ].min = e.target.value;
+                                                        ].min = parseFloat(
+                                                            e.target.value
+                                                        );
                                                         this.setState({
                                                             localEvaluation:
                                                                 localEvaluationCopy,
@@ -209,7 +215,9 @@ class EvaluationDialog extends React.Component {
                                                             );
                                                         localEvaluationCopy.categories[
                                                             index
-                                                        ].max = e.target.value;
+                                                        ].max = parseFloat(
+                                                            e.target.value
+                                                        );
                                                         this.setState({
                                                             localEvaluation:
                                                                 localEvaluationCopy,
@@ -238,7 +246,9 @@ class EvaluationDialog extends React.Component {
                                                             );
                                                         localEvaluationCopy.categories[
                                                             index
-                                                        ].step = e.target.value;
+                                                        ].step = parseFloat(
+                                                            e.target.value
+                                                        );
                                                         this.setState({
                                                             localEvaluation:
                                                                 localEvaluationCopy,

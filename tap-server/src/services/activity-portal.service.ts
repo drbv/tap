@@ -174,7 +174,7 @@ export class ActivityPortalService {
                 } as TeamMember)
             } else {
                 const team = {
-                    book_id: row.Buchnr.toString(),
+                    bookId: row.Buchnr.toString(),
                     club_id: row.Clubnr,
                     club_name_short: row.Clubname_kurz,
                     organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
@@ -197,7 +197,7 @@ export class ActivityPortalService {
                         row.RFID !== null
                             ? row.RFID.toString()
                             : this.fixRfidIsNull(row).toString(),
-                    book_id: row.Buchnr,
+                    bookId: row.Buchnr,
                     pre_name: row.Vorname,
                     family_name: row.Nachname,
                     birth_year: row.Geburtsjahr,
@@ -215,7 +215,7 @@ export class ActivityPortalService {
         for (const team of teams.values()) {
             try {
                 await this.db.teams.upsert({
-                    book_id: team.book_id,
+                    bookId: team.bookId,
                     club_id: team.club_id,
                     club_name_short: team.club_name_short,
                     organization: team.organization,
@@ -235,7 +235,7 @@ export class ActivityPortalService {
             try {
                 await this.db.athletes.upsert({
                     rfid: row.RFID1.toString(),
-                    book_id: row.Buchnr,
+                    bookId: row.Buchnr,
                     pre_name: row.Vorname1,
                     family_name: row.Nachname1,
                     sex: row.Anrede1 === 'Herr' ? 'm' : 'w',
@@ -246,7 +246,7 @@ export class ActivityPortalService {
                 })
                 await this.db.athletes.upsert({
                     rfid: row.RFID2.toString(),
-                    book_id: row.Buchnr,
+                    bookId: row.Buchnr,
                     pre_name: row.Vorname2,
                     family_name: row.Nachname2,
                     sex: row.Anrede2 === 'Herr' ? 'm' : 'w',
@@ -256,7 +256,7 @@ export class ActivityPortalService {
                     sport: 'rr',
                 })
                 await this.db.teams.upsert({
-                    book_id: row.Buchnr.toString(),
+                    bookId: row.Buchnr.toString(),
                     club_id: row.Clubnr,
                     club_name_short: row.Clubname_kurz,
                     organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
@@ -367,7 +367,7 @@ export class ActivityPortalService {
         for (const row of csvData) {
             try {
                 await this.db.teams.upsert({
-                    book_id: row.Buchnume.toString(),
+                    bookId: row.Buchnume.toString(),
                     club_id: row.Clubnr,
                     club_name_short: row.Clubname_kurz,
                     organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
@@ -560,7 +560,7 @@ export class ActivityPortalService {
                     series: row.Cup_Serie ? row.Cup_Serie : "",
                     league: row.Startkl ? row.Startkl : "",
                     club_id: row.Verein_nr ? row.Verein_nr.toString() : "",
-                    book_id: row.Startbuch ? row.Startbuch.toString() : "",
+                    bookId: row.Startbuch ? row.Startbuch.toString() : "",
                     // team_member_count: row.Anz_Taenzer ? parseInt(row.Anz_Taenzer) : 0,
                     acros: [
                         {

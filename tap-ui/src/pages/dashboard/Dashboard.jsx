@@ -1,6 +1,6 @@
-import React, { Component } from "react"
-import { withRouter } from "react-router-dom"
-import MUIDataTable from "mui-datatables"
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import MUIDataTable from "mui-datatables";
 import {
     LinearProgress,
     Paper,
@@ -8,11 +8,11 @@ import {
     Tooltip,
     IconButton,
     Typography,
-} from "@material-ui/core"
-import { TipsAndUpdates } from "@mui/icons-material"
-import withStyles from "@material-ui/core/es/styles/withStyles"
-import withProps from "../../components/HOC"
-import { getCollection, closeCollection } from "../../Database"
+} from "@material-ui/core";
+import { TipsAndUpdates } from "@mui/icons-material";
+import withStyles from "@material-ui/core/es/styles/withStyles";
+import withProps from "../../components/HOC";
+import { getCollection, closeCollection } from "../../Database";
 
 const styles = (theme) => ({
     root: {
@@ -43,38 +43,38 @@ const styles = (theme) => ({
             cursor: "default",
         },
     },
-})
+});
 
 class Dashboard extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
-            Competition: null,
-        }
+            Rounds: null,
+        };
 
-        this.subs = []
+        this.subs = [];
     }
 
     async componentDidMount() {
-        let collection = await getCollection("competition")
-        let sub = await collection.find().$.subscribe((Competition) => {
-            if (!Competition) {
-                return
+        let collection = await getCollection("rounds");
+        let sub = await collection.find().$.subscribe((Rounds) => {
+            if (!Rounds) {
+                return;
             }
-            console.log("reload Competition")
-            console.dir(Competition)
+            console.log("reload Rounds");
+            console.dir(Rounds);
             this.setState({
-                Competition,
-            })
-        })
+                Rounds,
+            });
+        });
 
-        this.subs.push(sub)
+        this.subs.push(sub);
     }
 
     render() {
-        const { classes } = this.props
-        return <div>{this.state.Competition}</div>
+        const { classes } = this.props;
+        return <div>{this.state.Competition}</div>;
     }
 }
 
@@ -93,6 +93,6 @@ Dashboard.defaultProps = {
             },
         ],
     },
-}
+};
 
-export default withStyles(styles, { withTheme: true })(Dashboard)
+export default withStyles(styles, { withTheme: true })(Dashboard);
