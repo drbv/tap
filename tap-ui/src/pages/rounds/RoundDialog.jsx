@@ -72,7 +72,7 @@ class RoundDialog extends React.Component {
             this.subs.push(sub);
         });
 
-        getCollection("users").then(async (collection) => {
+        getCollection("user").then(async (collection) => {
             const sub = await collection.find().$.subscribe((users) => {
                 if (!users) {
                     return;
@@ -121,7 +121,7 @@ class RoundDialog extends React.Component {
     }
 
     async upsertRound(object) {
-        getCollection("rounds").then(async (collection) => {
+        getCollection("round").then(async (collection) => {
             collection.upsert(object);
         });
     }

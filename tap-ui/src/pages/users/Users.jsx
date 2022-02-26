@@ -49,7 +49,7 @@ class Users extends Component {
     async componentDidMount() {
         this.setState({ db: await Database.getClientDb() });
 
-        const sub = this.state.db.users.find().$.subscribe((users) => {
+        const sub = this.state.db.user.find().$.subscribe((users) => {
             if (!users) {
                 return;
             }
@@ -68,7 +68,7 @@ class Users extends Component {
     }
 
     async deleteUser(id) {
-        await this.state.db.users
+        await this.state.db.user
             .findOne({
                 selector: {
                     id: id,

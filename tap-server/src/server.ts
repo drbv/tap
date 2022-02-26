@@ -46,17 +46,18 @@ async function initialize() {
         if (id != null) {
             await activityPortalService.fetchAppointmentDataFromPortal(id);
 
-            res.send("Database " + id + " activated.");
+            if (Database.currentCompetition != "") {
+                Database.getCompetitionDatabaseApp().then((app) => {
+                    mainApp.use('/db/' + Database.currentCompetition, app)
+                    // res.redirect('/db/' + Database.currentCompetition)
+    
+                    res.send("Database " + id + " activated.");
+                })
+            }
+        } else {
+            res.status(404);
         }
 
-        if (Database.currentCompetition != "") {
-            Database.getCompetitionDatabaseApp().then((app) => {
-                mainApp.use('/db/' + Database.currentCompetition, app)
-                res.redirect('/db/' + Database.currentCompetition)
-            })
-        }
-
-        res.status(404);
     })
 
     server = mainApp.listen(port, () => console.log(`Server listening on port ${port}`));
