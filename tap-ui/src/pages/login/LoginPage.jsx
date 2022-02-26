@@ -77,7 +77,7 @@ class LoginPage extends React.Component {
     }
 
     async componentDidMount() {
-        getCollection("users").then(async (collection) => {
+        getCollection("user").then(async (collection) => {
             const sub = await collection.find().$.subscribe((users) => {
                 if (!users) {
                     return;

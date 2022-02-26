@@ -233,40 +233,42 @@ export class ActivityPortalService {
     private async importRrData(csvData: StartDataRrData[]) {
         for (const row of csvData) {
             try {
-                await this.db.athletes.upsert({
-                    rfid: row.RFID1.toString(),
-                    bookId: row.Buchnr,
-                    pre_name: row.Vorname1,
-                    family_name: row.Nachname1,
-                    sex: row.Anrede1 === 'Herr' ? 'm' : 'w',
-                    club_id: row.Clubnr,
-                    club_name_short: row.Clubname_kurz,
-                    organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
-                    sport: 'rr',
-                })
-                await this.db.athletes.upsert({
-                    rfid: row.RFID2.toString(),
-                    bookId: row.Buchnr,
-                    pre_name: row.Vorname2,
-                    family_name: row.Nachname2,
-                    sex: row.Anrede2 === 'Herr' ? 'm' : 'w',
-                    club_id: row.Clubnr,
-                    club_name_short: row.Clubname_kurz,
-                    organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
-                    sport: 'rr',
-                })
-                await this.db.teams.upsert({
-                    bookId: row.Buchnr.toString(),
-                    club_id: row.Clubnr,
-                    club_name_short: row.Clubname_kurz,
-                    organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
-                    sport: 'rr',
-                    league: row.Startklasse,
-                    members: [
-                        { member_id: row.RFID1.toString() },
-                        { member_id: row.RFID2.toString() },
-                    ],
-                })
+                if (row.RFID1 != null && row.RFID2 != null ){
+                    await this.db.athletes.upsert({
+                        rfid: row.RFID1.toString(),
+                        bookId: row.Buchnr ? row.Buchnr : 0,
+                        pre_name: row.Vorname1 ? row.Vorname1 : "",
+                        family_name: row.Nachname1 ? row.Nachname1 : "",
+                        sex: row.Anrede1 ? (row.Anrede1 === 'Herr' ? 'm' : 'w') : '?',
+                        club_id: row.Clubnr ? row.Clubnr : 0,
+                        club_name_short: row.Clubname_kurz ? row.Clubname_kurz : "",
+                        organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
+                        sport: 'rr',
+                    })
+                    await this.db.athletes.upsert({
+                        rfid: row.RFID2.toString(),
+                        bookId: row.Buchnr ? row.Buchnr : 0,
+                        pre_name: row.Vorname2 ? row.Vorname2 : "",
+                        family_name: row.Nachname2 ? row.Nachname2 : "",
+                        sex: row.Anrede2 ? (row.Anrede2 === 'Herr' ? 'm' : 'w') : '?',
+                        club_id: row.Clubnr ? row.Clubnr : 0,
+                        club_name_short: row.Clubname_kurz ? row.Clubname_kurz : "",
+                        organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
+                        sport: 'rr',
+                    })
+                    await this.db.teams.upsert({
+                        bookId: row.Buchnr ? row.Buchnr.toString() : "",
+                        club_id: row.Clubnr ? row.Clubnr : 0,
+                        club_name_short: row.Clubname_kurz ? row.Clubname_kurz : "",
+                        organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
+                        sport: 'rr',
+                        league: row.Startklasse ? row.Startklasse : "",
+                        members: [
+                            { member_id: row.RFID1.toString() },
+                            { member_id: row.RFID2.toString() },
+                        ],
+                    })
+                }
             } catch (e) {
                 console.error(e)
             }
@@ -301,16 +303,18 @@ export class ActivityPortalService {
 
         for (const official of officials.values()) {
             try {
-                await this.db.officials.upsert({
-                    id: official.id,
-                    rfid: official.rfid,
-                    pre_name: official.pre_name,
-                    family_name: official.family_name,
-                    club_id: official.club_id,
-                    licence: official.licence,
-                    email: official.email,
-                    organization: official.organization,
-                })
+                if (official.id != null) {
+                    await this.db.officials.upsert({
+                        id: official.id,
+                        rfid: official.rfid ? official.rfid : 0,
+                        pre_name: official.pre_name,
+                        family_name: official.family_name,
+                        club_id: official.club_id,
+                        licence: official.licence,
+                        email: official.email ? official.email : "",
+                        organization: official.organization ? official.organization : "",
+                    })
+                }
             } catch (e) {
                 console.error(e)
             }
@@ -366,14 +370,16 @@ export class ActivityPortalService {
     private async importFormationData(csvData: FormationData[]) {
         for (const row of csvData) {
             try {
-                await this.db.teams.upsert({
-                    bookId: row.Buchnume.toString(),
-                    club_id: row.Clubnr,
-                    club_name_short: row.Clubname_kurz,
-                    organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
-                    sport: row.Startklasse.includes('_RR_') ? 'rr' : 'bw',
-                    league: row.Startklasse,
-                })
+                if (row.Buchnume != null){
+                    await this.db.teams.upsert({
+                        bookId: row.Buchnume.toString(),
+                        club_id: row.Clubnr,
+                        club_name_short: row.Clubname_kurz,
+                        organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
+                        sport: row.Startklasse.includes('_RR_') ? 'rr' : 'bw',
+                        league: row.Startklasse,
+                    })
+                }
             } catch (e) {
                 console.error(e)
             }

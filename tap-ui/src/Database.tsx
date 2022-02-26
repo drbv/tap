@@ -29,6 +29,7 @@ addRxPlugin(RxDBNoValidatePlugin)
 addRxPlugin(RxDBLeaderElectionPlugin)
 addPouchPlugin(pouchdb_adapter_http)
 addPouchPlugin(pouchdb_adapter_websql)
+require('http').globalAgent.maxSockets = 50;
 
 let dbPromise: any = null
 const activeSyncs = new Map()
@@ -49,10 +50,13 @@ export async function getCollection(collection: string) {
 
     // sync local collection with server
     var repState = rxCollection.syncCouchDB({
-        remote: "http://localhost:5000/db/1220200/" + collection,
+        remote: "http://192.168.43.65:5000/db/1220200/" + collection,
+        waitForLeadership: false,
         options: {
             live: true,
             retry: true,
+            batch_size: 1, // only transfer one document per batch
+            batches_limit: 1 ,
         },
     })
 
@@ -75,14 +79,13 @@ export async function getBaseCollection(collection: string) {
 
     // sync local collection with server
     var repState = rxCollection.syncCouchDB({
-        remote: "http://localhost:5000/basedb/" + collection,
-        direction: {                          // direction (optional) to specify sync-directions
-            pull: true, // default=true
-            push: false  // default=true
-        },
+        remote: "http://192.168.43.65:5000/basedb/" + collection,
+        waitForLeadership: false,
         options: {
             live: true,
             retry: true,
+            batch_size: 1, // only transfer one document per batch
+            batches_limit: 1,
         },
     })
 
@@ -108,28 +111,28 @@ async function _create() {
     })
 
     await db.addCollections({
-        //new data
-        rounds: {
-            schema: RoundSchema,
+        //new data        
+        competition: {
+            schema: CompetitionSchema,
         },
         phase: {
             schema: PhaseSchema,
         },
+        result: {
+            schema: ResultSchema,
+        },
+        round: {
+            schema: RoundSchema,
+        },
         scoringrule: {
             schema: ScoringRuleSchema,
         },
-        competition: {
-            schema: CompetitionSchema,
-        },
-        users: {
+        user: {
             schema: UserSchema,
-        },
-        results: {
-            schema: ResultSchema,
         },
     })
 
-    await db.users.upsert({
+    await db.user.upsert({
         id: "DEFAULT_ADMIN",
         name: "DEFAULT_ADMIN",
         role: "admin",

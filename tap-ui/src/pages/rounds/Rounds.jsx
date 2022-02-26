@@ -50,7 +50,7 @@ class Rounds extends Component {
     }
 
     async componentDidMount() {
-        getCollection("rounds").then(async (collection) => {
+        getCollection("round").then(async (collection) => {
             const sub = await collection.find().$.subscribe((Rounds) => {
                 if (!Rounds) {
                     return;

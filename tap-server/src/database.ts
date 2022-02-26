@@ -17,6 +17,7 @@ import {CompetitionSchema} from '../../shared/schemas/competition.schema';
 import {RoundSchema} from '../../shared/schemas/round.schema';
 import {ResultSchema} from '../../shared/schemas/result.schema';
 import {PhaseSchema} from '../../shared/schemas/phase.schema';
+import {UserSchema} from '../../shared/schemas/user.schema';
 import {ScoringRuleSchema} from '../../shared/schemas/scoringRule.schema';
 
 addRxPlugin(RxDBServerPlugin)
@@ -134,18 +135,21 @@ export class Database {
                 competition: {
                     schema: CompetitionSchema,
                 },
-                round: {
-                    schema: RoundSchema,
+                phase: {
+                    schema: PhaseSchema,
                 },
                 result: {
                     schema: ResultSchema,
                 },
-                phase: {
-                    schema: PhaseSchema,
+                round: {
+                    schema: RoundSchema,
                 },
                 scoringrule: {
                     schema: ScoringRuleSchema,
-                }
+                },
+                user: {
+                    schema: UserSchema,
+                },
             });
         } catch (e) {
             console.log('error: ', e);

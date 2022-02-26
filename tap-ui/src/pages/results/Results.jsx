@@ -42,7 +42,7 @@ class Results extends Component {
     }
 
     async componentDidMount() {
-        getCollection("results").then(async (collection) => {
+        getCollection("result").then(async (collection) => {
             const sub = await collection.find().$.subscribe((results) => {
                 if (!results) {
                     return;
@@ -63,7 +63,7 @@ class Results extends Component {
     }
 
     async deleteResult(id) {
-        getCollection("results").then(async (collection) => {
+        getCollection("result").then(async (collection) => {
             await collection
                 .findOne({
                     selector: {
@@ -136,6 +136,9 @@ class Results extends Component {
                                 options: {
                                     filter: false,
                                     sort: true,
+                                    customBodyRender: (value) => {
+                                        return JSON.stringify(value);
+                                    },
                                 },
                             },
                             {

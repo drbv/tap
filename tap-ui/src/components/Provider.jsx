@@ -56,7 +56,7 @@ class Provider extends Component {
     }
 
     async loadUser(id, key) {
-        let currentUser = await getCollection("users").then((collection) =>
+        let currentUser = await getCollection("user").then((collection) =>
             collection
                 .findOne({
                     selector: { id: id, key: key },

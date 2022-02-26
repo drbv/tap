@@ -40,5 +40,5 @@ export const TeamSchema = {
             }
         },
     },
-    required: ['bookId', 'club_id', 'club_name_short', 'organization', 'sport', 'members'],
+    required: ['bookId', 'club_id', 'club_name_short', 'organization', 'sport'],
 }

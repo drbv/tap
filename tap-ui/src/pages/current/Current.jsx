@@ -39,7 +39,33 @@ class Current extends Component {
     }
 
     async componentDidMount() {
-        getCollection("rounds").then(async (collection) => {
+        getCollection("result").then(async (collection) => {
+            let sub = await collection
+                .find({
+                    selector: {
+                        judgeId: this.props.user.id,
+                    },
+                })
+                .$.subscribe((results) => {
+                    if (!results) {
+                        return;
+                    }
+                    console.log("reload Results");
+                    console.dir(results);
+                    this.setState(
+                        {
+                            results,
+                        },
+                        () => {
+                            this.prepaireResults();
+                        }
+                    );
+                });
+
+            this.subs.push(sub);
+        });
+
+        getCollection("round").then(async (collection) => {
             let sub = await collection
                 .find({
                     selector: {
@@ -58,17 +84,13 @@ class Current extends Component {
                         rounds[0].subrounds.find(
                             (value) => value.status == "running"
                         );
-                    this.setState({
-                        rounds,
-                        currentRound: currentRound,
-                    });
-
-                    if (currentRound != undefined) {
-                        this.prepaireResults(
-                            currentRound.participants[0],
-                            rounds[0].roundId
-                        );
-                    }
+                    this.setState(
+                        {
+                            rounds,
+                            currentRound: currentRound,
+                        },
+                        () => this.prepaireResults()
+                    );
                 });
             this.subs.push(sub);
         });
@@ -88,34 +110,41 @@ class Current extends Component {
         });
     }
 
-    async prepaireResults(bookId, roundId) {
-        getCollection("results").then(async (collection) => {
-            let currentResult = await collection
-                .findOne({
-                    selector: {
-                        bookId: bookId,
-                        roundId: roundId,
+    async prepaireResults() {
+        if (
+            this.state.currentRound &&
+            this.state.currentRound.participants &&
+            this.state.currentRound.participants[0] &&
+            this.state.rounds &&
+            this.state.rounds[0]
+        ) {
+            let foundResult =
+                this.state.results &&
+                this.state.results.find(
+                    (result) =>
+                        result.bookId ==
+                            this.state.currentRound.participants[0] &&
+                        result.roundId == this.state.rounds[0].roundId
+                );
+            if (!foundResult) {
+                getCollection("result").then(async (collection) => {
+                    let currentResult = await collection.upsert({
+                        resultId: Date.now().toString() + this.props.user.id,
+                        bookId: this.state.currentRound.participants[0],
+                        roundId: this.state.rounds[0].roundId,
                         judgeId: this.props.user.id,
-                    },
-                })
-                .exec();
-            if (currentResult != null) {
-                this.setState({ currentResult });
-            } else {
-                let currentResult = await collection.upsert({
-                    resultId: Date.now().toString() + this.props.user.id,
-                    bookId: bookId,
-                    roundId: roundId,
-                    judgeId: this.props.user.id,
-                    ready: false,
+                        ready: false,
+                    });
+                    this.setState({ currentResult });
                 });
-                this.setState({ currentResult });
+            } else {
+                this.setState({ currentResult: foundResult });
             }
-        });
+        }
     }
 
     async updateResult(result) {
-        getCollection("results").then(async (collection) => {
+        getCollection("result").then(async (collection) => {
             await collection.upsert(result);
             console.dir(result);
         });

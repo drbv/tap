@@ -57,24 +57,11 @@ class Dashboard extends Component {
     }
 
     async componentDidMount() {
-        let collection = await getCollection("rounds");
-        let sub = await collection.find().$.subscribe((Rounds) => {
-            if (!Rounds) {
-                return;
-            }
-            console.log("reload Rounds");
-            console.dir(Rounds);
-            this.setState({
-                Rounds,
-            });
-        });
-
-        this.subs.push(sub);
+        this.props.history.push("/current");
     }
 
     render() {
-        const { classes } = this.props;
-        return <div>{this.state.Competition}</div>;
+        return <div>Startseite</div>;
     }
 }
 
@@ -95,4 +82,4 @@ Dashboard.defaultProps = {
     },
 };
 
-export default withStyles(styles, { withTheme: true })(Dashboard);
+export default withStyles(styles, { withTheme: true })(withRouter(Dashboard));
