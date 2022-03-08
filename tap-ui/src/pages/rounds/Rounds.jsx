@@ -50,6 +50,13 @@ class Rounds extends Component {
     }
 
     async componentDidMount() {
+        await this.reloadObjects();
+    }
+
+    async reloadObjects() {
+        // Unsubscribe from all subscriptions
+        this.subs.forEach((sub) => sub.unsubscribe());
+
         getCollection("round").then(async (collection) => {
             const sub = await collection.find().$.subscribe((Rounds) => {
                 if (!Rounds) {
@@ -118,7 +125,10 @@ class Rounds extends Component {
                 <RoundDialog
                     open={newRoundOpen}
                     roundToEdit={roundToEdit}
-                    handleClose={() => this.setState({ newRoundOpen: false })}
+                    handleClose={() => {
+                        this.setState({ newRoundOpen: false });
+                        this.reloadObjects();
+                    }}
                 />
                 {Rounds != null ? (
                     <MUIDataTable

@@ -126,7 +126,7 @@ class Competition extends Component {
                                     onClick={async () => {
                                         axios
                                             .get(
-                                                "http://192.168.43.65:5000/activate?id=" +
+                                                "http://localhost:5000/activate?id=" +
                                                     selectedAppointment.appointment_id
                                             )
                                             .then((response) => {

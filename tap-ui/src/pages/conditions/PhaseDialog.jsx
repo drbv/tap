@@ -85,7 +85,7 @@ class PhaseDialog extends React.Component {
     }
 
     async upsertPhase() {
-        await this.state.db.phase.upsert(this.state.localPhase);
+        await this.state.db.phase.atomicUpsert(this.state.localPhase);
     }
 
     render() {

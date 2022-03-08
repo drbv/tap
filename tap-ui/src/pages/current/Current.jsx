@@ -128,7 +128,7 @@ class Current extends Component {
                 );
             if (!foundResult) {
                 getCollection("result").then(async (collection) => {
-                    let currentResult = await collection.upsert({
+                    let currentResult = await collection.atomicUpsert({
                         resultId: Date.now().toString() + this.props.user.id,
                         bookId: this.state.currentRound.participants[0],
                         roundId: this.state.rounds[0].roundId,
@@ -145,7 +145,7 @@ class Current extends Component {
 
     async updateResult(result) {
         getCollection("result").then(async (collection) => {
-            await collection.upsert(result);
+            await collection.atomicUpsert(result);
             console.dir(result);
         });
         this.setState({ currentResult: result });
@@ -218,7 +218,7 @@ class Current extends Component {
                                                                     category.max
                                                                 }
                                                                 valueLabelDisplay='auto'
-                                                                onChange={(
+                                                                onChangeCommitted={(
                                                                     e,
                                                                     newValue
                                                                 ) => {

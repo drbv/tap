@@ -68,7 +68,7 @@ class UserDialog extends React.Component {
     }
 
     async upsertUser() {
-        await this.state.db.user.upsert(this.state.localUser);
+        await this.state.db.user.atomicUpsert(this.state.localUser);
     }
 
     render() {

@@ -88,8 +88,10 @@ class EvaluationDialog extends React.Component {
         }
     }
 
-    async upsertEvaluation() {
-        await this.state.db.scoringrule.upsert(this.state.localEvaluation);
+    async atomicUpsertEvaluation() {
+        await this.state.db.scoringrule.atomicUpsert(
+            this.state.localEvaluation
+        );
     }
 
     render() {
@@ -489,7 +491,7 @@ class EvaluationDialog extends React.Component {
                         <Button
                             disabled={this.state.disabled}
                             onClick={() => {
-                                this.upsertEvaluation();
+                                this.atomicUpsertEvaluation();
                                 this.props.handleClose();
                             }}
                             color='primary'
