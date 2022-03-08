@@ -57,50 +57,6 @@ class RoundDialog extends React.Component {
         this.subs = [];
     }
 
-    async componentDidMount() {
-        getCollection("scoringrule").then(async (collection) => {
-            const sub = await collection.find().$.subscribe((evaluations) => {
-                if (!evaluations) {
-                    return;
-                }
-                console.log("reload evaluations-list ");
-                console.dir(evaluations);
-                this.setState({
-                    evaluations,
-                });
-            });
-            this.subs.push(sub);
-        });
-
-        getCollection("user").then(async (collection) => {
-            const sub = await collection.find().$.subscribe((users) => {
-                if (!users) {
-                    return;
-                }
-                console.log("reload users-list ");
-                console.dir(users);
-                this.setState({
-                    users,
-                });
-            });
-            this.subs.push(sub);
-        });
-
-        getCollection("competition").then(async (collection) => {
-            const sub = await collection.find().$.subscribe((competition) => {
-                if (!competition) {
-                    return;
-                }
-                console.log("reload competition-list ");
-                console.dir(competition);
-                this.setState({
-                    competition,
-                });
-            });
-            this.subs.push(sub);
-        });
-    }
-
     async componentDidUpdate(prevProps, prevState) {
         if (prevProps.open !== this.props.open) {
             if (this.props.roundToEdit) {
@@ -112,6 +68,52 @@ class RoundDialog extends React.Component {
                     },
                 });
             }
+
+            getCollection("scoringrule").then(async (collection) => {
+                const sub = await collection
+                    .find()
+                    .$.subscribe((evaluations) => {
+                        if (!evaluations) {
+                            return;
+                        }
+                        console.log("reload evaluations-list ");
+                        console.dir(evaluations);
+                        this.setState({
+                            evaluations,
+                        });
+                    });
+                this.subs.push(sub);
+            });
+
+            getCollection("user").then(async (collection) => {
+                const sub = await collection.find().$.subscribe((users) => {
+                    if (!users) {
+                        return;
+                    }
+                    console.log("reload users-list ");
+                    console.dir(users);
+                    this.setState({
+                        users,
+                    });
+                });
+                this.subs.push(sub);
+            });
+
+            getCollection("competition").then(async (collection) => {
+                const sub = await collection
+                    .find()
+                    .$.subscribe((competition) => {
+                        if (!competition) {
+                            return;
+                        }
+                        console.log("reload competition-list ");
+                        console.dir(competition);
+                        this.setState({
+                            competition,
+                        });
+                    });
+                this.subs.push(sub);
+            });
         }
     }
 
@@ -120,9 +122,15 @@ class RoundDialog extends React.Component {
         this.subs.forEach((sub) => sub.unsubscribe());
     }
 
+    async handleClose() {
+        // Unsubscribe from all subscriptions
+        this.subs.forEach((sub) => sub.unsubscribe());
+        this.props.handleClose();
+    }
+
     async upsertRound(object) {
         getCollection("round").then(async (collection) => {
-            collection.upsert(object);
+            collection.atomicUpsert(object);
         });
     }
 
@@ -134,7 +142,7 @@ class RoundDialog extends React.Component {
             <div>
                 <Dialog
                     open={this.props.open}
-                    onClose={() => this.props.handleClose()}
+                    onClose={() => this.handleClose()}
                     aria-labelledby='form-dialog-title'
                     scroll='body'
                 >

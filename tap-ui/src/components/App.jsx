@@ -1,68 +1,68 @@
-import React, { Suspense, Component, lazy } from 'react'
-import { PropTypes } from 'prop-types'
-import { renderToStaticMarkup } from 'react-dom/server'
-import classNames from 'classnames'
+import React, { Suspense, Component, lazy } from "react";
+import { PropTypes } from "prop-types";
+import { renderToStaticMarkup } from "react-dom/server";
+import classNames from "classnames";
 
-import { LinearProgress, CssBaseline, withStyles } from '@material-ui/core'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import ls from 'local-storage'
+import { LinearProgress, CssBaseline, withStyles } from "@material-ui/core";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import ls from "local-storage";
 
-import globalTranslations from '../translations/global.json'
+import globalTranslations from "../translations/global.json";
 
-import withProps from './HOC'
-import AppNavbar from './AppNavbar'
-import MainDrawer from './AppDrawer'
+import withProps from "./HOC";
+import AppNavbar from "./AppNavbar";
+import MainDrawer from "./AppDrawer";
 
-const LoginPage = lazy(() => import('../pages/login/LoginPage'))
+const LoginPage = lazy(() => import("../pages/login/LoginPage"));
 
-const drawerWidth = 240
+const drawerWidth = 240;
 
 const styles = (theme) => ({
     content: {
         flexGrow: 1,
-        transition: theme.transitions.create('margin', {
+        transition: theme.transitions.create("margin", {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
         marginLeft: +drawerWidth,
     },
     contentShift: {
-        transition: theme.transitions.create('margin', {
+        transition: theme.transitions.create("margin", {
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.enteringScreen,
         }),
         marginLeft: 0,
     },
-})
+});
 
 class App extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
-            languages: [{ name: 'Deutsch', code: 'de' }],
+            languages: [{ name: "Deutsch", code: "de" }],
             translation: globalTranslations,
             options: {
                 renderToStaticMarkup,
                 defaultLanguage:
-                    ls('default_lng') !== null ? ls('default_lng') : 'de',
+                    ls("default_lng") !== null ? ls("default_lng") : "de",
             },
 
             open: true,
-        }
+        };
     }
 
     componentDidMount() {
-        this.setState({ open: !this.props.smallScreen })
+        this.setState({ open: !this.props.smallScreen });
     }
 
     /**
      * toggles the drawer
      */
     handleDrawerToggle(force = false) {
-        if (force) this.setState({ open: !this.state.open })
+        if (force) this.setState({ open: !this.state.open });
         else if (this.props.smallScreen)
-            this.setState({ open: !this.state.open })
+            this.setState({ open: !this.state.open });
     }
 
     getRoutes() {
@@ -77,47 +77,27 @@ class App extends Component {
                         >
                             {route.component}
                         </Route>
-                    )
+                    );
                     if (
                         route.admin &&
                         this.props.user &&
-                        this.props.user.role == 'admin'
+                        this.props.user.role == "admin"
                     ) {
-                        return routing
+                        return routing;
                     } else if (!route.admin) {
-                        return routing
+                        return routing;
                     }
                 })}
             </Switch>
-        )
+        );
     }
 
     render() {
-        const { classes } = this.props
-
-        let content = null
-
-        if (this.props.isLoggedIn) {
-            content = (
-                <div>
-                    <main
-                        className={classNames(classes.content, {
-                            [classes.contentShift]: !(
-                                !this.props.smallScreen && this.state.open
-                            ),
-                        })}
-                    >
-                        {this.props.routes && this.getRoutes()}
-                    </main>
-                </div>
-            )
-        } else {
-            content = <LoginPage />
-        }
+        const { classes } = this.props;
 
         return (
             <Router>
-                <div className="App">
+                <div className='App'>
                     <CssBaseline />
                     {this.props.isLoggedIn && (
                         <div>
@@ -136,10 +116,27 @@ class App extends Component {
                             />
                         </div>
                     )}
-                    <Suspense fallback={<LinearProgress />}>{content}</Suspense>
+                    <Suspense fallback={<LinearProgress />}>
+                        {this.props.isLoggedIn ? (
+                            <div>
+                                <main
+                                    className={classNames(classes.content, {
+                                        [classes.contentShift]: !(
+                                            !this.props.smallScreen &&
+                                            this.state.open
+                                        ),
+                                    })}
+                                >
+                                    {this.props.routes && this.getRoutes()}
+                                </main>
+                            </div>
+                        ) : (
+                            <LoginPage />
+                        )}
+                    </Suspense>
                 </div>
             </Router>
-        )
+        );
     }
 }
 
@@ -148,8 +145,8 @@ App.defaultProps = {
     routes: {
         routes: [
             {
-                name: 'default',
-                path: '/',
+                name: "default",
+                path: "/",
                 exact: true,
                 component: <LinearProgress />,
                 icon: null,
@@ -157,7 +154,7 @@ App.defaultProps = {
             },
         ],
     },
-}
+};
 
 App.propTypes = {
     /**
@@ -168,6 +165,6 @@ App.propTypes = {
       }
    */
     routes: PropTypes.array,
-}
+};
 
-export default withStyles(styles, { withTheme: true })(withProps(App))
+export default withStyles(styles, { withTheme: true })(withProps(App));
