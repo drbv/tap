@@ -41,7 +41,8 @@ async function initialize() {
             res.status(400).send("Required query params missing");
         }
 
-        const id = req.query.id as string;
+        //const id = req.query.id as string;
+        const id = "1220200"
 
         if (id != null) {
             await activityPortalService.fetchAppointmentDataFromPortal(id);
@@ -49,7 +50,7 @@ async function initialize() {
             if (Database.currentCompetition != "") {
                 Database.getCompetitionDatabaseApp().then((app) => {
                     mainApp.use('/db/' + Database.currentCompetition, app)
-                    // res.redirect('/db/' + Database.currentCompetition)
+                    //res.redirect('/db/' + Database.currentCompetition)
     
                     res.send("Database " + id + " activated.");
                 })

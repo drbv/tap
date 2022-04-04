@@ -8,6 +8,7 @@ import {
     Typography,
     Button,
 } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import withStyles from "@material-ui/core/es/styles/withStyles";
 
 import withProps from "../../components/HOC";
@@ -23,6 +24,13 @@ const styles = {
         height: 700,
         width: 800,
     },
+    mark: {
+        background: "black",
+    },
+    rail: {
+        background:
+            "linear-gradient(to right, green 30%, orange 30% 70%, red 70%);",
+    },
 };
 
 class Current extends Component {
@@ -33,6 +41,7 @@ class Current extends Component {
             results: null,
             rounds: null,
             evaluations: null,
+            judgeType: null,
         };
 
         this.subs = [];
@@ -70,6 +79,10 @@ class Current extends Component {
                 .find({
                     selector: {
                         status: "running",
+                        // $or: [
+                        //     { judgeIds: { $in: this.props.user.id } },
+                        //     { acroJudgeIds: { $in: this.props.user.id } },
+                        // ],
                     },
                 })
                 .$.subscribe((rounds) => {
@@ -84,30 +97,84 @@ class Current extends Component {
                         rounds[0].subrounds.find(
                             (value) => value.status == "running"
                         );
+                    //check judge status
+
+                    let judgeType =
+                        rounds[0] &&
+                        rounds[0].judgeIds.includes(this.props.user.id)
+                            ? "evaluation"
+                            : "acro";
+
                     this.setState(
                         {
+                            judgeType,
                             rounds,
                             currentRound: currentRound,
                         },
-                        () => this.prepaireResults()
+                        () => {
+                            this.prepaireResults();
+                            this.loadCurrentCompetition();
+                        }
                     );
+
+                    rounds[0] &&
+                        rounds[0].evaluationTemplateId &&
+                        getCollection("scoringrule").then(
+                            async (collection) => {
+                                let currentEvaluation = await collection
+                                    .findOne({
+                                        selector: {
+                                            id: rounds[0].evaluationTemplateId,
+                                        },
+                                    })
+                                    .exec();
+
+                                console.dir(currentEvaluation);
+                                this.setState({
+                                    currentEvaluation,
+                                });
+                            }
+                        );
+
+                    rounds[0] &&
+                        rounds[0].acroTemplateId &&
+                        getCollection("scoringrule").then(
+                            async (collection) => {
+                                let currentAcroTemplate = await collection
+                                    .findOne({
+                                        selector: {
+                                            id: rounds[0].acroTemplateId,
+                                        },
+                                    })
+                                    .exec();
+
+                                console.dir(currentAcroTemplate);
+                                this.setState({
+                                    currentAcroTemplate,
+                                });
+                            }
+                        );
                 });
             this.subs.push(sub);
         });
+    }
 
-        getCollection("scoringrule").then(async (collection) => {
-            let sub = await collection.find().$.subscribe((evaluations) => {
-                if (!evaluations) {
-                    return;
-                }
-                console.log("reload Evaluations");
-                console.dir(evaluations);
+    async loadCurrentCompetition() {
+        this.state.currentRound &&
+            this.state.currentRound.participants[0] &&
+            getCollection("competition").then(async (collection) => {
+                let currentCompetition = await collection
+                    .findOne({
+                        selector: {
+                            bookId: this.state.currentRound.participants[0],
+                        },
+                    })
+                    .exec();
+
                 this.setState({
-                    evaluations,
+                    currentCompetition,
                 });
             });
-            this.subs.push(sub);
-        });
     }
 
     async prepaireResults() {
@@ -153,9 +220,15 @@ class Current extends Component {
 
     render() {
         const { classes } = this.props;
-        const { rounds, evaluations, currentResult, currentRound } = this.state;
-
-        const currentEvaluation = evaluations && evaluations[0];
+        const {
+            rounds,
+            currentEvaluation,
+            currentAcroTemplate,
+            currentResult,
+            currentRound,
+            currentCompetition,
+            judgeType,
+        } = this.state;
 
         return currentRound ? (
             <div>
@@ -172,110 +245,331 @@ class Current extends Component {
                                             {"Startnummer " +
                                                 currentResult.bookId}
                                         </Typography>
-                                        {currentEvaluation &&
-                                            currentEvaluation.categories &&
-                                            currentEvaluation.categories.map(
-                                                (category) => {
-                                                    return (
-                                                        <div>
-                                                            <Typography
-                                                                id='discrete-slider'
-                                                                gutterBottom
-                                                            >
-                                                                {category.name}
-                                                            </Typography>
-                                                            <Slider
-                                                                defaultValue={
-                                                                    currentResult.categories &&
-                                                                    currentResult.categories.find(
-                                                                        (
-                                                                            result
-                                                                        ) =>
-                                                                            result.name ==
-                                                                            category.name
-                                                                    ) != null
-                                                                        ? currentResult.categories.find(
+                                        {judgeType && judgeType == "evaluation"
+                                            ? // Wertungspanel für Fußtechnik
+                                              currentEvaluation &&
+                                              currentEvaluation.categories &&
+                                              currentEvaluation.categories.map(
+                                                  (category) => {
+                                                      return (
+                                                          <div>
+                                                              <Typography
+                                                                  id='discrete-slider'
+                                                                  gutterBottom
+                                                              >
+                                                                  {
+                                                                      category.name
+                                                                  }
+                                                              </Typography>
+                                                              <Slider
+                                                                  classes={{
+                                                                      thumb: classes.thumb,
+                                                                      rail: classes.rail,
+                                                                      track: classes.track,
+                                                                      valueLabel:
+                                                                          classes.valueLabel,
+                                                                      mark: classes.mark,
+                                                                  }}
+                                                                  defaultValue={
+                                                                      currentResult.categories &&
+                                                                      currentResult.categories.find(
+                                                                          (
+                                                                              result
+                                                                          ) =>
+                                                                              result.name ==
+                                                                              category.name
+                                                                      ) != null
+                                                                          ? currentResult.categories.find(
+                                                                                (
+                                                                                    result
+                                                                                ) =>
+                                                                                    result.name ==
+                                                                                    category.name
+                                                                            )
+                                                                                .value
+                                                                          : 0.5 *
+                                                                            category.max
+                                                                  }
+                                                                  valueLabelFormat={(
+                                                                      value
+                                                                  ) => {
+                                                                      return (
+                                                                          Math.round(
+                                                                              (value /
+                                                                                  category.max) *
+                                                                                  100
+                                                                          ) +
+                                                                          "%"
+                                                                      );
+                                                                  }}
+                                                                  aria-labelledby='discrete-slider-small-steps'
+                                                                  step={
+                                                                      category.max /
+                                                                      10
+                                                                  }
+                                                                  marks
+                                                                  min={
+                                                                      category.min
+                                                                  }
+                                                                  max={
+                                                                      category.max
+                                                                  }
+                                                                  valueLabelDisplay='auto'
+                                                                  onChangeCommitted={(
+                                                                      e,
+                                                                      newValue
+                                                                  ) => {
+                                                                      const localResult =
+                                                                          JSON.parse(
+                                                                              JSON.stringify(
+                                                                                  currentResult
+                                                                              )
+                                                                          );
+
+                                                                      if (
+                                                                          localResult.categories &&
+                                                                          localResult.categories.find(
                                                                               (
                                                                                   result
                                                                               ) =>
                                                                                   result.name ==
                                                                                   category.name
-                                                                          )
-                                                                              .value
-                                                                        : 0.5 *
-                                                                          category.max
-                                                                }
-                                                                aria-labelledby='discrete-slider-small-steps'
-                                                                step={
-                                                                    category.max /
-                                                                    10
-                                                                }
-                                                                marks
-                                                                min={
-                                                                    category.min
-                                                                }
-                                                                max={
-                                                                    category.max
-                                                                }
-                                                                valueLabelDisplay='auto'
-                                                                onChangeCommitted={(
-                                                                    e,
-                                                                    newValue
-                                                                ) => {
-                                                                    const localResult =
-                                                                        JSON.parse(
-                                                                            JSON.stringify(
-                                                                                currentResult
-                                                                            )
-                                                                        );
+                                                                          ) !=
+                                                                              null
+                                                                      ) {
+                                                                          localResult.categories.find(
+                                                                              (
+                                                                                  result
+                                                                              ) =>
+                                                                                  result.name ==
+                                                                                  category.name
+                                                                          ).value =
+                                                                              newValue
+                                                                                  ? newValue
+                                                                                  : 0;
+                                                                          this.updateResult(
+                                                                              localResult
+                                                                          );
+                                                                      } else {
+                                                                          localResult.categories
+                                                                              ? localResult.categories.push(
+                                                                                    {
+                                                                                        name: category.name,
+                                                                                        value: newValue
+                                                                                            ? newValue
+                                                                                            : 0,
+                                                                                    }
+                                                                                )
+                                                                              : (localResult.categories =
+                                                                                    [
+                                                                                        {
+                                                                                            name: category.name,
+                                                                                            value: newValue
+                                                                                                ? newValue
+                                                                                                : 0,
+                                                                                        },
+                                                                                    ]);
+                                                                          this.updateResult(
+                                                                              localResult
+                                                                          );
+                                                                      }
+                                                                  }}
+                                                              />
+                                                          </div>
+                                                      );
+                                                  }
+                                              )
+                                            : // Wertungspanel für Akrobatiken
+                                              currentAcroTemplate &&
+                                              currentCompetition &&
+                                              currentCompetition.acros &&
+                                              currentCompetition.acros[0] &&
+                                              currentCompetition.acros[0].acro.map(
+                                                  (acro) => {
+                                                      if (
+                                                          acro.acro_short_text !=
+                                                          ""
+                                                      ) {
+                                                          return (
+                                                              <div>
+                                                                  <Typography
+                                                                      id='discrete-slider'
+                                                                      gutterBottom
+                                                                  >
+                                                                      {
+                                                                          acro.acro_short_text
+                                                                      }
+                                                                  </Typography>
+                                                                  <Slider
+                                                                      classes={{
+                                                                          thumb: classes.thumb,
+                                                                          rail: classes.rail,
+                                                                          track: classes.track,
+                                                                          valueLabel:
+                                                                              classes.valueLabel,
+                                                                          mark: classes.mark,
+                                                                      }}
+                                                                      defaultValue={
+                                                                          currentResult.categories &&
+                                                                          currentResult.categories.find(
+                                                                              (
+                                                                                  result
+                                                                              ) =>
+                                                                                  result.name ==
+                                                                                  acro.acro_short_text
+                                                                          ) !=
+                                                                              null
+                                                                              ? currentResult.categories.find(
+                                                                                    (
+                                                                                        result
+                                                                                    ) =>
+                                                                                        result.name ==
+                                                                                        acro.acro_short_text
+                                                                                )
+                                                                                    .value
+                                                                              : 0.5 *
+                                                                                acro.points
+                                                                      }
+                                                                      valueLabelFormat={(
+                                                                          value
+                                                                      ) => {
+                                                                          return (
+                                                                              Math.round(
+                                                                                  (value /
+                                                                                      acro.points) *
+                                                                                      100
+                                                                              ) +
+                                                                              "%"
+                                                                          );
+                                                                      }}
+                                                                      aria-labelledby='discrete-slider-small-steps'
+                                                                      step={
+                                                                          acro.points /
+                                                                          10
+                                                                      }
+                                                                      min={0}
+                                                                      max={
+                                                                          acro.points
+                                                                      }
+                                                                      valueLabelDisplay='auto'
+                                                                      onChangeCommitted={(
+                                                                          e,
+                                                                          newValue
+                                                                      ) => {
+                                                                          const localResult =
+                                                                              JSON.parse(
+                                                                                  JSON.stringify(
+                                                                                      currentResult
+                                                                                  )
+                                                                              );
 
-                                                                    if (
-                                                                        localResult.categories &&
-                                                                        localResult.categories.find(
-                                                                            (
-                                                                                result
-                                                                            ) =>
-                                                                                result.name ==
-                                                                                category.name
-                                                                        ) !=
-                                                                            null
-                                                                    ) {
-                                                                        localResult.categories.find(
-                                                                            (
-                                                                                result
-                                                                            ) =>
-                                                                                result.name ==
-                                                                                category.name
-                                                                        ).value =
-                                                                            newValue;
-                                                                        this.updateResult(
-                                                                            localResult
-                                                                        );
-                                                                    } else {
-                                                                        localResult.categories
-                                                                            ? localResult.categories.push(
-                                                                                  {
-                                                                                      name: category.name,
-                                                                                      value: newValue,
-                                                                                  }
-                                                                              )
-                                                                            : (localResult.categories =
-                                                                                  [
-                                                                                      {
-                                                                                          name: category.name,
-                                                                                          value: newValue,
-                                                                                      },
-                                                                                  ]);
-                                                                        this.updateResult(
-                                                                            localResult
-                                                                        );
-                                                                    }
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    );
-                                                }
-                                            )}
+                                                                          if (
+                                                                              localResult.categories &&
+                                                                              localResult.categories.find(
+                                                                                  (
+                                                                                      result
+                                                                                  ) =>
+                                                                                      result.name ==
+                                                                                      acro.acro_short_text
+                                                                              ) !=
+                                                                                  null
+                                                                          ) {
+                                                                              localResult.categories.find(
+                                                                                  (
+                                                                                      result
+                                                                                  ) =>
+                                                                                      result.name ==
+                                                                                      acro.acro_short_text
+                                                                              ).value =
+                                                                                  newValue
+                                                                                      ? newValue
+                                                                                      : 0;
+                                                                              this.updateResult(
+                                                                                  localResult
+                                                                              );
+                                                                          } else {
+                                                                              localResult.categories
+                                                                                  ? localResult.categories.push(
+                                                                                        {
+                                                                                            name: acro.acro_short_text,
+                                                                                            value: newValue
+                                                                                                ? newValue
+                                                                                                : 0,
+                                                                                        }
+                                                                                    )
+                                                                                  : (localResult.categories =
+                                                                                        [
+                                                                                            {
+                                                                                                name: acro.acro_short_text,
+                                                                                                value: newValue
+                                                                                                    ? newValue
+                                                                                                    : 0,
+                                                                                            },
+                                                                                        ]);
+                                                                              this.updateResult(
+                                                                                  localResult
+                                                                              );
+                                                                          }
+                                                                      }}
+                                                                  />
+                                                                  {currentAcroTemplate.boni &&
+                                                                      currentAcroTemplate.boni.map(
+                                                                          (
+                                                                              bonus
+                                                                          ) => {
+                                                                              return (
+                                                                                  <Grid
+                                                                                      item
+                                                                                      xs={
+                                                                                          2
+                                                                                      }
+                                                                                  >
+                                                                                      <Button
+                                                                                          variant='outlined'
+                                                                                          color='secondary'
+                                                                                          size='small'
+                                                                                          onClick={() => {
+                                                                                              const localResult =
+                                                                                                  JSON.parse(
+                                                                                                      JSON.stringify(
+                                                                                                          currentResult
+                                                                                                      )
+                                                                                                  );
+
+                                                                                              localResult.boni
+                                                                                                  ? localResult.boni.push(
+                                                                                                        {
+                                                                                                            name: bonus.name,
+                                                                                                            value: bonus.value,
+                                                                                                            amount: 1,
+                                                                                                        }
+                                                                                                    )
+                                                                                                  : (localResult.boni =
+                                                                                                        [
+                                                                                                            {
+                                                                                                                name: bonus.name,
+                                                                                                                value: bonus.value,
+                                                                                                                amount: 1,
+                                                                                                            },
+                                                                                                        ]);
+                                                                                              this.updateResult(
+                                                                                                  localResult
+                                                                                              );
+                                                                                          }}
+                                                                                      >
+                                                                                          {
+                                                                                              bonus.name
+                                                                                          }
+                                                                                      </Button>
+                                                                                  </Grid>
+                                                                              );
+                                                                          }
+                                                                      )}
+                                                              </div>
+                                                          );
+                                                      }
+                                                  }
+                                              )}
                                         <Grid
                                             container
                                             justifyContent='center'
@@ -288,18 +582,12 @@ class Current extends Component {
                                                         return (
                                                             <Grid item xs={2}>
                                                                 <Button
-                                                                    variant='contained'
-                                                                    color='red'
+                                                                    variant='outlined'
+                                                                    color='error'
+                                                                    size='small'
                                                                     onClick={() => {}}
                                                                 >
-                                                                    <Typography
-                                                                        id='discrete-slider'
-                                                                        gutterBottom
-                                                                    >
-                                                                        {
-                                                                            bonus.name
-                                                                        }
-                                                                    </Typography>
+                                                                    {bonus.name}
                                                                 </Button>
                                                             </Grid>
                                                         );

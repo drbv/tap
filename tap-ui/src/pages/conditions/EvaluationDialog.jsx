@@ -80,8 +80,6 @@ class EvaluationDialog extends React.Component {
                     localEvaluation: {
                         id: Date.now().toString(),
                         name: "",
-                        categories: null,
-                        boni: null,
                     },
                 });
             }
