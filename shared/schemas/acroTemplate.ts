@@ -1,5 +1,5 @@
-export const ScoringRuleSchema = {
-  title: 'Schema for defininig scoringRules',
+export const AcroTemplate = {
+  title: 'Schema for defininig acroTemplate',
   description:
     'Database schema for storing definitions for evaluations that can be used in rounds',
   version: 0,
@@ -54,5 +54,4 @@ export const ScoringRuleSchema = {
       },
     },
   },
-  required: ['id', 'name'],
 };

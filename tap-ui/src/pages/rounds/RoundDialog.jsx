@@ -218,6 +218,44 @@ class RoundDialog extends React.Component {
                                 className={classes.inputContent}
                                 htmlFor='role-select'
                             >
+                                Akrowertungsbogen
+                            </InputLabel>
+                            <Select
+                                fullWidth
+                                inputProps={{
+                                    name: "evaluation",
+                                    id: "evaluation-select",
+                                }}
+                                value={localRound.acroTemplateId}
+                                onChange={(e) => {
+                                    this.setState((prevState) => {
+                                        let localRound = Object.assign(
+                                            {},
+                                            prevState.localRound
+                                        ); // creating copy of state variable
+                                        localRound.acroTemplateId =
+                                            e.target.value; // update the name property, assign a new value
+                                        return { localRound }; // return new object
+                                    });
+                                }}
+                            >
+                                {this.state.evaluations &&
+                                    this.state.evaluations.map((evaluation) => {
+                                        return (
+                                            <MenuItem value={evaluation.id}>
+                                                {evaluation.name}
+                                            </MenuItem>
+                                        );
+                                    })}
+                            </Select>
+                        </div>
+                        <div className={classes.inputContent}>
+                            <InputLabel
+                                required={true}
+                                shrink={true}
+                                className={classes.inputContent}
+                                htmlFor='role-select'
+                            >
                                 Status
                             </InputLabel>
                             <Select
@@ -286,7 +324,18 @@ class RoundDialog extends React.Component {
                                                 {this.state.users &&
                                                     this.state.users.map(
                                                         (user) => {
-                                                            return (
+                                                            return (!localRound.observerIds ||
+                                                                !localRound.observerIds.includes(
+                                                                    user
+                                                                )) &&
+                                                                (!localRound.acroJudgeIds ||
+                                                                    !localRound.acroJudgeIds.includes(
+                                                                        user
+                                                                    )) &&
+                                                                (!localRound.judgeIds ||
+                                                                    !localRound.judgeIds.includes(
+                                                                        user
+                                                                    )) ? (
                                                                 <MenuItem
                                                                     value={
                                                                         user.id
@@ -294,7 +343,7 @@ class RoundDialog extends React.Component {
                                                                 >
                                                                     {user.name}
                                                                 </MenuItem>
-                                                            );
+                                                            ) : null;
                                                         }
                                                     )}
                                             </Select>
@@ -311,6 +360,93 @@ class RoundDialog extends React.Component {
                                     localRoundCopy.judgeIds
                                         ? localRoundCopy.judgeIds.push("")
                                         : (localRoundCopy.judgeIds = [""]);
+                                    this.setState({
+                                        localRound: localRoundCopy,
+                                    });
+                                }}
+                            >
+                                <Add />
+                            </IconButton>
+                        </Tooltip>
+                        <Divider />
+                        {/* Section to select users as acroJudge */}
+                        <div className={classes.inputContent}>
+                            <InputLabel
+                                required={true}
+                                shrink={true}
+                                className={classes.inputContent}
+                                htmlFor='role-select'
+                            >
+                                Akrobatik-Wertungsrichter
+                            </InputLabel>
+                            {localRound.acroJudgeIds &&
+                                localRound.acroJudgeIds.map(
+                                    (singleJudgeId, index) => {
+                                        return (
+                                            <Select
+                                                fullWidth
+                                                inputProps={{
+                                                    name: "judge",
+                                                    id: "judge-select",
+                                                }}
+                                                value={singleJudgeId}
+                                                onChange={(e) => {
+                                                    this.setState(
+                                                        (prevState) => {
+                                                            let localRound =
+                                                                Object.assign(
+                                                                    {},
+                                                                    prevState.localRound
+                                                                ); // creating copy of state variable
+                                                            localRound.acroJudgeIds[
+                                                                index
+                                                            ] = e.target.value; // update the name property, assign a new value
+                                                            return {
+                                                                localRound,
+                                                            }; // return new object
+                                                        }
+                                                    );
+                                                }}
+                                            >
+                                                {this.state.users &&
+                                                    this.state.users.map(
+                                                        (user) => {
+                                                            return (!localRound.observerIds ||
+                                                                !localRound.observerIds.includes(
+                                                                    user
+                                                                )) &&
+                                                                (!localRound.acroJudgeIds ||
+                                                                    !localRound.acroJudgeIds.includes(
+                                                                        user
+                                                                    )) &&
+                                                                (!localRound.judgeIds ||
+                                                                    !localRound.judgeIds.includes(
+                                                                        user
+                                                                    )) ? (
+                                                                <MenuItem
+                                                                    value={
+                                                                        user.id
+                                                                    }
+                                                                >
+                                                                    {user.name}
+                                                                </MenuItem>
+                                                            ) : null;
+                                                        }
+                                                    )}
+                                            </Select>
+                                        );
+                                    }
+                                )}
+                        </div>
+                        <Tooltip title='Weiterer Akrobatik-Wertungsrichter'>
+                            <IconButton
+                                onClick={() => {
+                                    let localRoundCopy = JSON.parse(
+                                        JSON.stringify(localRound)
+                                    );
+                                    localRoundCopy.acroJudgeIds
+                                        ? localRoundCopy.acroJudgeIds.push("")
+                                        : (localRoundCopy.acroJudgeIds = [""]);
                                     this.setState({
                                         localRound: localRoundCopy,
                                     });
@@ -362,7 +498,18 @@ class RoundDialog extends React.Component {
                                                 {this.state.users &&
                                                     this.state.users.map(
                                                         (user) => {
-                                                            return (
+                                                            return (!localRound.observerIds ||
+                                                                !localRound.observerIds.includes(
+                                                                    user
+                                                                )) &&
+                                                                (!localRound.acroJudgeIds ||
+                                                                    !localRound.acroJudgeIds.includes(
+                                                                        user
+                                                                    )) &&
+                                                                (!localRound.judgeIds ||
+                                                                    !localRound.judgeIds.includes(
+                                                                        user
+                                                                    )) ? (
                                                                 <MenuItem
                                                                     value={
                                                                         user.id
@@ -370,7 +517,7 @@ class RoundDialog extends React.Component {
                                                                 >
                                                                     {user.name}
                                                                 </MenuItem>
-                                                            );
+                                                            ) : null;
                                                         }
                                                     )}
                                             </Select>
@@ -396,7 +543,7 @@ class RoundDialog extends React.Component {
                             </IconButton>
                         </Tooltip>
                         <Divider />
-                        {/* Section to select teams inside rounds*/}
+                        {/* Section to select teams inside rounds*/}*{" "}
                         <div className={classes.inputContent}>
                             <InputLabel
                                 required={true}

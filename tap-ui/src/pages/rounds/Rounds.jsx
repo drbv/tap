@@ -166,7 +166,22 @@ class Rounds extends Component {
                                 },
                             },
                             {
+                                name: "acroTemplateId",
+                                options: {
+                                    filter: false,
+                                    sort: true,
+                                },
+                            },
+                            {
                                 name: "judgeIds",
+                                options: {
+                                    filter: false,
+                                    excluded: true,
+                                    sort: true,
+                                },
+                            },
+                            {
+                                name: "acroJudgeIds",
                                 options: {
                                     filter: false,
                                     excluded: true,
@@ -223,14 +238,20 @@ class Rounds extends Component {
                                                                                     evaluationTemplateId:
                                                                                         tableMeta
                                                                                             .rowData[3],
-                                                                                    judgeIds:
+                                                                                    acroTemplateId:
                                                                                         tableMeta
                                                                                             .rowData[4],
-                                                                                    observerIds:
+                                                                                    judgeIds:
                                                                                         tableMeta
                                                                                             .rowData[5],
+                                                                                    acroJudgeIds:
+                                                                                        tableMeta
+                                                                                            .rowData[6],
+                                                                                    observerIds:
+                                                                                        tableMeta
+                                                                                            .rowData[7],
                                                                                     status: tableMeta
-                                                                                        .rowData[6],
+                                                                                        .rowData[8],
                                                                                 },
                                                                         }
                                                                     );

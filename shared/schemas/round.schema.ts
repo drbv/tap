@@ -32,7 +32,16 @@ export const RoundSchema = {
         evaluationTemplateId: {
             type: "string",
         },
+        acroTemplateId: {
+            type: "string",
+        },
         judgeIds: {
+            type: "array",
+            items: {
+                type: "string",
+            },
+        },
+        acroJudgeIds: {
             type: "array",
             items: {
                 type: "string",
