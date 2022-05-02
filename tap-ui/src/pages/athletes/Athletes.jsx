@@ -16,6 +16,8 @@ import { isRxDatabase, isRxCollection } from "rxdb";
 import withProps from "../../components/HOC";
 import { getCollection, closeCollection } from "../../Database";
 import CoupleDialog from "./AthleteDialog";
+import { Translate, withLocalize } from "react-localize-redux";
+import athleteTranslations from "../../translations/athletes.json";
 
 const styles = (theme) => ({
     root: {
@@ -45,6 +47,7 @@ class Athletes extends Component {
         };
 
         this.subs = [];
+        this.props.addTranslation(athleteTranslations);
     }
 
     async componentDidMount() {
@@ -69,7 +72,7 @@ class Athletes extends Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, translate } = this.props;
         const { Athletes, newCoupleOpen, coupleToEdit } = this.state;
 
         return (
@@ -107,13 +110,24 @@ class Athletes extends Component {
                                 options: {
                                     filter: true,
                                     sort: true,
+                                    display: "excluded",
                                 },
                             },
                             {
                                 name: "league",
+                                label: translate("athlete.league"),
                                 options: {
                                     filter: false,
                                     sort: true,
+                                    customBodyRender: (
+                                        value,
+                                        tableMeta,
+                                        updateValue
+                                    ) => {
+                                        return translate(
+                                            "athlete.leagues." + value
+                                        );
+                                    },
                                 },
                             },
                             {
@@ -121,10 +135,12 @@ class Athletes extends Component {
                                 options: {
                                     filter: false,
                                     sort: true,
+                                    display: "excluded",
                                 },
                             },
                             {
                                 name: "bookId",
+                                label: translate("athlete.bookId"),
                                 options: {
                                     filter: false,
                                     sort: true,
@@ -133,6 +149,7 @@ class Athletes extends Component {
                             {
                                 name: "acros",
                                 options: {
+                                    display: "excluded",
                                     customBodyRender: (
                                         value,
                                         tableMeta,
@@ -147,6 +164,7 @@ class Athletes extends Component {
                             {
                                 name: "replacement_acros",
                                 options: {
+                                    display: "excluded",
                                     customBodyRender: (
                                         value,
                                         tableMeta,
@@ -161,6 +179,7 @@ class Athletes extends Component {
                             {
                                 name: "music",
                                 options: {
+                                    display: "excluded",
                                     customBodyRender: (
                                         value,
                                         tableMeta,
@@ -206,5 +225,5 @@ Athletes.defaultProps = {
 };
 
 export default withStyles(styles, { withTheme: true })(
-    withRouter(withProps(Athletes))
+    withLocalize(withProps(withRouter(Athletes)))
 );

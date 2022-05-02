@@ -16,6 +16,7 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    Grid,
     InputLabel,
     MenuItem,
     Select,
@@ -150,539 +151,595 @@ class RoundDialog extends React.Component {
                         Runde anlegen / bearbeiten
                     </DialogTitle>
                     <DialogContent dividers>
-                        <TextField
-                            margin='dense'
-                            id='name'
-                            name='name'
-                            defaultValue={localRound.roundName}
-                            required={true}
-                            onChange={(e) => {
-                                let newValue = e.target.value;
-                                this.setState((prevState) => {
-                                    let localRound = Object.assign(
-                                        {},
-                                        prevState.localRound
-                                    ); // creating copy of state variable
-                                    localRound.roundName = newValue; // update the name property, assign a new value
-                                    return { localRound }; // return new object
-                                });
-                            }}
-                            helperText='Name der Runde'
-                            label='Name'
-                            type='text'
-                            fullWidth
-                            className={classes.inputContent}
-                        />
-                        <div className={classes.inputContent}>
-                            <InputLabel
-                                required={true}
-                                shrink={true}
-                                className={classes.inputContent}
-                                htmlFor='role-select'
-                            >
-                                Wertungsbogen
-                            </InputLabel>
-                            <Select
-                                fullWidth
-                                inputProps={{
-                                    name: "evaluation",
-                                    id: "evaluation-select",
-                                }}
-                                value={localRound.evaluationTemplateId}
-                                onChange={(e) => {
-                                    this.setState((prevState) => {
-                                        let localRound = Object.assign(
-                                            {},
-                                            prevState.localRound
-                                        ); // creating copy of state variable
-                                        localRound.evaluationTemplateId =
-                                            e.target.value; // update the name property, assign a new value
-                                        return { localRound }; // return new object
-                                    });
-                                }}
-                            >
-                                {this.state.evaluations &&
-                                    this.state.evaluations.map((evaluation) => {
-                                        return (
-                                            <MenuItem value={evaluation.id}>
-                                                {evaluation.name}
-                                            </MenuItem>
-                                        );
-                                    })}
-                            </Select>
-                        </div>
-                        <div className={classes.inputContent}>
-                            <InputLabel
-                                required={true}
-                                shrink={true}
-                                className={classes.inputContent}
-                                htmlFor='role-select'
-                            >
-                                Akrowertungsbogen
-                            </InputLabel>
-                            <Select
-                                fullWidth
-                                inputProps={{
-                                    name: "evaluation",
-                                    id: "evaluation-select",
-                                }}
-                                value={localRound.acroTemplateId}
-                                onChange={(e) => {
-                                    this.setState((prevState) => {
-                                        let localRound = Object.assign(
-                                            {},
-                                            prevState.localRound
-                                        ); // creating copy of state variable
-                                        localRound.acroTemplateId =
-                                            e.target.value; // update the name property, assign a new value
-                                        return { localRound }; // return new object
-                                    });
-                                }}
-                            >
-                                {this.state.evaluations &&
-                                    this.state.evaluations.map((evaluation) => {
-                                        return (
-                                            <MenuItem value={evaluation.id}>
-                                                {evaluation.name}
-                                            </MenuItem>
-                                        );
-                                    })}
-                            </Select>
-                        </div>
-                        <div className={classes.inputContent}>
-                            <InputLabel
-                                required={true}
-                                shrink={true}
-                                className={classes.inputContent}
-                                htmlFor='role-select'
-                            >
-                                Status
-                            </InputLabel>
-                            <Select
-                                fullWidth
-                                inputProps={{
-                                    name: "status",
-                                    id: "status-select",
-                                }}
-                                value={localRound.status}
-                                onChange={(e) => {
-                                    this.setState((prevState) => {
-                                        let localRound = Object.assign(
-                                            {},
-                                            prevState.localRound
-                                        ); // creating copy of state variable
-                                        localRound.status = e.target.value; // update the name property, assign a new value
-                                        return { localRound }; // return new object
-                                    });
-                                }}
-                            >
-                                <MenuItem value='blocked'>Fehlerhaft</MenuItem>
-                                <MenuItem value='waiting'>Vorbereitet</MenuItem>
-                                <MenuItem value='running'>Laufend</MenuItem>
-                                <MenuItem value='done'>Abgeschlossen</MenuItem>
-                            </Select>
-                        </div>
-                        {/* Section to select users as judges */}
-                        <div className={classes.inputContent}>
-                            <InputLabel
-                                required={true}
-                                shrink={true}
-                                className={classes.inputContent}
-                                htmlFor='role-select'
-                            >
-                                Wertungsrichter
-                            </InputLabel>
-                            {localRound.judgeIds &&
-                                localRound.judgeIds.map(
-                                    (singleJudgeId, index) => {
-                                        return (
-                                            <Select
-                                                fullWidth
-                                                inputProps={{
-                                                    name: "judge",
-                                                    id: "judge-select",
-                                                }}
-                                                value={singleJudgeId}
-                                                onChange={(e) => {
-                                                    this.setState(
-                                                        (prevState) => {
-                                                            let localRound =
-                                                                Object.assign(
-                                                                    {},
-                                                                    prevState.localRound
-                                                                ); // creating copy of state variable
-                                                            localRound.judgeIds[
-                                                                index
-                                                            ] = e.target.value; // update the name property, assign a new value
-                                                            return {
-                                                                localRound,
-                                                            }; // return new object
-                                                        }
-                                                    );
-                                                }}
-                                            >
-                                                {this.state.users &&
-                                                    this.state.users.map(
-                                                        (user) => {
-                                                            return (!localRound.observerIds ||
-                                                                !localRound.observerIds.includes(
-                                                                    user
-                                                                )) &&
-                                                                (!localRound.acroJudgeIds ||
-                                                                    !localRound.acroJudgeIds.includes(
-                                                                        user
-                                                                    )) &&
-                                                                (!localRound.judgeIds ||
-                                                                    !localRound.judgeIds.includes(
-                                                                        user
-                                                                    )) ? (
-                                                                <MenuItem
-                                                                    value={
-                                                                        user.id
-                                                                    }
-                                                                >
-                                                                    {user.name}
-                                                                </MenuItem>
-                                                            ) : null;
-                                                        }
-                                                    )}
-                                            </Select>
-                                        );
-                                    }
-                                )}
-                        </div>
-                        <Tooltip title='Weiterer Wertungsrichter'>
-                            <IconButton
-                                onClick={() => {
-                                    let localRoundCopy = JSON.parse(
-                                        JSON.stringify(localRound)
-                                    );
-                                    localRoundCopy.judgeIds
-                                        ? localRoundCopy.judgeIds.push("")
-                                        : (localRoundCopy.judgeIds = [""]);
-                                    this.setState({
-                                        localRound: localRoundCopy,
-                                    });
-                                }}
-                            >
-                                <Add />
-                            </IconButton>
-                        </Tooltip>
-                        <Divider />
-                        {/* Section to select users as acroJudge */}
-                        <div className={classes.inputContent}>
-                            <InputLabel
-                                required={true}
-                                shrink={true}
-                                className={classes.inputContent}
-                                htmlFor='role-select'
-                            >
-                                Akrobatik-Wertungsrichter
-                            </InputLabel>
-                            {localRound.acroJudgeIds &&
-                                localRound.acroJudgeIds.map(
-                                    (singleJudgeId, index) => {
-                                        return (
-                                            <Select
-                                                fullWidth
-                                                inputProps={{
-                                                    name: "judge",
-                                                    id: "judge-select",
-                                                }}
-                                                value={singleJudgeId}
-                                                onChange={(e) => {
-                                                    this.setState(
-                                                        (prevState) => {
-                                                            let localRound =
-                                                                Object.assign(
-                                                                    {},
-                                                                    prevState.localRound
-                                                                ); // creating copy of state variable
-                                                            localRound.acroJudgeIds[
-                                                                index
-                                                            ] = e.target.value; // update the name property, assign a new value
-                                                            return {
-                                                                localRound,
-                                                            }; // return new object
-                                                        }
-                                                    );
-                                                }}
-                                            >
-                                                {this.state.users &&
-                                                    this.state.users.map(
-                                                        (user) => {
-                                                            return (!localRound.observerIds ||
-                                                                !localRound.observerIds.includes(
-                                                                    user
-                                                                )) &&
-                                                                (!localRound.acroJudgeIds ||
-                                                                    !localRound.acroJudgeIds.includes(
-                                                                        user
-                                                                    )) &&
-                                                                (!localRound.judgeIds ||
-                                                                    !localRound.judgeIds.includes(
-                                                                        user
-                                                                    )) ? (
-                                                                <MenuItem
-                                                                    value={
-                                                                        user.id
-                                                                    }
-                                                                >
-                                                                    {user.name}
-                                                                </MenuItem>
-                                                            ) : null;
-                                                        }
-                                                    )}
-                                            </Select>
-                                        );
-                                    }
-                                )}
-                        </div>
-                        <Tooltip title='Weiterer Akrobatik-Wertungsrichter'>
-                            <IconButton
-                                onClick={() => {
-                                    let localRoundCopy = JSON.parse(
-                                        JSON.stringify(localRound)
-                                    );
-                                    localRoundCopy.acroJudgeIds
-                                        ? localRoundCopy.acroJudgeIds.push("")
-                                        : (localRoundCopy.acroJudgeIds = [""]);
-                                    this.setState({
-                                        localRound: localRoundCopy,
-                                    });
-                                }}
-                            >
-                                <Add />
-                            </IconButton>
-                        </Tooltip>
-                        <Divider />
-                        {/* Section to select users as observers */}
-                        <div className={classes.inputContent}>
-                            <InputLabel
-                                required={true}
-                                shrink={true}
-                                className={classes.inputContent}
-                                htmlFor='role-select'
-                            >
-                                Observer
-                            </InputLabel>
-                            {localRound.observerIds &&
-                                localRound.observerIds.map(
-                                    (singleObserverId, index) => {
-                                        return (
-                                            <Select
-                                                fullWidth
-                                                inputProps={{
-                                                    name: "observer",
-                                                    id: "observer-select",
-                                                }}
-                                                value={singleObserverId}
-                                                onChange={(e) => {
-                                                    this.setState(
-                                                        (prevState) => {
-                                                            let localRound =
-                                                                Object.assign(
-                                                                    {},
-                                                                    prevState.localRound
-                                                                ); // creating copy of state variable
-                                                            localRound.observerIds[
-                                                                index
-                                                            ] = e.target.value; // update the name property, assign a new value
-                                                            return {
-                                                                localRound,
-                                                            }; // return new object
-                                                        }
-                                                    );
-                                                }}
-                                            >
-                                                {this.state.users &&
-                                                    this.state.users.map(
-                                                        (user) => {
-                                                            return (!localRound.observerIds ||
-                                                                !localRound.observerIds.includes(
-                                                                    user
-                                                                )) &&
-                                                                (!localRound.acroJudgeIds ||
-                                                                    !localRound.acroJudgeIds.includes(
-                                                                        user
-                                                                    )) &&
-                                                                (!localRound.judgeIds ||
-                                                                    !localRound.judgeIds.includes(
-                                                                        user
-                                                                    )) ? (
-                                                                <MenuItem
-                                                                    value={
-                                                                        user.id
-                                                                    }
-                                                                >
-                                                                    {user.name}
-                                                                </MenuItem>
-                                                            ) : null;
-                                                        }
-                                                    )}
-                                            </Select>
-                                        );
-                                    }
-                                )}
-                        </div>
-                        <Tooltip title='Weiterer Observer'>
-                            <IconButton
-                                onClick={() => {
-                                    let localRoundCopy = JSON.parse(
-                                        JSON.stringify(localRound)
-                                    );
-                                    localRoundCopy.observerIds
-                                        ? localRoundCopy.observerIds.push("")
-                                        : (localRoundCopy.observerIds = [""]);
-                                    this.setState({
-                                        localRound: localRoundCopy,
-                                    });
-                                }}
-                            >
-                                <Add />
-                            </IconButton>
-                        </Tooltip>
-                        <Divider />
-                        {/* Section to select teams inside rounds*/}*{" "}
-                        <div className={classes.inputContent}>
-                            <InputLabel
-                                required={true}
-                                shrink={true}
-                                className={classes.inputContent}
-                                htmlFor='role-select'
-                            >
-                                Tanzpaare
-                            </InputLabel>
-                            {localRound.subrounds &&
-                                localRound.subrounds.map(
-                                    (singleSubround, index) => {
-                                        return (
-                                            <div>
-                                                <Select
-                                                    fullWidth
-                                                    inputProps={{
-                                                        name: "participant",
-                                                        id: "participant-select",
-                                                    }}
-                                                    value={
-                                                        singleSubround.participants &&
-                                                        singleSubround
-                                                            .participants[0]
-                                                    }
-                                                    onChange={(e) => {
-                                                        this.setState(
-                                                            (prevState) => {
-                                                                let localRound =
-                                                                    JSON.parse(
-                                                                        JSON.stringify(
-                                                                            this
-                                                                                .state
-                                                                                .localRound
-                                                                        )
-                                                                    ); // creating copy of state variable
-                                                                localRound.subrounds[
-                                                                    index
-                                                                ].participants[0] =
-                                                                    e.target.value; // update the name property, assign a new value
-                                                                return {
-                                                                    localRound,
-                                                                }; // return new object
+                        <Grid container spacing={4}>
+                            <Grid item xs={4}>
+                                <TextField
+                                    margin='dense'
+                                    id='name'
+                                    name='name'
+                                    defaultValue={localRound.roundName}
+                                    required={true}
+                                    onChange={(e) => {
+                                        let newValue = e.target.value;
+                                        this.setState((prevState) => {
+                                            let localRound = Object.assign(
+                                                {},
+                                                prevState.localRound
+                                            ); // creating copy of state variable
+                                            localRound.roundName = newValue; // update the name property, assign a new value
+                                            return { localRound }; // return new object
+                                        });
+                                    }}
+                                    helperText='Name der Runde'
+                                    label='Name'
+                                    type='text'
+                                    fullWidth
+                                    className={classes.inputContent}
+                                />
+                                <div className={classes.inputContent}>
+                                    <InputLabel
+                                        required={true}
+                                        shrink={true}
+                                        className={classes.inputContent}
+                                        htmlFor='role-select'
+                                    >
+                                        Wertungsbogen
+                                    </InputLabel>
+                                    <Select
+                                        fullWidth
+                                        inputProps={{
+                                            name: "evaluation",
+                                            id: "evaluation-select",
+                                        }}
+                                        value={localRound.evaluationTemplateId}
+                                        onChange={(e) => {
+                                            this.setState((prevState) => {
+                                                let localRound = Object.assign(
+                                                    {},
+                                                    prevState.localRound
+                                                ); // creating copy of state variable
+                                                localRound.evaluationTemplateId =
+                                                    e.target.value; // update the name property, assign a new value
+                                                return { localRound }; // return new object
+                                            });
+                                        }}
+                                    >
+                                        {this.state.evaluations &&
+                                            this.state.evaluations.map(
+                                                (evaluation) => {
+                                                    return (
+                                                        <MenuItem
+                                                            value={
+                                                                evaluation.id
                                                             }
-                                                        );
-                                                    }}
-                                                >
-                                                    {this.state.competition &&
-                                                        this.state.competition.map(
-                                                            (competition) => {
-                                                                return (
-                                                                    <MenuItem
-                                                                        value={
-                                                                            competition.bookId
-                                                                        }
-                                                                    >
-                                                                        {
-                                                                            competition.bookId
-                                                                        }
-                                                                    </MenuItem>
+                                                        >
+                                                            {evaluation.name}
+                                                        </MenuItem>
+                                                    );
+                                                }
+                                            )}
+                                    </Select>
+                                </div>
+                                <div className={classes.inputContent}>
+                                    <InputLabel
+                                        required={true}
+                                        shrink={true}
+                                        className={classes.inputContent}
+                                        htmlFor='role-select'
+                                    >
+                                        Akrowertungsbogen
+                                    </InputLabel>
+                                    <Select
+                                        fullWidth
+                                        inputProps={{
+                                            name: "evaluation",
+                                            id: "evaluation-select",
+                                        }}
+                                        value={localRound.acroTemplateId}
+                                        onChange={(e) => {
+                                            this.setState((prevState) => {
+                                                let localRound = Object.assign(
+                                                    {},
+                                                    prevState.localRound
+                                                ); // creating copy of state variable
+                                                localRound.acroTemplateId =
+                                                    e.target.value; // update the name property, assign a new value
+                                                return { localRound }; // return new object
+                                            });
+                                        }}
+                                    >
+                                        {this.state.evaluations &&
+                                            this.state.evaluations.map(
+                                                (evaluation) => {
+                                                    return (
+                                                        <MenuItem
+                                                            value={
+                                                                evaluation.id
+                                                            }
+                                                        >
+                                                            {evaluation.name}
+                                                        </MenuItem>
+                                                    );
+                                                }
+                                            )}
+                                    </Select>
+                                </div>
+                                <div className={classes.inputContent}>
+                                    <InputLabel
+                                        required={true}
+                                        shrink={true}
+                                        className={classes.inputContent}
+                                        htmlFor='role-select'
+                                    >
+                                        Status
+                                    </InputLabel>
+                                    <Select
+                                        fullWidth
+                                        inputProps={{
+                                            name: "status",
+                                            id: "status-select",
+                                        }}
+                                        value={localRound.status}
+                                        onChange={(e) => {
+                                            this.setState((prevState) => {
+                                                let localRound = Object.assign(
+                                                    {},
+                                                    prevState.localRound
+                                                ); // creating copy of state variable
+                                                localRound.status =
+                                                    e.target.value; // update the name property, assign a new value
+                                                return { localRound }; // return new object
+                                            });
+                                        }}
+                                    >
+                                        <MenuItem value='blocked'>
+                                            Fehlerhaft
+                                        </MenuItem>
+                                        <MenuItem value='waiting'>
+                                            Vorbereitet
+                                        </MenuItem>
+                                        <MenuItem value='running'>
+                                            Laufend
+                                        </MenuItem>
+                                        <MenuItem value='done'>
+                                            Abgeschlossen
+                                        </MenuItem>
+                                    </Select>
+                                </div>
+                            </Grid>
+                            <Grid item xs={4}>
+                                {/* Section to select users as judges */}
+                                <div className={classes.inputContent}>
+                                    <InputLabel
+                                        required={true}
+                                        shrink={true}
+                                        className={classes.inputContent}
+                                        htmlFor='role-select'
+                                    >
+                                        Wertungsrichter
+                                    </InputLabel>
+                                    {localRound.judgeIds &&
+                                        localRound.judgeIds.map(
+                                            (singleJudgeId, index) => {
+                                                return (
+                                                    <Select
+                                                        fullWidth
+                                                        inputProps={{
+                                                            name: "judge",
+                                                            id: "judge-select",
+                                                        }}
+                                                        value={singleJudgeId}
+                                                        onChange={(e) => {
+                                                            this.setState(
+                                                                (prevState) => {
+                                                                    let localRound =
+                                                                        Object.assign(
+                                                                            {},
+                                                                            prevState.localRound
+                                                                        ); // creating copy of state variable
+                                                                    localRound.judgeIds[
+                                                                        index
+                                                                    ] =
+                                                                        e.target.value; // update the name property, assign a new value
+                                                                    return {
+                                                                        localRound,
+                                                                    }; // return new object
+                                                                }
+                                                            );
+                                                        }}
+                                                    >
+                                                        {this.state.users &&
+                                                            this.state.users.map(
+                                                                (user) => {
+                                                                    return (!localRound.observerIds ||
+                                                                        !localRound.observerIds.includes(
+                                                                            user
+                                                                        )) &&
+                                                                        (!localRound.acroJudgeIds ||
+                                                                            !localRound.acroJudgeIds.includes(
+                                                                                user
+                                                                            )) &&
+                                                                        (!localRound.judgeIds ||
+                                                                            !localRound.judgeIds.includes(
+                                                                                user
+                                                                            )) ? (
+                                                                        <MenuItem
+                                                                            value={
+                                                                                user.id
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                user.name
+                                                                            }
+                                                                        </MenuItem>
+                                                                    ) : null;
+                                                                }
+                                                            )}
+                                                    </Select>
+                                                );
+                                            }
+                                        )}
+                                </div>
+                                <Tooltip title='Weiterer Wertungsrichter'>
+                                    <IconButton
+                                        onClick={() => {
+                                            let localRoundCopy = JSON.parse(
+                                                JSON.stringify(localRound)
+                                            );
+                                            localRoundCopy.judgeIds
+                                                ? localRoundCopy.judgeIds.push(
+                                                      ""
+                                                  )
+                                                : (localRoundCopy.judgeIds = [
+                                                      "",
+                                                  ]);
+                                            this.setState({
+                                                localRound: localRoundCopy,
+                                            });
+                                        }}
+                                    >
+                                        <Add />
+                                    </IconButton>
+                                </Tooltip>
+                                <Divider />
+                                {/* Section to select users as acroJudge */}
+                                <div className={classes.inputContent}>
+                                    <InputLabel
+                                        required={true}
+                                        shrink={true}
+                                        className={classes.inputContent}
+                                        htmlFor='role-select'
+                                    >
+                                        Akrobatik-Wertungsrichter
+                                    </InputLabel>
+                                    {localRound.acroJudgeIds &&
+                                        localRound.acroJudgeIds.map(
+                                            (singleJudgeId, index) => {
+                                                return (
+                                                    <Select
+                                                        fullWidth
+                                                        inputProps={{
+                                                            name: "judge",
+                                                            id: "judge-select",
+                                                        }}
+                                                        value={singleJudgeId}
+                                                        onChange={(e) => {
+                                                            this.setState(
+                                                                (prevState) => {
+                                                                    let localRound =
+                                                                        Object.assign(
+                                                                            {},
+                                                                            prevState.localRound
+                                                                        ); // creating copy of state variable
+                                                                    localRound.acroJudgeIds[
+                                                                        index
+                                                                    ] =
+                                                                        e.target.value; // update the name property, assign a new value
+                                                                    return {
+                                                                        localRound,
+                                                                    }; // return new object
+                                                                }
+                                                            );
+                                                        }}
+                                                    >
+                                                        {this.state.users &&
+                                                            this.state.users.map(
+                                                                (user) => {
+                                                                    return (!localRound.observerIds ||
+                                                                        !localRound.observerIds.includes(
+                                                                            user
+                                                                        )) &&
+                                                                        (!localRound.acroJudgeIds ||
+                                                                            !localRound.acroJudgeIds.includes(
+                                                                                user
+                                                                            )) &&
+                                                                        (!localRound.judgeIds ||
+                                                                            !localRound.judgeIds.includes(
+                                                                                user
+                                                                            )) ? (
+                                                                        <MenuItem
+                                                                            value={
+                                                                                user.id
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                user.name
+                                                                            }
+                                                                        </MenuItem>
+                                                                    ) : null;
+                                                                }
+                                                            )}
+                                                    </Select>
+                                                );
+                                            }
+                                        )}
+                                </div>
+                                <Tooltip title='Weiterer Akrobatik-Wertungsrichter'>
+                                    <IconButton
+                                        onClick={() => {
+                                            let localRoundCopy = JSON.parse(
+                                                JSON.stringify(localRound)
+                                            );
+                                            localRoundCopy.acroJudgeIds
+                                                ? localRoundCopy.acroJudgeIds.push(
+                                                      ""
+                                                  )
+                                                : (localRoundCopy.acroJudgeIds =
+                                                      [""]);
+                                            this.setState({
+                                                localRound: localRoundCopy,
+                                            });
+                                        }}
+                                    >
+                                        <Add />
+                                    </IconButton>
+                                </Tooltip>
+                                <Divider />
+                                {/* Section to select users as observers */}
+                                <div className={classes.inputContent}>
+                                    <InputLabel
+                                        required={true}
+                                        shrink={true}
+                                        className={classes.inputContent}
+                                        htmlFor='role-select'
+                                    >
+                                        Observer
+                                    </InputLabel>
+                                    {localRound.observerIds &&
+                                        localRound.observerIds.map(
+                                            (singleObserverId, index) => {
+                                                return (
+                                                    <Select
+                                                        fullWidth
+                                                        inputProps={{
+                                                            name: "observer",
+                                                            id: "observer-select",
+                                                        }}
+                                                        value={singleObserverId}
+                                                        onChange={(e) => {
+                                                            this.setState(
+                                                                (prevState) => {
+                                                                    let localRound =
+                                                                        Object.assign(
+                                                                            {},
+                                                                            prevState.localRound
+                                                                        ); // creating copy of state variable
+                                                                    localRound.observerIds[
+                                                                        index
+                                                                    ] =
+                                                                        e.target.value; // update the name property, assign a new value
+                                                                    return {
+                                                                        localRound,
+                                                                    }; // return new object
+                                                                }
+                                                            );
+                                                        }}
+                                                    >
+                                                        {this.state.users &&
+                                                            this.state.users.map(
+                                                                (user) => {
+                                                                    return (!localRound.observerIds ||
+                                                                        !localRound.observerIds.includes(
+                                                                            user
+                                                                        )) &&
+                                                                        (!localRound.acroJudgeIds ||
+                                                                            !localRound.acroJudgeIds.includes(
+                                                                                user
+                                                                            )) &&
+                                                                        (!localRound.judgeIds ||
+                                                                            !localRound.judgeIds.includes(
+                                                                                user
+                                                                            )) ? (
+                                                                        <MenuItem
+                                                                            value={
+                                                                                user.id
+                                                                            }
+                                                                        >
+                                                                            {
+                                                                                user.name
+                                                                            }
+                                                                        </MenuItem>
+                                                                    ) : null;
+                                                                }
+                                                            )}
+                                                    </Select>
+                                                );
+                                            }
+                                        )}
+                                </div>
+                                <Tooltip title='Weiterer Observer'>
+                                    <IconButton
+                                        onClick={() => {
+                                            let localRoundCopy = JSON.parse(
+                                                JSON.stringify(localRound)
+                                            );
+                                            localRoundCopy.observerIds
+                                                ? localRoundCopy.observerIds.push(
+                                                      ""
+                                                  )
+                                                : (localRoundCopy.observerIds =
+                                                      [""]);
+                                            this.setState({
+                                                localRound: localRoundCopy,
+                                            });
+                                        }}
+                                    >
+                                        <Add />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
+                            <Grid item xs={4}>
+                                {/* Section to select teams inside rounds*/}
+                                <div className={classes.inputContent}>
+                                    <InputLabel
+                                        required={true}
+                                        shrink={true}
+                                        className={classes.inputContent}
+                                        htmlFor='role-select'
+                                    >
+                                        Tanzpaare
+                                    </InputLabel>
+                                    {localRound.subrounds &&
+                                        localRound.subrounds.map(
+                                            (singleSubround, index) => {
+                                                return (
+                                                    <div>
+                                                        <Select
+                                                            fullWidth
+                                                            inputProps={{
+                                                                name: "participant",
+                                                                id: "participant-select",
+                                                            }}
+                                                            value={
+                                                                singleSubround.participants &&
+                                                                singleSubround
+                                                                    .participants[0]
+                                                            }
+                                                            onChange={(e) => {
+                                                                this.setState(
+                                                                    (
+                                                                        prevState
+                                                                    ) => {
+                                                                        let localRound =
+                                                                            JSON.parse(
+                                                                                JSON.stringify(
+                                                                                    this
+                                                                                        .state
+                                                                                        .localRound
+                                                                                )
+                                                                            ); // creating copy of state variable
+                                                                        localRound.subrounds[
+                                                                            index
+                                                                        ].participants[0] =
+                                                                            e.target.value; // update the name property, assign a new value
+                                                                        return {
+                                                                            localRound,
+                                                                        }; // return new object
+                                                                    }
                                                                 );
+                                                            }}
+                                                        >
+                                                            {this.state
+                                                                .competition &&
+                                                                this.state.competition.map(
+                                                                    (
+                                                                        competition
+                                                                    ) => {
+                                                                        return (
+                                                                            <MenuItem
+                                                                                value={
+                                                                                    competition.bookId
+                                                                                }
+                                                                            >
+                                                                                {
+                                                                                    competition.bookId
+                                                                                }
+                                                                            </MenuItem>
+                                                                        );
+                                                                    }
+                                                                )}
+                                                        </Select>
+                                                        <Select
+                                                            fullWidth
+                                                            inputProps={{
+                                                                name: "status",
+                                                                id: "status-select",
+                                                            }}
+                                                            value={
+                                                                singleSubround.status
                                                             }
-                                                        )}
-                                                </Select>
-                                                <Select
-                                                    fullWidth
-                                                    inputProps={{
-                                                        name: "status",
-                                                        id: "status-select",
-                                                    }}
-                                                    value={
-                                                        singleSubround.status
-                                                    }
-                                                    onChange={(e) => {
-                                                        this.setState(
-                                                            (prevState) => {
-                                                                let localRound =
-                                                                    JSON.parse(
-                                                                        JSON.stringify(
-                                                                            this
-                                                                                .state
-                                                                                .localRound
-                                                                        )
-                                                                    );
-                                                                // creating copy of state variable
-                                                                localRound.subrounds[
-                                                                    index
-                                                                ].status =
-                                                                    e.target.value; // update the name property, assign a new value
-                                                                return {
-                                                                    localRound,
-                                                                }; // return new object
-                                                            }
-                                                        );
-                                                    }}
-                                                >
-                                                    <MenuItem value='blocked'>
-                                                        Fehlerhaft
-                                                    </MenuItem>
-                                                    <MenuItem value='waiting'>
-                                                        Vorbereitet
-                                                    </MenuItem>
-                                                    <MenuItem value='running'>
-                                                        Laufend
-                                                    </MenuItem>
-                                                    <MenuItem value='done'>
-                                                        Abgeschlossen
-                                                    </MenuItem>
-                                                </Select>
-                                            </div>
-                                        );
-                                    }
-                                )}
-                        </div>
-                        <Tooltip title='Weiterere Teilrunde'>
-                            <IconButton
-                                onClick={() => {
-                                    let localRoundCopy = JSON.parse(
-                                        JSON.stringify(localRound)
-                                    );
-                                    localRoundCopy.subrounds
-                                        ? localRoundCopy.subrounds.push({
-                                              participants: [""],
-                                              status: "blocked",
-                                          })
-                                        : (localRoundCopy.subrounds = [
-                                              {
-                                                  participants: [""],
-                                                  status: "blocked",
-                                              },
-                                          ]);
-                                    this.setState({
-                                        localRound: localRoundCopy,
-                                    });
-                                }}
-                            >
-                                <Add />
-                            </IconButton>
-                        </Tooltip>
+                                                            onChange={(e) => {
+                                                                this.setState(
+                                                                    (
+                                                                        prevState
+                                                                    ) => {
+                                                                        let localRound =
+                                                                            JSON.parse(
+                                                                                JSON.stringify(
+                                                                                    this
+                                                                                        .state
+                                                                                        .localRound
+                                                                                )
+                                                                            );
+                                                                        // creating copy of state variable
+                                                                        localRound.subrounds[
+                                                                            index
+                                                                        ].status =
+                                                                            e.target.value; // update the name property, assign a new value
+                                                                        return {
+                                                                            localRound,
+                                                                        }; // return new object
+                                                                    }
+                                                                );
+                                                            }}
+                                                        >
+                                                            <MenuItem value='blocked'>
+                                                                Fehlerhaft
+                                                            </MenuItem>
+                                                            <MenuItem value='waiting'>
+                                                                Vorbereitet
+                                                            </MenuItem>
+                                                            <MenuItem value='running'>
+                                                                Laufend
+                                                            </MenuItem>
+                                                            <MenuItem value='done'>
+                                                                Abgeschlossen
+                                                            </MenuItem>
+                                                        </Select>
+                                                    </div>
+                                                );
+                                            }
+                                        )}
+                                </div>
+                                <Tooltip title='Weiterere Teilrunde'>
+                                    <IconButton
+                                        onClick={() => {
+                                            let localRoundCopy = JSON.parse(
+                                                JSON.stringify(localRound)
+                                            );
+                                            localRoundCopy.subrounds
+                                                ? localRoundCopy.subrounds.push(
+                                                      {
+                                                          participants: [""],
+                                                          status: "blocked",
+                                                      }
+                                                  )
+                                                : (localRoundCopy.subrounds = [
+                                                      {
+                                                          participants: [""],
+                                                          status: "blocked",
+                                                      },
+                                                  ]);
+                                            this.setState({
+                                                localRound: localRoundCopy,
+                                            });
+                                        }}
+                                    >
+                                        <Add />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
+                        </Grid>
                     </DialogContent>
                     <DialogActions>
                         <Button
