@@ -7,6 +7,7 @@ import { LinearProgress, CssBaseline, withStyles } from "@material-ui/core";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import ls from "local-storage";
 
+import { Translate, withLocalize } from "react-localize-redux";
 import globalTranslations from "../translations/global.json";
 
 import withProps from "./HOC";
@@ -40,16 +41,21 @@ class App extends Component {
         super(props);
 
         this.state = {
-            languages: [{ name: "Deutsch", code: "de" }],
+            open: true,
+        };
+
+        this.props.initialize({
+            languages: [
+                { name: "Deutsch", code: "de" },
+                { name: "English", code: "en" },
+            ],
             translation: globalTranslations,
             options: {
                 renderToStaticMarkup,
                 defaultLanguage:
                     ls("default_lng") !== null ? ls("default_lng") : "de",
             },
-
-            open: true,
-        };
+        });
     }
 
     componentDidMount() {
@@ -167,4 +173,6 @@ App.propTypes = {
     routes: PropTypes.array,
 };
 
-export default withStyles(styles, { withTheme: true })(withProps(App));
+export default withStyles(styles, { withTheme: true })(
+    withLocalize(withProps(App))
+);

@@ -1,5 +1,7 @@
 import React, { lazy } from "react";
 import ReactDOM from "react-dom";
+import { LocalizeProvider } from "react-localize-redux";
+
 import { createTheme, MuiThemeProvider } from "@material-ui/core";
 import Provider from "./components/Provider";
 import App from "./components/App";
@@ -153,11 +155,11 @@ function ReactIsInDevelomentMode() {
 
 ReactDOM.render(
     <MuiThemeProvider theme={theme}>
-        <React.StrictMode>
+        <LocalizeProvider>
             <Provider>
                 <App routes={Routes} />
             </Provider>
-        </React.StrictMode>
+        </LocalizeProvider>
     </MuiThemeProvider>,
     document.getElementById("root")
 );
