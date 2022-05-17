@@ -3,10 +3,14 @@ import React from "react";
 import { PropTypes } from "prop-types";
 import withStyles from "@material-ui/core/es/styles/withStyles";
 
+import { withLocalize } from "react-localize-redux";
+
 import { isRxCollection, isRxDatabase, isRxDocument } from "rxdb";
 
 import withProps from "../../components/HOC";
 import { getCollection } from "../../Database";
+import roundTranslation from "../../translations/rounds.json";
+import athleteTranslation from "../../translations/athletes.json";
 
 //components and libraries
 import {
@@ -56,6 +60,8 @@ class RoundDialog extends React.Component {
             users: null,
         };
         this.subs = [];
+        this.props.addTranslation(roundTranslation);
+        this.props.addTranslation(athleteTranslation);
     }
 
     async componentDidUpdate(prevProps, prevState) {
@@ -136,7 +142,7 @@ class RoundDialog extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, translate } = this.props;
         const { localRound } = this.state;
 
         return localRound ? (
@@ -153,29 +159,103 @@ class RoundDialog extends React.Component {
                     <DialogContent dividers>
                         <Grid container spacing={4}>
                             <Grid item xs={4}>
-                                <TextField
-                                    margin='dense'
-                                    id='name'
-                                    name='name'
-                                    defaultValue={localRound.roundName}
-                                    required={true}
-                                    onChange={(e) => {
-                                        let newValue = e.target.value;
-                                        this.setState((prevState) => {
-                                            let localRound = Object.assign(
-                                                {},
-                                                prevState.localRound
-                                            ); // creating copy of state variable
-                                            localRound.roundName = newValue; // update the name property, assign a new value
-                                            return { localRound }; // return new object
-                                        });
-                                    }}
-                                    helperText='Name der Runde'
-                                    label='Name'
-                                    type='text'
-                                    fullWidth
-                                    className={classes.inputContent}
-                                />
+                                <div className={classes.inputContent}>
+                                    <InputLabel
+                                        required={true}
+                                        shrink={true}
+                                        className={classes.inputContent}
+                                        htmlFor='role-select'
+                                    >
+                                        Rundentyp
+                                    </InputLabel>
+                                    <Select
+                                        fullWidth
+                                        inputProps={{
+                                            name: "roundType",
+                                            id: "roundType-select",
+                                        }}
+                                        value={localRound.roundType}
+                                        onChange={(e) => {
+                                            this.setState((prevState) => {
+                                                let localRound = Object.assign(
+                                                    {},
+                                                    prevState.localRound
+                                                ); // creating copy of state variable
+                                                localRound.roundType =
+                                                    e.target.value; // update the name property, assign a new value
+                                                return { localRound }; // return new object
+                                            });
+                                        }}
+                                    >
+                                        <MenuItem value='qualifying'>
+                                            {translate(
+                                                "round.roundTypes.qualifying"
+                                            )}
+                                        </MenuItem>
+                                        <MenuItem value='intermediate'>
+                                            {translate(
+                                                "round.roundTypes.intermediate"
+                                            )}
+                                        </MenuItem>
+                                        <MenuItem value='hope'>
+                                            {translate("round.roundTypes.hope")}
+                                        </MenuItem>
+                                        <MenuItem value='finals'>
+                                            {translate(
+                                                "round.roundTypes.finals"
+                                            )}
+                                        </MenuItem>
+                                    </Select>
+                                </div>
+                                <div className={classes.inputContent}>
+                                    <InputLabel
+                                        required={true}
+                                        shrink={true}
+                                        className={classes.inputContent}
+                                        htmlFor='role-select'
+                                    >
+                                        Tanzklasse
+                                    </InputLabel>
+                                    <Select
+                                        fullWidth
+                                        inputProps={{
+                                            name: "league",
+                                            id: "league-select",
+                                        }}
+                                        value={localRound.league}
+                                        onChange={(e) => {
+                                            alert(e.target.value);
+                                            this.setState((prevState) => {
+                                                let localRound = Object.assign(
+                                                    {},
+                                                    prevState.localRound
+                                                ); // creating copy of state variable
+                                                localRound.league =
+                                                    e.target.value; // update the name property, assign a new value
+                                                return { localRound }; // return new object
+                                            });
+                                        }}
+                                    >
+                                        {[
+                                            "RR_A",
+                                            "RR_B",
+                                            "RR_C",
+                                            "RR_J",
+                                            "RR_S",
+                                            "RR_S1",
+                                            "RR_S2",
+                                        ].map((value) => {
+                                            return (
+                                                <MenuItem value={value}>
+                                                    {translate(
+                                                        "athlete.leagues." +
+                                                            value
+                                                    )}
+                                                </MenuItem>
+                                            );
+                                        })}
+                                    </Select>
+                                </div>
                                 <div className={classes.inputContent}>
                                     <InputLabel
                                         required={true}
@@ -783,4 +863,6 @@ RoundDialog.propTypes = {
     handleClose: PropTypes.func.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(withProps(RoundDialog));
+export default withStyles(styles, { withTheme: true })(
+    withLocalize(withProps(RoundDialog))
+);

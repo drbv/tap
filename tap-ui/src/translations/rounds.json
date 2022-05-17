@@ -1,0 +1,18 @@
+{
+  "round":{
+    "roundType":["Rundentyp", "Type"],
+    "roundTypes":{
+      "qualifying":["Vorrunde", "Qualifying round"],
+      "intermediate":["Zwischenrunde", "Intermediate round"],
+      "hope":["Hoffnungsrunde", "Round of hope"],
+      "finals":["Endrunde", "Final round"]
+    },
+    "status":["Status", "Status"],
+    "stati":{
+      "running":["Laufend", "Running"],
+      "blocked":["Gestoppt", "Blocked"],
+      "prepared":["Vorbereitet", "Prepared"]
+    },
+    "actions":["Aktionen", "Actions"]
+  }
+}

@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
+import { Translate, withLocalize } from "react-localize-redux";
+
 import MUIDataTable from "mui-datatables";
 import {
     LinearProgress,
@@ -13,6 +15,9 @@ import { Edit, Delete, PeopleAlt } from "@material-ui/icons";
 import { getCollection } from "../../Database";
 import RoundSetDialog from "./RoundSetDialog";
 import RoundDialog from "./RoundDialog";
+
+import roundTranslation from "../../translations/rounds.json";
+import athleteTranslation from "../../translations/athletes.json";
 
 const styles = (theme) => ({
     root: {
@@ -47,6 +52,8 @@ class Rounds extends Component {
         };
 
         this.subs = [];
+        this.props.addTranslation(roundTranslation);
+        this.props.addTranslation(athleteTranslation);
     }
 
     async componentDidMount() {
@@ -78,7 +85,7 @@ class Rounds extends Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, translate } = this.props;
         const {
             Rounds,
             roundToEdit,
@@ -139,13 +146,33 @@ class Rounds extends Component {
                                 name: "roundId",
                                 options: {
                                     filter: false,
+                                    display: "excluded",
                                 },
                             },
                             {
-                                name: "roundName",
+                                name: "roundType",
+                                label: translate("round.roundType"),
                                 options: {
                                     filter: false,
                                     sort: true,
+                                    customBodyRender: (value) => {
+                                        return translate(
+                                            "round.roundTypes." + value
+                                        );
+                                    },
+                                },
+                            },
+                            {
+                                name: "league",
+                                label: translate("athlete.league"),
+                                options: {
+                                    filter: false,
+                                    sort: true,
+                                    customBodyRender: (value) => {
+                                        return translate(
+                                            "athlete.leagues." + value
+                                        );
+                                    },
                                 },
                             },
                             {
@@ -176,7 +203,7 @@ class Rounds extends Component {
                                 name: "judgeIds",
                                 options: {
                                     filter: false,
-                                    excluded: true,
+                                    display: "excluded",
                                     sort: true,
                                 },
                             },
@@ -184,7 +211,7 @@ class Rounds extends Component {
                                 name: "acroJudgeIds",
                                 options: {
                                     filter: false,
-                                    excluded: true,
+                                    display: "excluded",
                                     sort: true,
                                 },
                             },
@@ -192,19 +219,30 @@ class Rounds extends Component {
                                 name: "observerIds",
                                 options: {
                                     filter: false,
-                                    excluded: true,
+                                    display: "excluded",
                                     sort: true,
                                 },
                             },
                             {
                                 name: "status",
+                                label: translate("round.status"),
                                 options: {
                                     filter: false,
                                     sort: true,
+                                    customBodyRender: (
+                                        value,
+                                        tableMeta,
+                                        updateValue
+                                    ) => {
+                                        return translate(
+                                            "round.stati." + value
+                                        );
+                                    },
                                 },
                             },
                             {
-                                name: "aktionen",
+                                name: "actions",
+                                label: translate("round.actions"),
                                 options: {
                                     filter: false,
                                     sort: false,
@@ -229,29 +267,31 @@ class Rounds extends Component {
                                                                                     roundId:
                                                                                         tableMeta
                                                                                             .rowData[0],
-                                                                                    roundName:
+                                                                                    roundType:
                                                                                         tableMeta
                                                                                             .rowData[1],
+                                                                                    league: tableMeta
+                                                                                        .rowData[2],
                                                                                     subrounds:
                                                                                         tableMeta
-                                                                                            .rowData[2],
+                                                                                            .rowData[3],
                                                                                     evaluationTemplateId:
                                                                                         tableMeta
-                                                                                            .rowData[3],
+                                                                                            .rowData[4],
                                                                                     acroTemplateId:
                                                                                         tableMeta
-                                                                                            .rowData[4],
+                                                                                            .rowData[5],
                                                                                     judgeIds:
                                                                                         tableMeta
-                                                                                            .rowData[5],
+                                                                                            .rowData[6],
                                                                                     acroJudgeIds:
                                                                                         tableMeta
-                                                                                            .rowData[6],
+                                                                                            .rowData[7],
                                                                                     observerIds:
                                                                                         tableMeta
-                                                                                            .rowData[7],
+                                                                                            .rowData[8],
                                                                                     status: tableMeta
-                                                                                        .rowData[8],
+                                                                                        .rowData[9],
                                                                                 },
                                                                         }
                                                                     );
@@ -314,4 +354,6 @@ Rounds.defaultProps = {
     },
 };
 
-export default withStyles(styles, { withTheme: true })(withRouter(Rounds));
+export default withStyles(styles, { withTheme: true })(
+    withLocalize(withRouter(Rounds))
+);
