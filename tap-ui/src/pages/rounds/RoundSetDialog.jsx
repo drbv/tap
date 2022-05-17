@@ -4,9 +4,12 @@ import { PropTypes } from "prop-types";
 import withStyles from "@material-ui/core/es/styles/withStyles";
 
 import { isRxCollection, isRxDatabase, isRxDocument } from "rxdb";
+import { withLocalize } from "react-localize-redux";
 
 import withProps from "../../components/HOC";
-import * as Database from "../../Database";
+import { getCollection, closeCollection } from "../../Database";
+
+import athleteTranslation from "../../translations/athletes.json";
 
 //components and libraries
 import {
@@ -65,31 +68,25 @@ class RoundSetDialog extends React.Component {
             roundLimitations: [],
         };
         this.subs = [];
-    }
-
-    async componentDidMount() {
-        this.setState({ db: await Database.getClientDb() });
+        this.props.addTranslation(athleteTranslation);
     }
 
     async loadNumberCouples(className) {
-        const sub = await this.state.db.couples
+        let collection = await getCollection("competition");
+        let value = await collection
             .find({
                 selector: {
-                    class: className,
+                    league: className,
                 },
             })
-            .$.subscribe((value) => {
-                if (!value) {
-                    return;
-                }
-                console.log("reload number couples in class");
-                console.dir(value.length);
-                this.setState({
-                    numberCouples: value.length,
-                });
-            });
-        this.subs.push(sub);
-        this.setState({ suggestedNumber: this.state.numberCouples });
+            .exec();
+
+        console.log("reload number couples in class");
+        console.dir(value.length);
+        this.setState({
+            numberCouples: value.length,
+            suggestedNumber: value.length,
+        });
     }
 
     async componentDidUpdate(prevProps, prevState) {
@@ -131,7 +128,7 @@ class RoundSetDialog extends React.Component {
     }
 
     render() {
-        const { classes } = this.props;
+        const { classes, translate } = this.props;
         const {
             localRoundSet,
             roundLimitations,
@@ -179,17 +176,29 @@ class RoundSetDialog extends React.Component {
                                     });
                                 }}
                             >
-                                <MenuItem value='sClass'>Schüler</MenuItem>
-                                <MenuItem value='jClass'>Junioren</MenuItem>
-                                <MenuItem value='cClass'>C-Klasse</MenuItem>
-                                <MenuItem value='bClass'>B-Klasse</MenuItem>
-                                <MenuItem value='aClass'>A-Klasse</MenuItem>
+                                {[
+                                    "RR_A",
+                                    "RR_B",
+                                    "RR_C",
+                                    "RR_J",
+                                    "RR_S",
+                                    "RR_S1",
+                                    "RR_S2",
+                                ].map((value) => {
+                                    return (
+                                        <MenuItem value={value}>
+                                            {translate(
+                                                "athlete.leagues." + value
+                                            )}
+                                        </MenuItem>
+                                    );
+                                })}
                             </Select>
                             {localRoundSet && localRoundSet.class && (
                                 <div>
                                     <Input
                                         className={classes.input}
-                                        value={this.state.suggestedNumber}
+                                        value={this.state.numberCouples}
                                         margin='dense'
                                         onChange={(e) => {
                                             this.setState({
@@ -335,5 +344,5 @@ RoundSetDialog.propTypes = {
 };
 
 export default withStyles(styles, { withTheme: true })(
-    withProps(RoundSetDialog)
+    withLocalize(withProps(RoundSetDialog))
 );

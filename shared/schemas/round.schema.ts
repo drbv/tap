@@ -9,7 +9,10 @@ export const RoundSchema = {
             type: "string",
             final: true,
         },
-        roundName: {
+        league: {
+            type: "string",
+        },
+        roundType: {
             type: "string",
         },
         subrounds: {
@@ -57,5 +60,5 @@ export const RoundSchema = {
             type: "string",
         },
     },
-    required: ['roundId', 'roundName'],
+    required: ['roundId'],
 }
