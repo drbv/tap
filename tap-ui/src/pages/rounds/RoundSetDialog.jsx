@@ -31,6 +31,7 @@ import {
     FormHelperText,
     FormControl,
     CircularProgress,
+    Grid,
 } from "@material-ui/core";
 import { Delete, Add } from "@material-ui/icons";
 import { Tooltip } from "@material-ui/core";
@@ -106,16 +107,35 @@ class RoundSetDialog extends React.Component {
     }
 
     async atomicUpsertRoundSet() {
-        await this.state.db.roundsets.atomicUpsert(this.state.localRoundSet);
+        await getCollection("round").then(async (collection) => {
+            this.state.roundLimitations.map((round, index) => {
+                let roundType = "";
+                switch (index) {
+                    case 0:
+                        roundType = "qualifying";
+                        break;
+                    case this.state.roundLimitations.length - 1:
+                        roundType = "finals";
+                        break;
+                    default:
+                        roundType = "intermediate";
+                }
+                collection.atomicUpsert({
+                    roundId: Date.now().toString() + index,
+                    league: this.state.localRoundSet.class,
+                    roundType: roundType,
+                });
+            });
+        });
     }
 
     buildRoundLimitations(numberCouples) {
         let localRoundLimitations = [];
         localRoundLimitations.push({ limit: numberCouples });
         for (let i = 1; numberCouples > 7; i++) {
-            if ((numberCouples / 100) * 90 > (numberCouples / 100) * 10) {
+            if ((numberCouples / 100) * 90 > (numberCouples / 100) * 40) {
                 let newLimit = Math.ceil(
-                    ((numberCouples / 100) * 90 + (numberCouples / 100) * 10) /
+                    ((numberCouples / 100) * 90 + (numberCouples / 100) * 40) /
                         2
                 );
                 numberCouples = newLimit;
@@ -125,6 +145,17 @@ class RoundSetDialog extends React.Component {
             }
         }
         this.setState({ roundLimitations: localRoundLimitations });
+    }
+
+    renderSwitch(index) {
+        switch (index) {
+            case 0:
+                return "Vorrunde";
+            case this.state.roundLimitations.length - 1:
+                return "Endrunde";
+            default:
+                return index + ". Zwischenrunde";
+        }
     }
 
     render() {
@@ -148,141 +179,201 @@ class RoundSetDialog extends React.Component {
                         Nutzer anlegen / bearbeiten
                     </DialogTitle>
                     <DialogContent dividers>
-                        <div className={classes.inputContent}>
-                            <InputLabel
-                                required={true}
-                                shrink={true}
-                                className={classes.inputContent}
-                                htmlFor='class-select'
-                            >
-                                Tanzklasse
-                            </InputLabel>
-                            <Select
-                                fullWidth
-                                inputProps={{
-                                    name: "class",
-                                    id: "class-select",
-                                }}
-                                value={localRoundSet.class}
-                                onChange={(e) => {
-                                    this.setState((prevState) => {
-                                        let localRoundSet = Object.assign(
-                                            {},
-                                            prevState.localRoundSet
-                                        ); // creating copy of state variable
-                                        localRoundSet.class = e.target.value; // update the name property, assign a new value
-                                        this.loadNumberCouples(e.target.value);
-                                        return { localRoundSet }; // return new object
-                                    });
-                                }}
-                            >
-                                {[
-                                    "RR_A",
-                                    "RR_B",
-                                    "RR_C",
-                                    "RR_J",
-                                    "RR_S",
-                                    "RR_S1",
-                                    "RR_S2",
-                                ].map((value) => {
-                                    return (
-                                        <MenuItem value={value}>
-                                            {translate(
-                                                "athlete.leagues." + value
-                                            )}
-                                        </MenuItem>
-                                    );
-                                })}
-                            </Select>
-                            {localRoundSet && localRoundSet.class && (
-                                <div>
-                                    <Input
-                                        className={classes.input}
-                                        value={this.state.numberCouples}
-                                        margin='dense'
+                        <Grid
+                            container
+                            direction='row'
+                            justifyContent='center'
+                            alignItems='flex-end'
+                            spacing={2}
+                        >
+                            <Grid item xs={3}>
+                                <div className={classes.inputContent}>
+                                    <InputLabel
+                                        required={true}
+                                        shrink={true}
+                                        className={classes.inputContent}
+                                        htmlFor='class-select'
+                                    >
+                                        Tanzklasse
+                                    </InputLabel>
+                                    <Select
+                                        fullWidth
+                                        inputProps={{
+                                            name: "class",
+                                            id: "class-select",
+                                        }}
+                                        value={localRoundSet.class}
                                         onChange={(e) => {
+                                            this.setState((prevState) => {
+                                                let localRoundSet =
+                                                    Object.assign(
+                                                        {},
+                                                        prevState.localRoundSet
+                                                    ); // creating copy of state variable
+                                                localRoundSet.class =
+                                                    e.target.value; // update the name property, assign a new value
+                                                this.loadNumberCouples(
+                                                    e.target.value
+                                                );
+                                                return { localRoundSet }; // return new object
+                                            });
                                             this.setState({
-                                                suggestedNumber: e.target.value,
+                                                roundLimitations: [],
                                             });
                                         }}
-                                        inputProps={{
-                                            step: 1,
-                                            min: 0,
-                                            max: 1000,
-                                            type: "number",
-                                            "aria-labelledby": "input-slider",
-                                        }}
-                                    />
-                                    <Button
-                                        className={classes.newRoundButton}
-                                        color='inherit'
-                                        variant='outlined'
-                                        color='primary'
-                                        onClick={() => {
-                                            this.buildRoundLimitations(
-                                                suggestedNumber
-                                            );
-                                        }}
                                     >
-                                        Rundenanzahl berechnen
-                                    </Button>
+                                        {[
+                                            "RR_A",
+                                            "RR_B",
+                                            "RR_C",
+                                            "RR_J",
+                                            "RR_S",
+                                            "RR_S1",
+                                            "RR_S2",
+                                        ].map((value) => {
+                                            return (
+                                                <MenuItem value={value}>
+                                                    {translate(
+                                                        "athlete.leagues." +
+                                                            value
+                                                    )}
+                                                </MenuItem>
+                                            );
+                                        })}
+                                    </Select>
                                 </div>
-                            )}
-                            {roundLimitations.map((roundLimit, index) => {
-                                return (
-                                    <div>
-                                        <Typography
-                                            id='discrete-slider'
-                                            gutterBottom
-                                        >
-                                            {"Runde " + (index + 1)}
-                                        </Typography>
-                                        <div className={classes.row}>
-                                            <Slider
-                                                defaultValue={roundLimit.limit}
-                                                aria-labelledby='discrete-slider-small-steps'
-                                                step={1}
-                                                min={0}
-                                                max={suggestedNumber}
-                                                onDragStop={(e) => {
-                                                    let localRoundLimitations =
-                                                        this.state
-                                                            .roundLimitations;
-                                                    localRoundLimitations[
-                                                        index
-                                                    ].limit = parseInt(
-                                                        e.target.value
-                                                    );
-                                                    this.setState({
-                                                        roundLimitations:
-                                                            localRoundLimitations,
-                                                    });
-                                                }}
-                                                valueLabelDisplay='auto'
-                                            />
-                                            <Tooltip title='Entfernen'>
-                                                <IconButton
-                                                    onClick={() => {
+                            </Grid>
+                            <Grid item xs={3}>
+                                <InputLabel
+                                    required={true}
+                                    shrink={true}
+                                    className={classes.inputContent}
+                                    htmlFor='number-select'
+                                >
+                                    Anzahl Paare
+                                </InputLabel>
+                                <Input
+                                    inputProps={{
+                                        name: "number",
+                                        id: "number-select",
+                                    }}
+                                    disabled={
+                                        !(localRoundSet && localRoundSet.class)
+                                    }
+                                    className={classes.input}
+                                    value={this.state.suggestedNumber}
+                                    margin='dense'
+                                    onChange={(e) => {
+                                        this.setState({
+                                            suggestedNumber: e.target.value,
+                                            roundLimitations: [],
+                                        });
+                                    }}
+                                    inputProps={{
+                                        step: 1,
+                                        min: 0,
+                                        max: 1000,
+                                        type: "number",
+                                        "aria-labelledby": "input-slider",
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Button
+                                    style={{ fontSize: "13px" }}
+                                    disabled={
+                                        !(localRoundSet && localRoundSet.class)
+                                    }
+                                    className={classes.newRoundButton}
+                                    color='inherit'
+                                    variant='outlined'
+                                    color='primary'
+                                    onClick={() => {
+                                        this.buildRoundLimitations(
+                                            suggestedNumber
+                                        );
+                                    }}
+                                >
+                                    Rundenaufteilung berechnen
+                                </Button>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            container
+                            direction='row'
+                            justifyContent='center'
+                            alignItems='flex-end'
+                            spacing={2}
+                        >
+                            <Grid item xs={12}>
+                                {roundLimitations.map((roundLimit, index) => {
+                                    return (
+                                        <div>
+                                            <Typography
+                                                id='discrete-slider'
+                                                gutterBottom
+                                            >
+                                                {this.renderSwitch(index)}
+                                            </Typography>
+                                            <div className={classes.row}>
+                                                <Slider
+                                                    disabled={index == 0}
+                                                    defaultValue={
+                                                        roundLimit.limit
+                                                    }
+                                                    aria-labelledby='discrete-slider-small-steps'
+                                                    step={1}
+                                                    min={0}
+                                                    max={suggestedNumber}
+                                                    onChangeCommitted={(
+                                                        e,
+                                                        value
+                                                    ) => {
                                                         let localRoundLimitations =
-                                                            this.state
-                                                                .roundLimitations;
-                                                        localRoundLimitations.splice(
-                                                            index,
-                                                            1
-                                                        );
+                                                            roundLimitations;
+                                                        localRoundLimitations[
+                                                            index
+                                                        ].limit =
+                                                            parseInt(value);
                                                         this.setState({
                                                             roundLimitations:
                                                                 localRoundLimitations,
                                                         });
                                                     }}
-                                                >
-                                                    <Delete />
-                                                </IconButton>
-                                            </Tooltip>
+                                                    valueLabelDisplay='auto'
+                                                    marks={[
+                                                        index > 0 && {
+                                                            value: roundLimitations[
+                                                                index - 1
+                                                            ].limit,
+                                                            label: "max",
+                                                        },
+                                                    ]}
+                                                />
+                                                <Tooltip title='Entfernen'>
+                                                    <IconButton
+                                                        onClick={() => {
+                                                            let localRoundLimitations =
+                                                                this.state
+                                                                    .roundLimitations;
+                                                            localRoundLimitations.splice(
+                                                                index,
+                                                                1
+                                                            );
+                                                            this.setState({
+                                                                roundLimitations:
+                                                                    localRoundLimitations,
+                                                            });
+                                                        }}
+                                                    >
+                                                        <Delete />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </div>
                                         </div>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
+                            </Grid>
                             <Tooltip title='Weitere Runde'>
                                 <IconButton
                                     onClick={() => {
@@ -300,7 +391,7 @@ class RoundSetDialog extends React.Component {
                                     <Add />
                                 </IconButton>
                             </Tooltip>
-                        </div>
+                        </Grid>
                     </DialogContent>
                     <DialogActions>
                         <Button
