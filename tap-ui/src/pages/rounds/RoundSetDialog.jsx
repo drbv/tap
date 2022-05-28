@@ -63,8 +63,8 @@ class RoundSetDialog extends React.Component {
         super(props);
 
         this.state = {
-            localRoundSet: null,
             numberCouples: null,
+            selectedClass: null,
             suggestedNumber: null,
             roundLimitations: [],
         };
@@ -106,15 +106,16 @@ class RoundSetDialog extends React.Component {
         }
     }
 
-    async atomicUpsertRoundSet() {
-        await getCollection("round").then(async (collection) => {
-            this.state.roundLimitations.map((round, index) => {
+    atomicUpsertRoundSet() {
+        const { selectedClass, roundLimitations } = this.state;
+        getCollection("round").then(async (collection) => {
+            roundLimitations.map((round, index) => {
                 let roundType = "";
                 switch (index) {
                     case 0:
                         roundType = "qualifying";
                         break;
-                    case this.state.roundLimitations.length - 1:
+                    case roundLimitations.length - 1:
                         roundType = "finals";
                         break;
                     default:
@@ -122,8 +123,9 @@ class RoundSetDialog extends React.Component {
                 }
                 collection.atomicUpsert({
                     roundId: Date.now().toString() + index,
-                    league: this.state.localRoundSet.class,
+                    league: selectedClass,
                     roundType: roundType,
+                    status: "blocked",
                 });
             });
         });
@@ -161,13 +163,13 @@ class RoundSetDialog extends React.Component {
     render() {
         const { classes, translate } = this.props;
         const {
-            localRoundSet,
+            selectedClass,
             roundLimitations,
             suggestedNumber,
             numberCouples,
         } = this.state;
 
-        return localRoundSet ? (
+        return (
             <div>
                 <Dialog
                     open={this.props.open}
@@ -202,21 +204,19 @@ class RoundSetDialog extends React.Component {
                                             name: "class",
                                             id: "class-select",
                                         }}
-                                        value={localRoundSet.class}
+                                        value={selectedClass}
                                         onChange={(e) => {
-                                            this.setState((prevState) => {
-                                                let localRoundSet =
-                                                    Object.assign(
-                                                        {},
-                                                        prevState.localRoundSet
-                                                    ); // creating copy of state variable
-                                                localRoundSet.class =
-                                                    e.target.value; // update the name property, assign a new value
-                                                this.loadNumberCouples(
-                                                    e.target.value
-                                                );
-                                                return { localRoundSet }; // return new object
-                                            });
+                                            this.setState(
+                                                {
+                                                    selectedClass:
+                                                        e.target.value,
+                                                },
+                                                () => {
+                                                    this.loadNumberCouples(
+                                                        e.target.value
+                                                    );
+                                                }
+                                            );
                                             this.setState({
                                                 roundLimitations: [],
                                             });
@@ -257,9 +257,7 @@ class RoundSetDialog extends React.Component {
                                         name: "number",
                                         id: "number-select",
                                     }}
-                                    disabled={
-                                        !(localRoundSet && localRoundSet.class)
-                                    }
+                                    disabled={!selectedClass}
                                     className={classes.input}
                                     value={this.state.suggestedNumber}
                                     margin='dense'
@@ -281,9 +279,7 @@ class RoundSetDialog extends React.Component {
                             <Grid item xs={6}>
                                 <Button
                                     style={{ fontSize: "13px" }}
-                                    disabled={
-                                        !(localRoundSet && localRoundSet.class)
-                                    }
+                                    disabled={!selectedClass}
                                     className={classes.newRoundButton}
                                     color='inherit'
                                     variant='outlined'
@@ -417,8 +413,6 @@ class RoundSetDialog extends React.Component {
                     </DialogActions>
                 </Dialog>
             </div>
-        ) : (
-            ""
         );
     }
 }

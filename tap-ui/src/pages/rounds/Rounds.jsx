@@ -79,6 +79,18 @@ class Rounds extends Component {
         });
     }
 
+    async deleteRound(roundId) {
+        getCollection("round").then(async (collection) => {
+            await collection
+                .findOne({
+                    selector: {
+                        roundId: roundId,
+                    },
+                })
+                .remove();
+        });
+    }
+
     componentWillUnmount() {
         // Unsubscribe from all subscriptions
         this.subs.forEach((sub) => sub.unsubscribe());
