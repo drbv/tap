@@ -118,7 +118,7 @@ export class Database {
 
     static async createCompetitionDB(name: string): Promise<RxDatabase> {
         const db: RxDatabase = await createRxDatabase({
-            name: "./" + name,
+            name: name,
             storage: getRxStoragePouch('websql'),
             ignoreDuplicate: true,
         });
@@ -186,7 +186,7 @@ export class Database {
 
     static async createBaseDB(name: string): Promise<RxDatabase> {
         const db: RxDatabase = await createRxDatabase({
-            name: "./" + name,
+            name: name,
             storage: getRxStoragePouch('websql'),
             ignoreDuplicate: true,
         });

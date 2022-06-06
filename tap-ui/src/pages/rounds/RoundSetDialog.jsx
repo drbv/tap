@@ -162,12 +162,7 @@ class RoundSetDialog extends React.Component {
 
     render() {
         const { classes, translate } = this.props;
-        const {
-            selectedClass,
-            roundLimitations,
-            suggestedNumber,
-            numberCouples,
-        } = this.state;
+        const { selectedClass, roundLimitations, suggestedNumber } = this.state;
 
         return (
             <div>
