@@ -51,7 +51,7 @@ export async function getCollection(collection: string) {
 
     // sync local collection with server
     var repState = rxCollection.syncCouchDB({
-        remote: "http://localhost:5000/db/1220200/" + collection,
+        remote: "http://localhost:5001/db/1220200/" + collection,
         waitForLeadership: false,
         options: {
             live: true,
@@ -78,7 +78,7 @@ export async function getBaseCollection(collection: string) {
 
     // sync local collection with server
     var repState = rxCollection.syncCouchDB({
-        remote: "http://localhost:5000/basedb/" + collection,
+        remote: "http://localhost:5001/basedb/" + collection,
         waitForLeadership: false,
         options: {
             live: true,
