@@ -1,0 +1,1 @@
+// Panel for Observer will be defined here

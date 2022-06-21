@@ -20,6 +20,8 @@ import {PhaseSchema} from '../../shared/schemas/phase.schema';
 import {UserSchema} from '../../shared/schemas/user.schema';
 import {ScoringRuleSchema} from '../../shared/schemas/scoringRule.schema';
 
+// import scoringRuleCompetitionDefaults from '../template/competitionDB/scoringrule.json'
+
 addRxPlugin(RxDBServerPlugin)
 addPouchPlugin(pouchdb_adapter_node_websql)
 
@@ -83,7 +85,7 @@ export class Database {
     }
 
     public static async getAdminDB(): Promise<RxDatabase> {
-        const name = "adminDB";
+        const name = "admindb";
 
         // get database from dbList by name
         let db = this.dbList.get(name);
@@ -100,7 +102,7 @@ export class Database {
     }
 
     public static async getBaseDB(): Promise<RxDatabase> {
-        const name = "baseDB";
+        const name = "basedb";
 
         // get database from dbList by name
         let db = this.dbList.get(name);
@@ -118,7 +120,7 @@ export class Database {
 
     static async createCompetitionDB(name: string): Promise<RxDatabase> {
         const db: RxDatabase = await createRxDatabase({
-            name: name,
+            name: 'c'+name,
             storage: getRxStoragePouch('websql'),
             ignoreDuplicate: true,
         });
@@ -154,6 +156,10 @@ export class Database {
         } catch (e) {
             console.log('error: ', e);
         }
+
+        // await db.scoringrule.bulkUpsert(
+        //     scoringRuleCompetitionDefaults
+        // )
 
         console.log(name + ' initialized.');
         return db;
