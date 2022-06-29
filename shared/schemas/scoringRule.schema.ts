@@ -1,58 +1,90 @@
 export const ScoringRuleSchema = {
-  title: 'Schema for defininig scoringRules',
+  title: "Schema for defininig scoringRules",
   description:
-    'Database schema for storing definitions for evaluations that can be used in rounds',
+    "Database schema for storing definitions for evaluations that can be used in rounds",
   version: 0,
-  primaryKey: 'id',
-  type: 'object',
+  primaryKey: "id",
+  type: "object",
   properties: {
     id: {
-      type: 'string',
+      type: "string",
       final: true,
     },
-    name: {
-      type: 'string',
+    rounds: {
+      type: "object",
+      properties: {
+        qualifying: { type: "boolean" },
+        intermediate: { type: "boolean" },
+        semifinals: { type: "boolean" },
+        finals: { type: "boolean" },
+      },
+    },
+    acrobatic: {
+      type: "boolean",
+    },
+    league: {
+      type: "string",
     },
     categories: {
-      type: 'array',
+      type: "array",
       items: {
-        type: 'object',
+        type: "object",
         properties: {
           name: {
-            type: 'string',
+            type: "string",
           },
           min: {
-            type: 'number',
+            type: "number",
           },
           max: {
-            type: 'number',
+            type: "number",
           },
           step: {
-            type: 'number',
+            type: "number",
           },
         },
       },
     },
-    boni: {
-      type: 'array',
+    deduction: {
+      type: "array",
       items: {
-        type: 'object',
+        type: "object",
         properties: {
           name: {
-            type: 'string',
+            type: "string",
           },
           value: {
-            type: 'number',
+            type: "number",
           },
           limit: {
-            type: 'number',
+            type: "number",
           },
           color: {
-            type: 'string',
+            type: "string",
+          },
+        },
+      },
+    },
+    bonus: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          name: {
+            type: "string",
+          },
+          value: {
+            type: "number",
+          },
+          limit: {
+            type: "number",
+          },
+          color: {
+            type: "string",
           },
         },
       },
     },
   },
-  required: ['id', 'name'],
+  required: ["id", "rounds", "league", "acrobatic"],
 };

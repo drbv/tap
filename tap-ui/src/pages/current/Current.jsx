@@ -15,6 +15,7 @@ import withProps from "../../components/HOC";
 import { getCollection } from "../../Database";
 import GeneralPanel from "./GeneralPanel";
 import AcroPanel from "./AcroPanel";
+import ObserverPanel from "./ObserverPanel";
 
 const styles = {
   root: {
@@ -152,28 +153,36 @@ class Current extends Component {
 
     return currentHeat ? (
       <div>
-        <Grid className={classes.root} spacing={2}>
-          <Grid container justifyContent="center" spacing={1}>
-            <Grid item xs={12}>
-              <Grid item xs={6}>
-                <Paper className={classes.paper}>
-                  {round && round.judgeIds.includes(this.props.user.id) && (
-                    <GeneralPanel
-                      evaluationTemplate={currentEvaluation}
-                      heat={currentHeat}
-                      round={round}
-                    />
-                  )}
-                  {round && round.acroJudgeIds.includes(this.props.user.id) && (
+        <Grid
+          className={classes.root}
+          container
+          justifyContent="center"
+          spacing={1}
+        >
+          <Grid item xs={12}>
+            <Paper className={classes.paper}>
+              {/* {round && round.judgeIds.includes(this.props.user.id) && (
+                <GeneralPanel
+                  evaluationTemplate={currentEvaluation}
+                  heat={currentHeat}
+                  round={round}
+                />
+              )} */}
+              {/* {round && round.acroJudgeIds.includes(this.props.user.id) && (
                     <AcroPanel
                       acroTemplate={currentAcroTemplate}
                       heat={currentHeat}
                       round={round}
                     />
-                  )}
-                </Paper>
-              </Grid>
-            </Grid>
+                  )} */}
+              {round && round.observerIds.includes(this.props.user.id) && (
+                <ObserverPanel
+                  evaluationTemplate={currentEvaluation}
+                  heat={currentHeat}
+                  round={round}
+                />
+              )}
+            </Paper>
           </Grid>
         </Grid>
       </div>

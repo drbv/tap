@@ -53,6 +53,7 @@ class GeneralPanel extends Component {
         });
 
       this.subs.push(sub);
+      this.prepaireResults();
     });
   }
 
@@ -180,8 +181,8 @@ class GeneralPanel extends Component {
             );
           })}
         {evaluationTemplate &&
-          evaluationTemplate.boni &&
-          evaluationTemplate.boni.map((bonus) => {
+          evaluationTemplate.deduction &&
+          evaluationTemplate.deduction.map((bonus) => {
             return (
               <Grid item xs={2}>
                 <Button
