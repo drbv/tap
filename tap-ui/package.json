@@ -37,6 +37,7 @@
         "react-localize-redux": "^3.5.3",
         "react-router-dom": "^5.2.0",
         "react-scripts": "^4.0.3",
+        "react-stopwatch": "^2.0.4",
         "reactstrap": "^9.0.1",
         "rxdb": "^10.5.4",
         "rxjs": "^7.4.0",
