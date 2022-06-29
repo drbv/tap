@@ -1,37 +1,30 @@
-import {
-    addPouchPlugin,
-    addRxPlugin,
-    createRxDatabase,
-    getRxStoragePouch,
-    RxDatabase,
-} from "rxdb"
-import { RxDBNoValidatePlugin } from "rxdb/plugins/no-validate"
-import { RxDBLeaderElectionPlugin } from "rxdb/plugins/leader-election"
-import { RxDBReplicationCouchDBPlugin } from "rxdb/plugins/replication-couchdb"
+import {addPouchPlugin, addRxPlugin, createRxDatabase, getRxStoragePouch,} from "rxdb"
+import {RxDBNoValidatePlugin} from "rxdb/plugins/no-validate"
+import {RxDBLeaderElectionPlugin} from "rxdb/plugins/leader-election"
+import {RxDBReplicationCouchDBPlugin} from "rxdb/plugins/replication-couchdb"
 import pouchdb_adapter_http from "pouchdb-adapter-http"
-import pouchdb_adapter_websql from "pouchdb-adapter-websql"
+import pouchdb_adapter_idb from "pouchdb-adapter-idb";
+import {globalAgent} from "http";
+
 import { AthleteSchema } from "../../shared/schemas/athlete.schema"
 import { TeamSchema } from "../../shared/schemas/team.schema"
 import { OfficialSchema } from "../../shared/schemas/official.schema"
 import { AcroSchema } from "../../shared/schemas/acro.schema"
 import { AppointmentSchema } from "shared/schemas/appointment.schema"
 import { PhaseSchema} from "shared/schemas/phase.schema"
-import {
-    CompetitionSchema
-} from "../../shared/schemas/competition.schema"
+import { CompetitionSchema } from "../../shared/schemas/competition.schema"
 import { RoundSchema } from "../../shared/schemas/round.schema"
 import { ScoringRuleSchema } from "../../shared/schemas/scoringRule.schema"
 import { UserSchema } from "../../shared/schemas/user.schema"
 import { RoundResultSchema } from "../../shared/schemas/roundResult.schema"
 import { CurrentCompetitionSchema } from "../../shared/schemas/currentCompetition.schema"
 
-addRxPlugin(RxDBReplicationCouchDBPlugin)
-addRxPlugin(RxDBNoValidatePlugin)
-addRxPlugin(RxDBLeaderElectionPlugin)
-addPouchPlugin(pouchdb_adapter_http)
-// addPouchPlugin(pouchdb_adapter_websql)
-addPouchPlugin(require('pouchdb-adapter-idb'));
-require('http').globalAgent.maxSockets = 50;
+addRxPlugin(RxDBReplicationCouchDBPlugin);
+addRxPlugin(RxDBNoValidatePlugin);
+addRxPlugin(RxDBLeaderElectionPlugin);
+addPouchPlugin(pouchdb_adapter_http);
+addPouchPlugin(pouchdb_adapter_idb);
+globalAgent.maxSockets = 50;
 
 let dbPromise: any = null
 const activeSyncs = new Map()

@@ -1,12 +1,7 @@
-import {
-    addPouchPlugin,
-    addRxPlugin,
-    createRxDatabase,
-    getRxStoragePouch,
-    RxDatabase,
-} from "rxdb";
-import { RxDBServerPlugin } from "rxdb/plugins/server";
-import pouchdb_adapter_node_websql from "pouchdb-adapter-node-websql";
+import {addPouchPlugin, addRxPlugin, createRxDatabase, getRxStoragePouch, RxDatabase,} from 'rxdb'
+import {RxDBServerPlugin} from 'rxdb/plugins/server'
+import * as LeveldownAdapter from 'pouchdb-adapter-leveldb';
+import leveldown from 'leveldown';
 
 import { AthleteSchema } from "../../shared/schemas/athlete.schema";
 import { OfficialSchema } from "../../shared/schemas/official.schema";
@@ -24,8 +19,8 @@ import { ScoringRuleSchema } from "../../shared/schemas/scoringRule.schema";
 
 let scoringRuleCompetitionDefaults = require("../template/competitionDB/scoringRule.json");
 
-addRxPlugin(RxDBServerPlugin);
-addPouchPlugin(pouchdb_adapter_node_websql);
+addRxPlugin(RxDBServerPlugin)
+addPouchPlugin(LeveldownAdapter)
 
 export class Database {
     private static dbList = new Map<string, RxDatabase>();
@@ -198,7 +193,7 @@ export class Database {
 
     static async createBaseDB(name: string): Promise<RxDatabase> {
         const db: RxDatabase = await createRxDatabase({
-            name: name,
+            name,
             storage: getRxStoragePouch("websql"),
             ignoreDuplicate: true,
         });
