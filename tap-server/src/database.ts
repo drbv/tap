@@ -1,29 +1,21 @@
-import {
-    addPouchPlugin,
-    addRxPlugin,
-    createRxDatabase,
-    getRxStoragePouch,
-    RxDatabase,
-} from 'rxdb'
+import {addPouchPlugin, addRxPlugin, createRxDatabase, getRxStoragePouch, RxDatabase,} from 'rxdb'
 import {RxDBServerPlugin} from 'rxdb/plugins/server'
-import pouchdb_adapter_node_websql from 'pouchdb-adapter-node-websql'
-
-import {AthleteSchema} from '../../shared/schemas/athlete.schema';
-import {OfficialSchema} from '../../shared/schemas/official.schema';
-import {TeamSchema} from '../../shared/schemas/team.schema';
-import {AcroSchema} from '../../shared/schemas/acro.schema';
-import {AppointmentSchema} from '../../shared/schemas/appointment.schema';
-import {CompetitionSchema} from '../../shared/schemas/competition.schema';
-import {RoundSchema} from '../../shared/schemas/round.schema';
-import {ResultSchema} from '../../shared/schemas/result.schema';
-import {PhaseSchema} from '../../shared/schemas/phase.schema';
-import {UserSchema} from '../../shared/schemas/user.schema';
-import {ScoringRuleSchema} from '../../shared/schemas/scoringRule.schema';
-
-// import scoringRuleCompetitionDefaults from '../template/competitionDB/scoringrule.json'
+import * as LeveldownAdapter from 'pouchdb-adapter-leveldb';
+import leveldown from 'leveldown';
+import {CompetitionSchema} from "../../shared/schemas/competition.schema";
+import {PhaseSchema} from "../../shared/schemas/phase.schema";
+import {ResultSchema} from "../../shared/schemas/result.schema";
+import {RoundSchema} from "../../shared/schemas/round.schema";
+import {ScoringRuleSchema} from "../../shared/schemas/scoring-rule.schema";
+import {UserSchema} from "../../shared/schemas/user.schema";
+import {OfficialSchema} from "../../shared/schemas/official.schema";
+import {TeamSchema} from "../../shared/schemas/team.schema";
+import {AthleteSchema} from "../../shared/schemas/athlete.schema";
+import {AcroSchema} from "../../shared/schemas/acro.schema";
+import {AppointmentSchema} from "../../shared/schemas/appointment.schema";
 
 addRxPlugin(RxDBServerPlugin)
-addPouchPlugin(pouchdb_adapter_node_websql)
+addPouchPlugin(LeveldownAdapter)
 
 export class Database {
     private static dbList = new Map<string, RxDatabase>();
@@ -146,7 +138,7 @@ export class Database {
                 round: {
                     schema: RoundSchema,
                 },
-                scoringrule: {
+                scoringRule: {
                     schema: ScoringRuleSchema,
                 },
                 user: {
@@ -168,7 +160,7 @@ export class Database {
     static async createAdminDB(name: string): Promise<RxDatabase> {
         const db: RxDatabase = await createRxDatabase({
             name: "./" + name,
-            storage: getRxStoragePouch('websql'),
+            storage: getRxStoragePouch(leveldown),
             ignoreDuplicate: true,
         });
 
@@ -192,7 +184,7 @@ export class Database {
 
     static async createBaseDB(name: string): Promise<RxDatabase> {
         const db: RxDatabase = await createRxDatabase({
-            name: name,
+            name,
             storage: getRxStoragePouch('websql'),
             ignoreDuplicate: true,
         });

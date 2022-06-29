@@ -1,28 +1,19 @@
-import {
-    addPouchPlugin,
-    addRxPlugin,
-    createRxDatabase,
-    getRxStoragePouch,
-    RxDatabase,
-} from "rxdb"
-import { RxDBNoValidatePlugin } from "rxdb/plugins/no-validate"
-import { RxDBLeaderElectionPlugin } from "rxdb/plugins/leader-election"
-import { RxDBReplicationCouchDBPlugin } from "rxdb/plugins/replication-couchdb"
+import {addPouchPlugin, addRxPlugin, createRxDatabase, getRxStoragePouch,} from "rxdb"
+import {RxDBNoValidatePlugin} from "rxdb/plugins/no-validate"
+import {RxDBLeaderElectionPlugin} from "rxdb/plugins/leader-election"
+import {RxDBReplicationCouchDBPlugin} from "rxdb/plugins/replication-couchdb"
 import pouchdb_adapter_http from "pouchdb-adapter-http"
-import pouchdb_adapter_websql from "pouchdb-adapter-websql"
-import { AthleteSchema } from "../../shared/schemas/athlete.schema"
-import { TeamSchema } from "../../shared/schemas/team.schema"
-import { OfficialSchema } from "../../shared/schemas/official.schema"
-import { AcroSchema } from "../../shared/schemas/acro.schema"
-import { AppointmentSchema } from "shared/schemas/appointment.schema"
-import { PhaseSchema} from "shared/schemas/phase.schema"
-import {
-    CompetitionSchema
-} from "../../shared/schemas/competition.schema"
-import { RoundSchema } from "../../shared/schemas/round.schema"
-import { ScoringRuleSchema } from "../../shared/schemas/scoringRule.schema"
-import { UserSchema } from "../../shared/schemas/user.schema"
-import { ResultSchema } from "../../shared/schemas/result.schema"
+import {AthleteSchema} from "../../shared/schemas/athlete.schema"
+import {TeamSchema} from "../../shared/schemas/team.schema"
+import {OfficialSchema} from "../../shared/schemas/official.schema"
+import {AcroSchema} from "../../shared/schemas/acro.schema"
+import {AppointmentSchema} from "shared/schemas/appointment.schema"
+import {PhaseSchema} from "shared/schemas/phase.schema"
+import {CompetitionSchema} from "../../shared/schemas/competition.schema"
+import {RoundSchema} from "../../shared/schemas/round.schema"
+import {ScoringRuleSchema} from "shared/schemas/scoring-rule.schema"
+import {UserSchema} from "../../shared/schemas/user.schema"
+import {ResultSchema} from "../../shared/schemas/result.schema"
 
 addRxPlugin(RxDBReplicationCouchDBPlugin)
 addRxPlugin(RxDBNoValidatePlugin)
