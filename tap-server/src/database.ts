@@ -4,26 +4,26 @@ import {
     createRxDatabase,
     getRxStoragePouch,
     RxDatabase,
-} from 'rxdb'
-import {RxDBServerPlugin} from 'rxdb/plugins/server'
-import pouchdb_adapter_node_websql from 'pouchdb-adapter-node-websql'
+} from "rxdb";
+import { RxDBServerPlugin } from "rxdb/plugins/server";
+import pouchdb_adapter_node_websql from "pouchdb-adapter-node-websql";
 
-import {AthleteSchema} from '../../shared/schemas/athlete.schema';
-import {OfficialSchema} from '../../shared/schemas/official.schema';
-import {TeamSchema} from '../../shared/schemas/team.schema';
-import {AcroSchema} from '../../shared/schemas/acro.schema';
-import {AppointmentSchema} from '../../shared/schemas/appointment.schema';
-import {CompetitionSchema} from '../../shared/schemas/competition.schema';
-import {RoundSchema} from '../../shared/schemas/round.schema';
-import {ResultSchema} from '../../shared/schemas/result.schema';
-import {PhaseSchema} from '../../shared/schemas/phase.schema';
-import {UserSchema} from '../../shared/schemas/user.schema';
-import {ScoringRuleSchema} from '../../shared/schemas/scoringRule.schema';
+import { AthleteSchema } from "../../shared/schemas/athlete.schema";
+import { OfficialSchema } from "../../shared/schemas/official.schema";
+import { TeamSchema } from "../../shared/schemas/team.schema";
+import { AcroSchema } from "../../shared/schemas/acro.schema";
+import { AppointmentSchema } from "../../shared/schemas/appointment.schema";
+import { CompetitionSchema } from "../../shared/schemas/competition.schema";
+import { RoundSchema } from "../../shared/schemas/round.schema";
+import { ResultSchema } from "../../shared/schemas/result.schema";
+import { PhaseSchema } from "../../shared/schemas/phase.schema";
+import { UserSchema } from "../../shared/schemas/user.schema";
+import { ScoringRuleSchema } from "../../shared/schemas/scoringRule.schema";
 
-// import scoringRuleCompetitionDefaults from '../template/competitionDB/scoringrule.json'
+let scoringRuleCompetitionDefaults = require("../template/competitionDB/scoringrule.json");
 
-addRxPlugin(RxDBServerPlugin)
-addPouchPlugin(pouchdb_adapter_node_websql)
+addRxPlugin(RxDBServerPlugin);
+addPouchPlugin(pouchdb_adapter_node_websql);
 
 export class Database {
     private static dbList = new Map<string, RxDatabase>();
@@ -39,18 +39,19 @@ export class Database {
             });
 
             this.app = serverResponse.app;
-            return this.app
+            return this.app;
         }
-        return null
+        return null;
     }
 
-    public static async setCurrentCompetitionDB(name: string): Promise<RxDatabase>{
-        try{
+    public static async setCurrentCompetitionDB(
+        name: string
+    ): Promise<RxDatabase> {
+        try {
             this.db = await this.getCompetitionDB(name);
             this.currentCompetition = name;
             return this.db;
-        }
-        catch(e){
+        } catch (e) {
             console.log(e);
             return null;
         }
@@ -58,15 +59,15 @@ export class Database {
 
     public static async getCurrentCompetitionDB(): Promise<RxDatabase> {
         // get database from dbList by name
-        const name = this.currentCompetition
+        const name = this.currentCompetition;
 
         // check if currentCompetiton is available
-        if (name && name !== ""){
-            return this.getCompetitionDB(name)
+        if (name && name !== "") {
+            return this.getCompetitionDB(name);
         }
 
         // TODO: resolve Promise
-        return null
+        return null;
     }
 
     public static async getCompetitionDB(name: string): Promise<RxDatabase> {
@@ -120,13 +121,13 @@ export class Database {
 
     static async createCompetitionDB(name: string): Promise<RxDatabase> {
         const db: RxDatabase = await createRxDatabase({
-            name: 'c'+name,
-            storage: getRxStoragePouch('websql'),
+            name: "c" + name,
+            storage: getRxStoragePouch("websql"),
             ignoreDuplicate: true,
         });
 
         await db.waitForLeadership();
-        console.log('isLeader now');
+        console.log("isLeader now");
 
         try {
             await db.addCollections({
@@ -134,6 +135,7 @@ export class Database {
                 // competition: {
                 //     schema: CompetitionSchema,
                 // },
+
                 competition: {
                     schema: CompetitionSchema,
                 },
@@ -153,27 +155,26 @@ export class Database {
                     schema: UserSchema,
                 },
             });
+
+            // load predefined Scoringrule-Objects
+            await db.scoringrule.bulkInsert(scoringRuleCompetitionDefaults);
         } catch (e) {
-            console.log('error: ', e);
+            console.log("error: ", e);
         }
 
-        // await db.scoringrule.bulkUpsert(
-        //     scoringRuleCompetitionDefaults
-        // )
-
-        console.log(name + ' initialized.');
+        console.log(name + " initialized.");
         return db;
     }
 
     static async createAdminDB(name: string): Promise<RxDatabase> {
         const db: RxDatabase = await createRxDatabase({
             name: "./" + name,
-            storage: getRxStoragePouch('websql'),
+            storage: getRxStoragePouch("websql"),
             ignoreDuplicate: true,
         });
 
         await db.waitForLeadership();
-        console.log('isLeader now');
+        console.log("isLeader now");
 
         try {
             await db.addCollections({
@@ -183,22 +184,22 @@ export class Database {
                 // },
             });
         } catch (e) {
-            console.log('error: ', e);
+            console.log("error: ", e);
         }
 
-        console.log(name + ' initialized.');
+        console.log(name + " initialized.");
         return db;
     }
 
     static async createBaseDB(name: string): Promise<RxDatabase> {
         const db: RxDatabase = await createRxDatabase({
             name: name,
-            storage: getRxStoragePouch('websql'),
+            storage: getRxStoragePouch("websql"),
             ignoreDuplicate: true,
         });
 
         await db.waitForLeadership();
-        console.log('isLeader now');
+        console.log("isLeader now");
 
         try {
             await db.addCollections({
@@ -219,10 +220,10 @@ export class Database {
                 },
             });
         } catch (e) {
-            console.log('error: ', e);
+            console.log("error: ", e);
         }
 
-        console.log(name + ' initialized.');
+        console.log(name + " initialized.");
         return db;
     }
 }

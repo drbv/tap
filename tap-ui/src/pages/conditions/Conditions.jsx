@@ -6,7 +6,7 @@ import { Tab, Typography, Paper } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 
 const Competition = lazy(() => import("./Competition"));
-const Evaluation = lazy(() => import("./Evaluation"));
+const Scoringrule = lazy(() => import("./Scoringrule"));
 const Phase = lazy(() => import("./Phase"));
 
 const styles = (theme) => ({
@@ -33,7 +33,7 @@ class Conditions extends Component {
             <div>
                 <Route
                     exact
-                    path='/conditions'
+                    path="/conditions"
                     render={() => {
                         return (
                             <div>
@@ -43,30 +43,30 @@ class Conditions extends Component {
                                             onChange={(e, newValue) =>
                                                 this.setState({ tab: newValue })
                                             }
-                                            aria-label='lab API tabs example'
+                                            aria-label="lab API tabs example"
                                         >
                                             <Tab
-                                                label='1: Turnierauswahl'
-                                                value='1'
+                                                label="1: Turnierauswahl"
+                                                value="1"
                                             />
                                             <Tab
-                                                label='2: Stationen'
-                                                value='2'
+                                                label="2: Stationen"
+                                                value="2"
                                             />
                                             <Tab
-                                                label='3: Wertungsvorschriften'
-                                                value='3'
+                                                label="3: Wertungsvorschriften"
+                                                value="3"
                                             />
                                         </TabList>
                                     </Paper>
-                                    <TabPanel value='1'>
+                                    <TabPanel value="1">
                                         <Competition />
                                     </TabPanel>
-                                    <TabPanel value='2'>
+                                    <TabPanel value="2">
                                         <Phase />
                                     </TabPanel>
-                                    <TabPanel value='3'>
-                                        <Evaluation />
+                                    <TabPanel value="3">
+                                        <Scoringrule />
                                     </TabPanel>
                                 </TabContext>
                             </div>
