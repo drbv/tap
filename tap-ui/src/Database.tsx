@@ -22,7 +22,8 @@ import {
 import { RoundSchema } from "../../shared/schemas/round.schema"
 import { ScoringRuleSchema } from "../../shared/schemas/scoringRule.schema"
 import { UserSchema } from "../../shared/schemas/user.schema"
-import { ResultSchema } from "../../shared/schemas/result.schema"
+import { RoundResultSchema } from "../../shared/schemas/roundResult.schema"
+import { CurrentCompetitionSchema } from "../../shared/schemas/currentCompetition.schema"
 
 addRxPlugin(RxDBReplicationCouchDBPlugin)
 addRxPlugin(RxDBNoValidatePlugin)
@@ -116,12 +117,12 @@ async function _create() {
             schema: PhaseSchema,
         },
         result: {
-            schema: ResultSchema,
+            schema: RoundResultSchema,
         },
         round: {
             schema: RoundSchema,
         },
-        scoringrule: {
+        scoring_rule: {
             schema: ScoringRuleSchema,
         },
         user: {
@@ -147,6 +148,9 @@ async function _createBase() {
     })
 
     await db.addCollections({
+        current_competition: {
+            schema: CurrentCompetitionSchema,
+        },
         athletes: {
             schema: AthleteSchema,
         },

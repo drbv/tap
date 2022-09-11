@@ -16,26 +16,23 @@ export const RoundSchema = {
             type: "string",
         },
         subrounds: {
-            type: 'array',
+            type: "array",
             items: {
-                type: 'object',
+                type: "object",
                 properties: {
                     participants: {
-                        type: 'array',
+                        type: "array",
                         items: {
-                            type: 'string',
-                        }
+                            type: "string",
+                        },
                     },
                     status: {
                         type: "string",
                     },
                 },
-            }
+            },
         },
         evaluationTemplateId: {
-            type: "string",
-        },
-        acroTemplateId: {
             type: "string",
         },
         judgeIds: {
@@ -60,5 +57,5 @@ export const RoundSchema = {
             type: "string",
         },
     },
-    required: ['roundId'],
-}
+    required: ["roundId"],
+};

@@ -14,13 +14,15 @@ import { TeamSchema } from "../../shared/schemas/team.schema";
 import { AcroSchema } from "../../shared/schemas/acro.schema";
 import { AppointmentSchema } from "../../shared/schemas/appointment.schema";
 import { CompetitionSchema } from "../../shared/schemas/competition.schema";
+import { CurrentCompetitionSchema } from "../../shared/schemas/currentCompetition.schema";
 import { RoundSchema } from "../../shared/schemas/round.schema";
-import { ResultSchema } from "../../shared/schemas/result.schema";
+import { RoundResultSchema } from "../../shared/schemas/roundResult.schema";
+import { FinalResultSchema } from "../../shared/schemas/finalResult.schema";
 import { PhaseSchema } from "../../shared/schemas/phase.schema";
 import { UserSchema } from "../../shared/schemas/user.schema";
 import { ScoringRuleSchema } from "../../shared/schemas/scoringRule.schema";
 
-let scoringRuleCompetitionDefaults = require("../template/competitionDB/scoringrule.json");
+let scoringRuleCompetitionDefaults = require("../template/competitionDB/scoringRule.json");
 
 addRxPlugin(RxDBServerPlugin);
 addPouchPlugin(pouchdb_adapter_node_websql);
@@ -85,22 +87,22 @@ export class Database {
         return db;
     }
 
-    public static async getAdminDB(): Promise<RxDatabase> {
-        const name = "admindb";
+    // public static async getAdminDB(): Promise<RxDatabase> {
+    //     const name = "admindb";
 
-        // get database from dbList by name
-        let db = this.dbList.get(name);
-        if (db != null) {
-            // return db if exist
-            return db;
-        }
+    //     // get database from dbList by name
+    //     let db = this.dbList.get(name);
+    //     if (db != null) {
+    //         // return db if exist
+    //         return db;
+    //     }
 
-        // if not exist -> create database
-        db = await this.createAdminDB(name);
-        this.dbList.set(name, db);
+    //     // if not exist -> create database
+    //     db = await this.createAdminDB(name);
+    //     this.dbList.set(name, db);
 
-        return db;
-    }
+    //     return db;
+    // }
 
     public static async getBaseDB(): Promise<RxDatabase> {
         const name = "basedb";
@@ -143,12 +145,15 @@ export class Database {
                     schema: PhaseSchema,
                 },
                 result: {
-                    schema: ResultSchema,
+                    schema: RoundResultSchema,
+                },
+                round_result: {
+                    schema: FinalResultSchema,
                 },
                 round: {
                     schema: RoundSchema,
                 },
-                scoringrule: {
+                scoring_rule: {
                     schema: ScoringRuleSchema,
                 },
                 user: {
@@ -157,7 +162,7 @@ export class Database {
             });
 
             // load predefined Scoringrule-Objects
-            await db.scoringrule.bulkInsert(scoringRuleCompetitionDefaults);
+            await db.scoring_rule.bulkInsert(scoringRuleCompetitionDefaults);
         } catch (e) {
             console.log("error: ", e);
         }
@@ -166,30 +171,30 @@ export class Database {
         return db;
     }
 
-    static async createAdminDB(name: string): Promise<RxDatabase> {
-        const db: RxDatabase = await createRxDatabase({
-            name: "./" + name,
-            storage: getRxStoragePouch("websql"),
-            ignoreDuplicate: true,
-        });
+    // static async createAdminDB(name: string): Promise<RxDatabase> {
+    //     const db: RxDatabase = await createRxDatabase({
+    //         name: "./" + name,
+    //         storage: getRxStoragePouch("websql"),
+    //         ignoreDuplicate: true,
+    //     });
 
-        await db.waitForLeadership();
-        console.log("isLeader now");
+    //     await db.waitForLeadership();
+    //     console.log("isLeader now");
 
-        try {
-            await db.addCollections({
-                // TODO add missing collections
-                // competition: {
-                //     schema: CompetitionSchema,
-                // },
-            });
-        } catch (e) {
-            console.log("error: ", e);
-        }
+    //     try {
+    //         await db.addCollections({
+    //             // TODO add missing collections
+    //             // competition: {
+    //             //     schema: CompetitionSchema,
+    //             // },
+    //         });
+    //     } catch (e) {
+    //         console.log("error: ", e);
+    //     }
 
-        console.log(name + " initialized.");
-        return db;
-    }
+    //     console.log(name + " initialized.");
+    //     return db;
+    // }
 
     static async createBaseDB(name: string): Promise<RxDatabase> {
         const db: RxDatabase = await createRxDatabase({
@@ -203,6 +208,9 @@ export class Database {
 
         try {
             await db.addCollections({
+                current_competition: {
+                    schema: CurrentCompetitionSchema,
+                },
                 athletes: {
                     schema: AthleteSchema,
                 },

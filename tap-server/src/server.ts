@@ -10,9 +10,8 @@ const port = config.get("port");
 async function initialize() {
     const mainApp = express();
 
-
     Database.getAdminDB().then(async (db) => {
-        const {app} = await db.server({
+        const { app } = await db.server({
             startServer: false,
             cors: true,
         });
@@ -21,19 +20,19 @@ async function initialize() {
     });
 
     Database.getBaseDB().then(async (db) => {
-        const {app} = await db.server({
+        const { app } = await db.server({
             startServer: false,
             cors: true,
-        })
+        });
 
-        mainApp.use("/basedb", app)
-    })
+        mainApp.use("/basedb", app);
+    });
 
     const activityPortalService = new ActivityPortalService();
 
     mainApp.use("/import", (req, res) => {
         activityPortalService.fetchDataFromPortal().then();
-        res.send("importing...")
+        res.send("importing...");
     });
 
     mainApp.use("/activate", async (req, res) => {
@@ -42,26 +41,27 @@ async function initialize() {
         }
 
         //const id = req.query.id as string;
-        const id = "1220200"
+        const id = "1220200";
 
         if (id != null) {
             await activityPortalService.fetchAppointmentDataFromPortal(id);
 
             if (Database.currentCompetition != "") {
                 Database.getCompetitionDatabaseApp().then((app) => {
-                    mainApp.use('/db/' + Database.currentCompetition, app)
+                    mainApp.use("/db/" + Database.currentCompetition, app);
                     //res.redirect('/db/' + Database.currentCompetition)
-    
+
                     res.send("Database " + id + " activated.");
-                })
+                });
             }
         } else {
             res.status(404);
         }
+    });
 
-    })
-
-    server = mainApp.listen(port, () => console.log(`Server listening on port ${port}`));
+    server = mainApp.listen(port, () =>
+        console.log(`Server listening on port ${port}`)
+    );
 }
 
 initialize();

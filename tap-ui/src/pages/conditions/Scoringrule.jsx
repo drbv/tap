@@ -45,7 +45,7 @@ class Scoringrule extends Component {
     }
 
     async componentDidMount() {
-        Database.getCollection("scoringrule").then((collection) => {
+        Database.getCollection("scoring_rule").then((collection) => {
             const sub = collection.find().$.subscribe((Scoringrule) => {
                 if (!Scoringrule) {
                     return;
@@ -66,7 +66,7 @@ class Scoringrule extends Component {
     }
 
     async deleteScoringrule(id) {
-        await this.state.db.scoringrule
+        await this.state.db.scoring_rule
             .findOne({
                 selector: {
                     id: id,
