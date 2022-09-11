@@ -14,7 +14,10 @@ import withProps from "./HOC";
 import AppNavbar from "./AppNavbar";
 import MainDrawer from "./AppDrawer";
 
+import { getBaseCollection, getCollection } from "../Database";
+
 const LoginPage = lazy(() => import("../pages/login/LoginPage"));
+const SetupPage = lazy(() => import("../pages/setup/SetupPage"));
 
 const drawerWidth = 240;
 
@@ -42,7 +45,10 @@ class App extends Component {
 
         this.state = {
             open: true,
+            competitionId: null,
         };
+
+        this.subs = [];
 
         this.props.initialize({
             languages: [
@@ -60,6 +66,30 @@ class App extends Component {
 
     componentDidMount() {
         this.setState({ open: !this.props.smallScreen });
+
+        getBaseCollection("current_competition").then(async (collection) => {
+            const sub = await collection
+                .findOne()
+                .$.subscribe((currentCompetition) => {
+                    if (!currentCompetition) {
+                        this.setState({
+                            competitionId: null,
+                        });
+                        return;
+                    }
+                    console.log("reload currentCompetition");
+                    console.dir(currentCompetition);
+                    this.setState({
+                        competitionId: currentCompetition.competition_id,
+                    });
+                });
+            this.subs.push(sub);
+        });
+    }
+
+    componentWillUnmount() {
+        // Unsubscribe from all subscriptions
+        this.subs.forEach((sub) => sub.unsubscribe());
     }
 
     /**
@@ -103,9 +133,9 @@ class App extends Component {
 
         return (
             <Router>
-                <div className='App'>
+                <div className="App">
                     <CssBaseline />
-                    {this.props.isLoggedIn && (
+                    {this.props.isLoggedIn && this.state.competitionId && (
                         <div>
                             <MainDrawer
                                 isOpen={this.state.open}
@@ -123,21 +153,32 @@ class App extends Component {
                         </div>
                     )}
                     <Suspense fallback={<LinearProgress />}>
-                        {this.props.isLoggedIn ? (
-                            <div>
-                                <main
-                                    className={classNames(classes.content, {
-                                        [classes.contentShift]: !(
-                                            !this.props.smallScreen &&
-                                            this.state.open
-                                        ),
-                                    })}
-                                >
-                                    {this.props.routes && this.getRoutes()}
-                                </main>
-                            </div>
+                        {!this.state.competitionId ? (
+                            <SetupPage />
                         ) : (
-                            <LoginPage />
+                            <div>
+                                {this.props.isLoggedIn ? (
+                                    <div>
+                                        <main
+                                            className={classNames(
+                                                classes.content,
+                                                {
+                                                    [classes.contentShift]: !(
+                                                        !this.props
+                                                            .smallScreen &&
+                                                        this.state.open
+                                                    ),
+                                                }
+                                            )}
+                                        >
+                                            {this.props.routes &&
+                                                this.getRoutes()}
+                                        </main>
+                                    </div>
+                                ) : (
+                                    <LoginPage />
+                                )}
+                            </div>
                         )}
                     </Suspense>
                 </div>

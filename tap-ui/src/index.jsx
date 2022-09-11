@@ -99,14 +99,14 @@ const Routes = [
         admin: true,
         icon: <AccountBalance />,
     },
-    {
-        name: "Turniereinstellungen",
-        path: "/conditions",
-        exact: true,
-        component: <Conditions />,
-        admin: true,
-        icon: <ModelTraining />,
-    },
+    // {
+    //     name: "Turniereinstellungen",
+    //     path: "/conditions",
+    //     exact: true,
+    //     component: <Conditions />,
+    //     admin: true,
+    //     icon: <ModelTraining />,
+    // },
     {
         name: "Teilnehmerliste",
         path: "/athletes",

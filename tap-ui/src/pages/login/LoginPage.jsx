@@ -22,7 +22,7 @@ import {
 import { Autocomplete } from "@material-ui/lab";
 
 import withProps from "../../components/HOC";
-import { getCollection } from "../../Database";
+import { getBaseCollection, getCollection } from "../../Database";
 
 const styles = (theme) => ({
     root: {
@@ -92,6 +92,11 @@ class LoginPage extends React.Component {
         });
     }
 
+    componentWillUnmount() {
+        // Unsubscribe from all subscriptions
+        this.subs.forEach((sub) => sub.unsubscribe());
+    }
+
     render() {
         const { classes, theme, isLoggedIn } = this.props;
         const { users, selectedUser } = this.state;
@@ -100,34 +105,34 @@ class LoginPage extends React.Component {
             <div>
                 <Grid
                     container
-                    direction='column'
-                    justifyContent='center'
-                    alignContent='center'
+                    direction="column"
+                    justifyContent="center"
+                    alignContent="center"
                     className={classes.first_element_margin}
                 >
                     <Paper className={classes.root} elevation={1}>
                         <div>
                             <Grid
                                 container
-                                direction='column'
-                                justifyContent='center'
-                                alignItems='center'
+                                direction="column"
+                                justifyContent="center"
+                                alignItems="center"
                                 className={classes.element_space_top}
                             >
                                 <Grid item sm={12}>
                                     <img
                                         src={logoURL}
-                                        alt='Logo DRBV'
+                                        alt="Logo DRBV"
                                         className={classes.logo}
                                     />
                                 </Grid>
                                 <Grid item sm={12}>
-                                    <Typography variant='h6' color='inherit'>
+                                    <Typography variant="h6" color="inherit">
                                         Bitte einloggen:
                                     </Typography>
                                 </Grid>
                                 <Grid item sm={12}>
-                                    <Typography component='p' color='error'>
+                                    <Typography component="p" color="error">
                                         {this.props.loginError != "" ? (
                                             this.props.loginError
                                         ) : (
@@ -148,13 +153,13 @@ class LoginPage extends React.Component {
                                                 });
                                         }}
                                         getOptionLabel={(option) => option.name}
-                                        id='Nutzer'
+                                        id="Nutzer"
                                         debug
                                         renderInput={(params) => (
                                             <TextField
                                                 {...params}
-                                                label='Nutzer'
-                                                margin='normal'
+                                                label="Nutzer"
+                                                margin="normal"
                                             />
                                         )}
                                     />
@@ -162,9 +167,9 @@ class LoginPage extends React.Component {
                                 <Grid item sm={12}>
                                     <TextField
                                         autoFocus
-                                        margin='dense'
-                                        id='password'
-                                        name='Passwort'
+                                        margin="dense"
+                                        id="password"
+                                        name="Passwort"
                                         style={{ width: "300px" }}
                                         value={this.state.password}
                                         onChange={(e) => {
@@ -172,16 +177,16 @@ class LoginPage extends React.Component {
                                                 password: e.target.value,
                                             });
                                         }}
-                                        label='Passwort'
-                                        type='text'
+                                        label="Passwort"
+                                        type="text"
                                         fullWidth
                                         className={classes.inputContent}
                                     />
                                 </Grid>
                                 <Grid item sm={12}>
                                     <Button
-                                        variant='contained'
-                                        color='secondary'
+                                        variant="contained"
+                                        color="secondary"
                                         onClick={() => {
                                             this.props.loadUser(
                                                 selectedUser &&

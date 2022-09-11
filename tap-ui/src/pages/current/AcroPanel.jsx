@@ -105,11 +105,11 @@ class AcroPanel extends Component {
 
     render() {
         const { currentResult } = this.state;
-        const { classes, acroTemplate, heat } = this.props;
+        const { classes, evaluationTemplate, heat } = this.props;
 
         return currentResult && currentResult.ready == false ? (
             <div>
-                {acroTemplate &&
+                {evaluationTemplate &&
                     heat &&
                     heat.acros &&
                     heat.acros[0] &&
@@ -201,7 +201,7 @@ class AcroPanel extends Component {
                                             }
                                         }}
                                     />
-                                    {acroTemplate?.deduction?.general?.map(
+                                    {evaluationTemplate?.deduction?.acro?.map(
                                         (bonus) => {
                                             return (
                                                 <Grid item xs={2}>

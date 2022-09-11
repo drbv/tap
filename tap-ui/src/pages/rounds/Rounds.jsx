@@ -112,9 +112,9 @@ class Rounds extends Component {
                 <Paper className={classes.newRoundField}>
                     <Button
                         className={classes.newRoundButton}
-                        color='inherit'
-                        variant='outlined'
-                        color='primary'
+                        color="inherit"
+                        variant="outlined"
+                        color="primary"
                         onClick={() => {
                             this.setState({ newRoundSetOpen: true });
                         }}
@@ -123,9 +123,9 @@ class Rounds extends Component {
                     </Button>
                     <Button
                         className={classes.newRoundButton}
-                        color='inherit'
-                        variant='outlined'
-                        color='primary'
+                        color="inherit"
+                        variant="outlined"
+                        color="primary"
                         onClick={() => {
                             this.setState({ newRoundOpen: true });
                         }}
@@ -205,13 +205,6 @@ class Rounds extends Component {
                                 },
                             },
                             {
-                                name: "acroTemplateId",
-                                options: {
-                                    filter: false,
-                                    sort: true,
-                                },
-                            },
-                            {
                                 name: "judgeIds",
                                 options: {
                                     filter: false,
@@ -266,7 +259,7 @@ class Rounds extends Component {
                                         if (tableMeta.rowData != null) {
                                             return (
                                                 <div>
-                                                    <Tooltip title='Bearbeiten'>
+                                                    <Tooltip title="Bearbeiten">
                                                         <span>
                                                             <IconButton
                                                                 onClick={() => {
@@ -290,9 +283,6 @@ class Rounds extends Component {
                                                                                     evaluationTemplateId:
                                                                                         tableMeta
                                                                                             .rowData[4],
-                                                                                    acroTemplateId:
-                                                                                        tableMeta
-                                                                                            .rowData[5],
                                                                                     judgeIds:
                                                                                         tableMeta
                                                                                             .rowData[6],
@@ -313,7 +303,7 @@ class Rounds extends Component {
                                                             </IconButton>
                                                         </span>
                                                     </Tooltip>
-                                                    <Tooltip title='Entfernen'>
+                                                    <Tooltip title="Entfernen">
                                                         <span>
                                                             <IconButton
                                                                 onClick={() => {

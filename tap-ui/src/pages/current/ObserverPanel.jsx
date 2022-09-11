@@ -260,7 +260,7 @@ class ObserverPanel extends Component {
                                     this.updateResult(localResult);
                                 }}
                             >
-                                Wertungen abschicken
+                                Wertung abschicken
                             </Button>
                         </Grid>
                     </Grid>
