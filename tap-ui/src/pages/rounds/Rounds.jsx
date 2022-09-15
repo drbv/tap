@@ -19,6 +19,8 @@ import RoundDialog from "./RoundDialog";
 import roundTranslation from "../../translations/rounds.json";
 import athleteTranslation from "../../translations/athletes.json";
 
+import withProps from "../../components/HOC";
+
 const styles = (theme) => ({
     root: {
         flexGrow: 1,
@@ -64,31 +66,35 @@ class Rounds extends Component {
         // Unsubscribe from all subscriptions
         this.subs.forEach((sub) => sub.unsubscribe());
 
-        getCollection("round").then(async (collection) => {
-            const sub = await collection.find().$.subscribe((Rounds) => {
-                if (!Rounds) {
-                    return;
-                }
-                console.log("reload rounds-list ");
-                console.dir(Rounds);
-                this.setState({
-                    Rounds,
+        getCollection("round", this.props.competitionId).then(
+            async (collection) => {
+                const sub = await collection.find().$.subscribe((Rounds) => {
+                    if (!Rounds) {
+                        return;
+                    }
+                    console.log("reload rounds-list ");
+                    console.dir(Rounds);
+                    this.setState({
+                        Rounds,
+                    });
                 });
-            });
-            this.subs.push(sub);
-        });
+                this.subs.push(sub);
+            }
+        );
     }
 
     async deleteRound(roundId) {
-        getCollection("round").then(async (collection) => {
-            await collection
-                .findOne({
-                    selector: {
-                        roundId: roundId,
-                    },
-                })
-                .remove();
-        });
+        getCollection("round", this.props.competitionId).then(
+            async (collection) => {
+                await collection
+                    .findOne({
+                        selector: {
+                            roundId: roundId,
+                        },
+                    })
+                    .remove();
+            }
+        );
     }
 
     componentWillUnmount() {
@@ -112,7 +118,6 @@ class Rounds extends Component {
                 <Paper className={classes.newRoundField}>
                     <Button
                         className={classes.newRoundButton}
-                        color="inherit"
                         variant="outlined"
                         color="primary"
                         onClick={() => {
@@ -123,7 +128,6 @@ class Rounds extends Component {
                     </Button>
                     <Button
                         className={classes.newRoundButton}
-                        color="inherit"
                         variant="outlined"
                         color="primary"
                         onClick={() => {
@@ -224,7 +228,6 @@ class Rounds extends Component {
                                 name: "observerIds",
                                 options: {
                                     filter: false,
-                                    display: "excluded",
                                     sort: true,
                                 },
                             },
@@ -357,5 +360,5 @@ Rounds.defaultProps = {
 };
 
 export default withStyles(styles, { withTheme: true })(
-    withLocalize(withRouter(Rounds))
+    withProps(withLocalize(withRouter(Rounds)))
 );

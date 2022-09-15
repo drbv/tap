@@ -13,7 +13,7 @@ import { Edit, Delete } from "@material-ui/icons";
 import { isRxDatabase, isRxCollection } from "rxdb";
 
 import withProps from "../../components/HOC";
-import * as Database from "../../Database";
+import { getCollection } from "../../Database";
 import UserDialog from "./UserDialog";
 
 const styles = (theme) => ({
@@ -47,19 +47,19 @@ class Users extends Component {
     }
 
     async componentDidMount() {
-        this.setState({ db: await Database.getClientDb() });
-
-        const sub = this.state.db.user.find().$.subscribe((users) => {
-            if (!users) {
-                return;
-            }
-            console.log("reload users-list ");
-            console.dir(users);
-            this.setState({
-                users,
+        getCollection("user", this.props.competitionId).then((collection) => {
+            const sub = collection.find().$.subscribe((users) => {
+                if (!users) {
+                    return;
+                }
+                console.log("reload users-list ");
+                console.dir(users);
+                this.setState({
+                    users,
+                });
             });
+            this.subs.push(sub);
         });
-        this.subs.push(sub);
     }
 
     componentWillUnmount() {
@@ -68,13 +68,17 @@ class Users extends Component {
     }
 
     async deleteUser(id) {
-        await this.state.db.user
-            .findOne({
-                selector: {
-                    id: id,
-                },
-            })
-            .remove();
+        getCollection("user", this.props.competitionId).then(
+            async (collection) => {
+                await collection
+                    .findOne({
+                        selector: {
+                            id: id,
+                        },
+                    })
+                    .remove();
+            }
+        );
     }
 
     render() {
@@ -86,9 +90,8 @@ class Users extends Component {
                 <Paper className={classes.newUserField}>
                     <Button
                         className={classes.newUserButton}
-                        color='inherit'
-                        variant='outlined'
-                        color='primary'
+                        variant="outlined"
+                        color="primary"
                         onClick={() => {
                             this.setState({ newUserOpen: true });
                         }}
@@ -97,9 +100,8 @@ class Users extends Component {
                     </Button>
                     <Button
                         className={classes.newUserButton}
-                        color='inherit'
-                        variant='outlined'
-                        color='primary'
+                        variant="outlined"
+                        color="primary"
                     >
                         Wertungsrichter importieren
                     </Button>
@@ -159,7 +161,7 @@ class Users extends Component {
                                         if (tableMeta.rowData != null) {
                                             return (
                                                 <div>
-                                                    <Tooltip title='Bearbeiten'>
+                                                    <Tooltip title="Bearbeiten">
                                                         <span>
                                                             <IconButton
                                                                 onClick={() => {
@@ -186,7 +188,7 @@ class Users extends Component {
                                                             </IconButton>
                                                         </span>
                                                     </Tooltip>
-                                                    <Tooltip title='Entfernen'>
+                                                    <Tooltip title="Entfernen">
                                                         <span>
                                                             <IconButton
                                                                 onClick={() => {
@@ -240,5 +242,5 @@ Users.defaultProps = {
 };
 
 export default withStyles(styles, { withTheme: true })(
-    withRouter(withProps(Users))
+    withProps(withRouter(Users))
 );

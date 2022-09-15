@@ -77,19 +77,21 @@ class LoginPage extends React.Component {
     }
 
     async componentDidMount() {
-        getCollection("user").then(async (collection) => {
-            const sub = await collection.find().$.subscribe((users) => {
-                if (!users) {
-                    return;
-                }
-                console.log("reload users-list ");
-                console.dir(users);
-                this.setState({
-                    users,
+        getCollection("user", this.props.competitionId).then(
+            async (collection) => {
+                const sub = await collection.find().$.subscribe((users) => {
+                    if (!users) {
+                        return;
+                    }
+                    console.log("reload users-list ");
+                    console.dir(users);
+                    this.setState({
+                        users,
+                    });
                 });
-            });
-            this.subs.push(sub);
-        });
+                this.subs.push(sub);
+            }
+        );
     }
 
     componentWillUnmount() {

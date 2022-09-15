@@ -73,7 +73,10 @@ class RoundSetDialog extends React.Component {
     }
 
     async loadNumberCouples(className) {
-        let collection = await getCollection("competition");
+        let collection = await getCollection(
+            "competition",
+            this.props.competitionId
+        );
         let value = await collection
             .find({
                 selector: {
@@ -108,27 +111,29 @@ class RoundSetDialog extends React.Component {
 
     atomicUpsertRoundSet() {
         const { selectedClass, roundLimitations } = this.state;
-        getCollection("round").then(async (collection) => {
-            roundLimitations.map((round, index) => {
-                let roundType = "";
-                switch (index) {
-                    case 0:
-                        roundType = "qualifying";
-                        break;
-                    case roundLimitations.length - 1:
-                        roundType = "finals";
-                        break;
-                    default:
-                        roundType = "intermediate";
-                }
-                collection.atomicUpsert({
-                    roundId: Date.now().toString() + index,
-                    league: selectedClass,
-                    roundType: roundType,
-                    status: "blocked",
+        getCollection("round", this.props.competitionId).then(
+            async (collection) => {
+                roundLimitations.map((round, index) => {
+                    let roundType = "";
+                    switch (index) {
+                        case 0:
+                            roundType = "qualifying";
+                            break;
+                        case roundLimitations.length - 1:
+                            roundType = "finals";
+                            break;
+                        default:
+                            roundType = "intermediate";
+                    }
+                    collection.atomicUpsert({
+                        roundId: Date.now().toString() + index,
+                        league: selectedClass,
+                        roundType: roundType,
+                        status: "blocked",
+                    });
                 });
-            });
-        });
+            }
+        );
     }
 
     buildRoundLimitations(numberCouples) {
@@ -169,18 +174,18 @@ class RoundSetDialog extends React.Component {
                 <Dialog
                     open={this.props.open}
                     onClose={() => this.props.handleClose()}
-                    aria-labelledby='form-dialog-title'
-                    scroll='body'
+                    aria-labelledby="form-dialog-title"
+                    scroll="body"
                 >
-                    <DialogTitle id='form-dialog-title'>
+                    <DialogTitle id="form-dialog-title">
                         Nutzer anlegen / bearbeiten
                     </DialogTitle>
                     <DialogContent dividers>
                         <Grid
                             container
-                            direction='row'
-                            justifyContent='center'
-                            alignItems='flex-end'
+                            direction="row"
+                            justifyContent="center"
+                            alignItems="flex-end"
                             spacing={2}
                         >
                             <Grid item xs={3}>
@@ -189,7 +194,7 @@ class RoundSetDialog extends React.Component {
                                         required={true}
                                         shrink={true}
                                         className={classes.inputContent}
-                                        htmlFor='class-select'
+                                        htmlFor="class-select"
                                     >
                                         Tanzklasse
                                     </InputLabel>
@@ -243,19 +248,15 @@ class RoundSetDialog extends React.Component {
                                     required={true}
                                     shrink={true}
                                     className={classes.inputContent}
-                                    htmlFor='number-select'
+                                    htmlFor="number-select"
                                 >
                                     Anzahl Paare
                                 </InputLabel>
                                 <Input
-                                    inputProps={{
-                                        name: "number",
-                                        id: "number-select",
-                                    }}
                                     disabled={!selectedClass}
                                     className={classes.input}
                                     value={this.state.suggestedNumber}
-                                    margin='dense'
+                                    margin="dense"
                                     onChange={(e) => {
                                         this.setState({
                                             suggestedNumber: e.target.value,
@@ -263,6 +264,8 @@ class RoundSetDialog extends React.Component {
                                         });
                                     }}
                                     inputProps={{
+                                        name: "number",
+                                        id: "number-select",
                                         step: 1,
                                         min: 0,
                                         max: 1000,
@@ -276,9 +279,8 @@ class RoundSetDialog extends React.Component {
                                     style={{ fontSize: "13px" }}
                                     disabled={!selectedClass}
                                     className={classes.newRoundButton}
-                                    color='inherit'
-                                    variant='outlined'
-                                    color='primary'
+                                    variant="outlined"
+                                    color="primary"
                                     onClick={() => {
                                         this.buildRoundLimitations(
                                             suggestedNumber
@@ -291,9 +293,9 @@ class RoundSetDialog extends React.Component {
                         </Grid>
                         <Grid
                             container
-                            direction='row'
-                            justifyContent='center'
-                            alignItems='flex-end'
+                            direction="row"
+                            justifyContent="center"
+                            alignItems="flex-end"
                             spacing={2}
                         >
                             <Grid item xs={12}>
@@ -301,7 +303,7 @@ class RoundSetDialog extends React.Component {
                                     return (
                                         <div>
                                             <Typography
-                                                id='discrete-slider'
+                                                id="discrete-slider"
                                                 gutterBottom
                                             >
                                                 {this.renderSwitch(index)}
@@ -312,7 +314,7 @@ class RoundSetDialog extends React.Component {
                                                     defaultValue={
                                                         roundLimit.limit
                                                     }
-                                                    aria-labelledby='discrete-slider-small-steps'
+                                                    aria-labelledby="discrete-slider-small-steps"
                                                     step={1}
                                                     min={0}
                                                     max={suggestedNumber}
@@ -331,7 +333,7 @@ class RoundSetDialog extends React.Component {
                                                                 localRoundLimitations,
                                                         });
                                                     }}
-                                                    valueLabelDisplay='auto'
+                                                    valueLabelDisplay="auto"
                                                     marks={[
                                                         index > 0 && {
                                                             value: roundLimitations[
@@ -341,7 +343,7 @@ class RoundSetDialog extends React.Component {
                                                         },
                                                     ]}
                                                 />
-                                                <Tooltip title='Entfernen'>
+                                                <Tooltip title="Entfernen">
                                                     <IconButton
                                                         onClick={() => {
                                                             let localRoundLimitations =
@@ -365,7 +367,7 @@ class RoundSetDialog extends React.Component {
                                     );
                                 })}
                             </Grid>
-                            <Tooltip title='Weitere Runde'>
+                            <Tooltip title="Weitere Runde">
                                 <IconButton
                                     onClick={() => {
                                         let localRoundLimitations =
@@ -389,8 +391,8 @@ class RoundSetDialog extends React.Component {
                             onClick={() => {
                                 this.props.handleClose();
                             }}
-                            color='secondary'
-                            variant='contained'
+                            color="secondary"
+                            variant="contained"
                         >
                             abbrechen
                         </Button>
@@ -400,8 +402,8 @@ class RoundSetDialog extends React.Component {
                                 this.atomicUpsertRoundSet();
                                 this.props.handleClose();
                             }}
-                            color='primary'
-                            variant='contained'
+                            color="primary"
+                            variant="contained"
                         >
                             speichern
                         </Button>

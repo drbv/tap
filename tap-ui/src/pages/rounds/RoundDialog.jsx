@@ -76,51 +76,57 @@ class RoundDialog extends React.Component {
                 });
             }
 
-            getCollection("scoring_rule").then(async (collection) => {
-                const sub = await collection
-                    .find()
-                    .$.subscribe((evaluations) => {
-                        if (!evaluations) {
+            getCollection("scoring_rule", this.props.competitionId).then(
+                async (collection) => {
+                    const sub = await collection
+                        .find()
+                        .$.subscribe((evaluations) => {
+                            if (!evaluations) {
+                                return;
+                            }
+                            console.log("reload evaluations-list ");
+                            console.dir(evaluations);
+                            this.setState({
+                                evaluations,
+                            });
+                        });
+                    this.subs.push(sub);
+                }
+            );
+
+            getCollection("user", this.props.competitionId).then(
+                async (collection) => {
+                    const sub = await collection.find().$.subscribe((users) => {
+                        if (!users) {
                             return;
                         }
-                        console.log("reload evaluations-list ");
-                        console.dir(evaluations);
+                        console.log("reload users-list ");
+                        console.dir(users);
                         this.setState({
-                            evaluations,
+                            users,
                         });
                     });
-                this.subs.push(sub);
-            });
+                    this.subs.push(sub);
+                }
+            );
 
-            getCollection("user").then(async (collection) => {
-                const sub = await collection.find().$.subscribe((users) => {
-                    if (!users) {
-                        return;
-                    }
-                    console.log("reload users-list ");
-                    console.dir(users);
-                    this.setState({
-                        users,
-                    });
-                });
-                this.subs.push(sub);
-            });
-
-            getCollection("competition").then(async (collection) => {
-                const sub = await collection
-                    .find()
-                    .$.subscribe((competition) => {
-                        if (!competition) {
-                            return;
-                        }
-                        console.log("reload competition-list ");
-                        console.dir(competition);
-                        this.setState({
-                            competition,
+            getCollection("competition", this.props.competitionId).then(
+                async (collection) => {
+                    const sub = await collection
+                        .find()
+                        .$.subscribe((competition) => {
+                            if (!competition) {
+                                return;
+                            }
+                            console.log("reload competition-list ");
+                            console.dir(competition);
+                            this.setState({
+                                competition,
+                            });
                         });
-                    });
-                this.subs.push(sub);
-            });
+                    this.subs.push(sub);
+                }
+            );
         }
     }
 
@@ -136,9 +142,11 @@ class RoundDialog extends React.Component {
     }
 
     async upsertRound(object) {
-        getCollection("round").then(async (collection) => {
-            collection.atomicUpsert(object);
-        });
+        getCollection("round", this.props.competitionId).then(
+            async (collection) => {
+                collection.atomicUpsert(object);
+            }
+        );
     }
 
     render() {

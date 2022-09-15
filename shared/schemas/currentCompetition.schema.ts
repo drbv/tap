@@ -2,12 +2,15 @@ export const CurrentCompetitionSchema = {
     title: "current competition data",
     description: "Database schema for storing data about current competition",
     version: 0,
-    primaryKey: "competition_id",
+    primaryKey: "id",
     type: "object",
     properties: {
-        competition_id: {
+        id: {
             type: "string",
             final: true,
+        },
+        competition_id: {
+            type: "string",
         },
     },
 };

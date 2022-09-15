@@ -36,27 +36,29 @@ class ObserverPanel extends Component {
     }
 
     async componentDidMount() {
-        getCollection("result").then(async (collection) => {
-            let sub = await collection
-                .find({
-                    selector: {
-                        judgeId: this.props.user.id,
-                    },
-                })
-                .$.subscribe((results) => {
-                    if (!results) {
-                        return;
-                    }
-                    console.log("reload Results");
-                    console.dir(results);
-                    this.setState({
-                        results,
+        getCollection("result", this.props.competitionId).then(
+            async (collection) => {
+                let sub = await collection
+                    .find({
+                        selector: {
+                            judgeId: this.props.user.id,
+                        },
+                    })
+                    .$.subscribe((results) => {
+                        if (!results) {
+                            return;
+                        }
+                        console.log("reload Results");
+                        console.dir(results);
+                        this.setState({
+                            results,
+                        });
                     });
-                });
 
-            this.subs.push(sub);
-            await this.prepaireResults();
-        });
+                this.subs.push(sub);
+                await this.prepaireResults();
+            }
+        );
     }
 
     async componentDidUpdate(prevProps) {
@@ -80,16 +82,19 @@ class ObserverPanel extends Component {
                         result.roundId == this.props.round.roundId
                 );
             if (!foundResult) {
-                getCollection("result").then(async (collection) => {
-                    let currentResult = await collection.atomicUpsert({
-                        resultId: Date.now().toString() + this.props.user.id,
-                        bookId: this.props.heat.participants[0],
-                        roundId: this.props.round.roundId,
-                        judgeId: this.props.user.id,
-                        ready: false,
-                    });
-                    this.setState({ currentResult });
-                });
+                getCollection("result", this.props.competitionId).then(
+                    async (collection) => {
+                        let currentResult = await collection.atomicUpsert({
+                            resultId:
+                                Date.now().toString() + this.props.user.id,
+                            bookId: this.props.heat.participants[0],
+                            roundId: this.props.round.roundId,
+                            judgeId: this.props.user.id,
+                            ready: false,
+                        });
+                        this.setState({ currentResult });
+                    }
+                );
             } else {
                 this.setState({ currentResult: foundResult });
             }
@@ -97,10 +102,12 @@ class ObserverPanel extends Component {
     }
 
     async updateResult(result) {
-        getCollection("result").then(async (collection) => {
-            await collection.atomicUpsert(result);
-            console.dir(result);
-        });
+        getCollection("result", this.props.competitionId).then(
+            async (collection) => {
+                await collection.atomicUpsert(result);
+                console.dir(result);
+            }
+        );
         this.setState({ currentResult: result });
     }
 

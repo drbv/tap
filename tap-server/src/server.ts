@@ -3,6 +3,7 @@ import { Database } from "./database";
 import { ActivityPortalService } from "./services/activity-portal.service";
 import config from "config";
 import { resolve } from "path";
+import { RxDocument } from "rxdb";
 
 let server: any;
 const port = config.get("port");
@@ -10,14 +11,14 @@ const port = config.get("port");
 async function initialize() {
     const mainApp = express();
 
-    Database.getAdminDB().then(async (db) => {
-        const { app } = await db.server({
-            startServer: false,
-            cors: true,
-        });
+    // Database.getAdminDB().then(async (db) => {
+    //     const { app } = await db.server({
+    //         startServer: false,
+    //         cors: true,
+    //     });
 
-        mainApp.use("/admindb", app);
-    });
+    //     mainApp.use("/admindb", app);
+    // });
 
     Database.getBaseDB().then(async (db) => {
         const { app } = await db.server({
@@ -40,14 +41,33 @@ async function initialize() {
             res.status(400).send("Required query params missing");
         }
 
-        //const id = req.query.id as string;
-        const id = "1220200";
+        const id = req.query.id as string;
 
         if (id != null) {
             await activityPortalService.fetchAppointmentDataFromPortal(id);
 
             if (Database.currentCompetition != "") {
                 Database.getCompetitionDatabaseApp().then((app) => {
+                    //set currentCompetition object
+                    Database.getBaseDB().then(async (baseDB) =>
+                        baseDB.current_competition
+                            .findOne()
+                            .exec()
+                            .then(async (document: RxDocument) => {
+                                if (document == null) {
+                                    await baseDB.current_competition.insert({
+                                        id: "CURRENT",
+                                        competition_id: id,
+                                    });
+                                } else {
+                                    await document.atomicPatch({
+                                        competition_id: id,
+                                    });
+                                }
+                            })
+                    );
+                    //TODO: load appointment and set "isActive" field
+
                     mainApp.use("/db/" + Database.currentCompetition, app);
                     //res.redirect('/db/' + Database.currentCompetition)
 
