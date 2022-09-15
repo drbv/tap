@@ -51,45 +51,48 @@ class Current extends Component {
     }
 
     async componentDidMount() {
-        getCollection("round").then(async (collection) => {
-            let sub = await collection
-                .findOne({
-                    selector: {
-                        status: "running",
-                        // $or: [
-                        //     { judgeIds: { $in: this.props.user.id } },
-                        //     { acroJudgeIds: { $in: this.props.user.id } },
-                        //     { observerIds: { $in: this.props.user.id } },
-                        // ],
-                    },
-                })
-                .$.subscribe((round) => {
-                    if (!round) {
-                        return;
-                    }
-                    console.log("reload Rounds");
-                    console.dir(round);
-                    let currentHeat =
-                        round &&
-                        round.subrounds &&
-                        round.subrounds.find(
-                            (value) => value.status == "running"
+        getCollection("round", this.props.competitionId).then(
+            async (collection) => {
+                let sub = await collection
+                    .findOne({
+                        selector: {
+                            status: "running",
+                            // $or: [
+                            //     { judgeIds: { $in: this.props.user.id } },
+                            //     { acroJudgeIds: { $in: this.props.user.id } },
+                            //     { observerIds: { $in: this.props.user.id } },
+                            // ],
+                        },
+                    })
+                    .$.subscribe((round) => {
+                        if (!round) {
+                            return;
+                        }
+                        console.log("reload Rounds");
+                        console.dir(round);
+                        let currentHeat =
+                            round &&
+                            round.subrounds &&
+                            round.subrounds.find(
+                                (value) => value.status == "running"
+                            );
+
+                        this.setState(
+                            {
+                                round,
+                                currentHeat,
+                            },
+                            () => {
+                                this.loadCurrentCompetition();
+                            }
                         );
 
-                    this.setState(
-                        {
-                            round,
-                            currentHeat,
-                        },
-                        () => {
-                            this.loadCurrentCompetition();
-                        }
-                    );
-
-                    round &&
-                        round.evaluationTemplateId &&
-                        getCollection("scoring_rule").then(
-                            async (collection) => {
+                        round &&
+                            round.evaluationTemplateId &&
+                            getCollection(
+                                "scoring_rule",
+                                this.props.competitionId
+                            ).then(async (collection) => {
                                 let currentEvaluation = await collection
                                     .findOne({
                                         selector: {
@@ -102,13 +105,14 @@ class Current extends Component {
                                 this.setState({
                                     currentEvaluation,
                                 });
-                            }
-                        );
+                            });
 
-                    round &&
-                        round.evaluationTemplateId &&
-                        getCollection("scoring_rule").then(
-                            async (collection) => {
+                        round &&
+                            round.evaluationTemplateId &&
+                            getCollection(
+                                "scoring_rule",
+                                this.props.competitionId
+                            ).then(async (collection) => {
                                 let currentEvaluationTemplate = await collection
                                     .findOne({
                                         selector: {
@@ -121,29 +125,31 @@ class Current extends Component {
                                 this.setState({
                                     currentEvaluationTemplate,
                                 });
-                            }
-                        );
-                });
-            this.subs.push(sub);
-        });
+                            });
+                    });
+                this.subs.push(sub);
+            }
+        );
     }
 
     async loadCurrentCompetition() {
         this.state.currentHeat &&
             this.state.currentHeat.participants[0] &&
-            getCollection("competition").then(async (collection) => {
-                let currentCompetition = await collection
-                    .findOne({
-                        selector: {
-                            bookId: this.state.currentHeat.participants[0],
-                        },
-                    })
-                    .exec();
+            getCollection("competition", this.props.competitionId).then(
+                async (collection) => {
+                    let currentCompetition = await collection
+                        .findOne({
+                            selector: {
+                                bookId: this.state.currentHeat.participants[0],
+                            },
+                        })
+                        .exec();
 
-                this.setState({
-                    currentCompetition,
-                });
-            });
+                    this.setState({
+                        currentCompetition,
+                    });
+                }
+            );
     }
 
     render() {

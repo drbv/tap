@@ -8,9 +8,12 @@ import {
     Tooltip,
     IconButton,
     Typography,
+    CircularProgress,
 } from "@material-ui/core";
 import MUIDataTable from "mui-datatables";
+import axios from "axios";
 
+import withProps from "../../components/HOC";
 import { getBaseCollection } from "../../Database";
 
 const styles = (theme) => ({
@@ -30,6 +33,7 @@ class AppointmentData extends Component {
 
         this.state = {
             Appointments: null,
+            loading: false,
         };
 
         this.subs = [];
@@ -179,6 +183,77 @@ class AppointmentData extends Component {
                                 name: "isActive",
                                 options: {
                                     filter: false,
+                                    customBodyRender: (value, tableMeta) => {
+                                        if (
+                                            tableMeta.rowData[0] ==
+                                            this.props.competitionId
+                                        ) {
+                                            return (
+                                                <Button
+                                                    className={
+                                                        classes.newRoundButton
+                                                    }
+                                                    variant="outlined"
+                                                    color="primary"
+                                                    onClick={() => {
+                                                        alert(
+                                                            "Sind sie sicher?"
+                                                        );
+                                                        //TODO: Daten entfernen
+                                                    }}
+                                                >
+                                                    Turnier beenden
+                                                </Button>
+                                            );
+                                        } else {
+                                            return (
+                                                <Button
+                                                    className={
+                                                        classes.newEvaluationButton
+                                                    }
+                                                    variant="contained"
+                                                    color="error"
+                                                    onClick={async () => {
+                                                        this.setState({
+                                                            loading: true,
+                                                        });
+                                                        axios
+                                                            .get(
+                                                                "http://localhost:5001/activate?id=" +
+                                                                    tableMeta
+                                                                        .rowData[0]
+                                                            )
+                                                            .then(
+                                                                (response) => {
+                                                                    console.dir(
+                                                                        response
+                                                                    );
+                                                                    this.setState(
+                                                                        {
+                                                                            loading: false,
+                                                                        }
+                                                                    );
+                                                                }
+                                                            )
+                                                            .catch((error) => {
+                                                                console.log(
+                                                                    error
+                                                                );
+                                                                this.setState({
+                                                                    loading: false,
+                                                                });
+                                                            });
+                                                    }}
+                                                >
+                                                    {this.state.loading ? (
+                                                        <CircularProgress color="secondary" />
+                                                    ) : (
+                                                        "Dieses Turnier verwenden"
+                                                    )}
+                                                </Button>
+                                            );
+                                        }
+                                    },
                                 },
                             },
                             {
@@ -201,4 +276,6 @@ class AppointmentData extends Component {
     }
 }
 
-export default withStyles(styles, { withTheme: true })(AppointmentData);
+export default withStyles(styles, { withTheme: true })(
+    withProps(AppointmentData)
+);

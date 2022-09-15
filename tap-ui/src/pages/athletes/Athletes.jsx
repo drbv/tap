@@ -51,7 +51,10 @@ class Athletes extends Component {
     }
 
     async componentDidMount() {
-        let collection = await getCollection("competition");
+        let collection = await getCollection(
+            "competition",
+            this.props.competitionId
+        );
         let sub = await collection.find().$.subscribe((Athletes) => {
             if (!Athletes) {
                 return;

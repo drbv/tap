@@ -102,18 +102,22 @@ class ScoringruleDialog extends React.Component {
     }
 
     async loadScoringrule(id) {
-        getCollection("scoring_rule").then(async (collection) => {
-            const localScoringrule = await collection.findOne(id).exec();
-            this.setState({
-                localScoringrule: localScoringrule.toJSON(),
-            });
-        });
+        getCollection("scoring_rule", this.props.competitionId).then(
+            async (collection) => {
+                const localScoringrule = await collection.findOne(id).exec();
+                this.setState({
+                    localScoringrule: localScoringrule.toJSON(),
+                });
+            }
+        );
     }
 
     async atomicUpsertScoringrule(localScoringrule) {
-        getCollection("scoring_rule").then(async (collection) => {
-            await collection.upsert(localScoringrule);
-        });
+        getCollection("scoring_rule", this.props.competitionId).then(
+            async (collection) => {
+                await collection.upsert(localScoringrule);
+            }
+        );
     }
 
     render() {

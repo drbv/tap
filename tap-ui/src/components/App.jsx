@@ -66,25 +66,6 @@ class App extends Component {
 
     componentDidMount() {
         this.setState({ open: !this.props.smallScreen });
-
-        getBaseCollection("current_competition").then(async (collection) => {
-            const sub = await collection
-                .findOne()
-                .$.subscribe((currentCompetition) => {
-                    if (!currentCompetition) {
-                        this.setState({
-                            competitionId: null,
-                        });
-                        return;
-                    }
-                    console.log("reload currentCompetition");
-                    console.dir(currentCompetition);
-                    this.setState({
-                        competitionId: currentCompetition.competition_id,
-                    });
-                });
-            this.subs.push(sub);
-        });
     }
 
     componentWillUnmount() {
@@ -135,7 +116,7 @@ class App extends Component {
             <Router>
                 <div className="App">
                     <CssBaseline />
-                    {this.props.isLoggedIn && this.state.competitionId && (
+                    {this.props.isLoggedIn && this.props.competitionId && (
                         <div>
                             <MainDrawer
                                 isOpen={this.state.open}
@@ -153,32 +134,21 @@ class App extends Component {
                         </div>
                     )}
                     <Suspense fallback={<LinearProgress />}>
-                        {!this.state.competitionId ? (
+                        {!this.props.competitionId ? (
                             <SetupPage />
+                        ) : this.props.isLoggedIn ? (
+                            <main
+                                className={classNames(classes.content, {
+                                    [classes.contentShift]: !(
+                                        !this.props.smallScreen &&
+                                        this.state.open
+                                    ),
+                                })}
+                            >
+                                {this.props.routes && this.getRoutes()}
+                            </main>
                         ) : (
-                            <div>
-                                {this.props.isLoggedIn ? (
-                                    <div>
-                                        <main
-                                            className={classNames(
-                                                classes.content,
-                                                {
-                                                    [classes.contentShift]: !(
-                                                        !this.props
-                                                            .smallScreen &&
-                                                        this.state.open
-                                                    ),
-                                                }
-                                            )}
-                                        >
-                                            {this.props.routes &&
-                                                this.getRoutes()}
-                                        </main>
-                                    </div>
-                                ) : (
-                                    <LoginPage />
-                                )}
-                            </div>
+                            <LoginPage />
                         )}
                     </Suspense>
                 </div>

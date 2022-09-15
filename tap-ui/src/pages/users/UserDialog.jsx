@@ -6,7 +6,7 @@ import withStyles from "@material-ui/core/es/styles/withStyles";
 import { isRxCollection, isRxDatabase, isRxDocument } from "rxdb";
 
 import withProps from "../../components/HOC";
-import * as Database from "../../Database";
+import { getCollection } from "../../Database";
 
 //components and libraries
 import {
@@ -46,10 +46,6 @@ class UserDialog extends React.Component {
         };
     }
 
-    async componentDidMount() {
-        this.setState({ db: await Database.getClientDb() });
-    }
-
     async componentDidUpdate(prevProps, prevState) {
         if (prevProps.open !== this.props.open) {
             if (this.props.userToEdit) {
@@ -68,7 +64,11 @@ class UserDialog extends React.Component {
     }
 
     async upsertUser() {
-        await this.state.db.user.atomicUpsert(this.state.localUser);
+        getCollection("user", this.props.competitionId).then(
+            async (collection) => {
+                await collection.atomicUpsert(this.state.localUser);
+            }
+        );
     }
 
     render() {
@@ -80,17 +80,17 @@ class UserDialog extends React.Component {
                 <Dialog
                     open={this.props.open}
                     onClose={() => this.props.handleClose()}
-                    aria-labelledby='form-dialog-title'
-                    scroll='body'
+                    aria-labelledby="form-dialog-title"
+                    scroll="body"
                 >
-                    <DialogTitle id='form-dialog-title'>
+                    <DialogTitle id="form-dialog-title">
                         Nutzer anlegen / bearbeiten
                     </DialogTitle>
                     <DialogContent dividers>
                         <TextField
-                            margin='dense'
-                            id='name'
-                            name='name'
+                            margin="dense"
+                            id="name"
+                            name="name"
                             Title
                             value={localUser.name}
                             required={true}
@@ -101,9 +101,9 @@ class UserDialog extends React.Component {
                                     localUser: localUserCopy,
                                 });
                             }}
-                            helperText='Name des Nutzers'
-                            label='Name'
-                            type='text'
+                            helperText="Name des Nutzers"
+                            label="Name"
+                            type="text"
                             fullWidth
                             className={classes.inputContent}
                         />
@@ -112,7 +112,7 @@ class UserDialog extends React.Component {
                                 required={true}
                                 shrink={true}
                                 className={classes.inputContent}
-                                htmlFor='role-select'
+                                htmlFor="role-select"
                             >
                                 Berechtigung
                             </InputLabel>
@@ -134,20 +134,20 @@ class UserDialog extends React.Component {
                                     });
                                 }}
                             >
-                                <MenuItem value='judge'>
+                                <MenuItem value="judge">
                                     Wertungsrichter
                                 </MenuItem>
-                                <MenuItem value='admin'>Turnierleiter</MenuItem>
-                                <MenuItem value='service'>
+                                <MenuItem value="admin">Turnierleiter</MenuItem>
+                                <MenuItem value="service">
                                     Beamer / Übersicht
                                 </MenuItem>
                             </Select>
                         </div>
                         <div className={classes.flexboxContainer}>
                             <TextField
-                                margin='dense'
-                                id='key'
-                                name='key'
+                                margin="dense"
+                                id="key"
+                                name="key"
                                 value={this.state.localUser.key}
                                 multiline={true}
                                 onChange={(e) => {
@@ -157,13 +157,13 @@ class UserDialog extends React.Component {
                                         localUser: localUserCopy,
                                     });
                                 }}
-                                helperText='Passwort zum Anmelden'
-                                label='Schlüssel'
-                                type='text'
+                                helperText="Passwort zum Anmelden"
+                                label="Schlüssel"
+                                type="text"
                                 fullWidth
                                 className={classes.inputContent}
                             />
-                            <Tooltip title='Schlüssel generieren'>
+                            <Tooltip title="Schlüssel generieren">
                                 <BlurOn />
                             </Tooltip>
                         </div>
@@ -173,8 +173,8 @@ class UserDialog extends React.Component {
                             onClick={() => {
                                 this.props.handleClose();
                             }}
-                            color='secondary'
-                            variant='contained'
+                            color="secondary"
+                            variant="contained"
                         >
                             abbrechen
                         </Button>
@@ -184,8 +184,8 @@ class UserDialog extends React.Component {
                                 this.upsertUser();
                                 this.props.handleClose();
                             }}
-                            color='primary'
-                            variant='contained'
+                            color="primary"
+                            variant="contained"
                         >
                             speichern
                         </Button>

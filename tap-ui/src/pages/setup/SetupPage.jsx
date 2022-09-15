@@ -17,7 +17,7 @@ import {
     Button,
     LinearProgress,
     CircularProgress,
-} from "@material-ui/core";
+} from "@mui/material";
 import { Autocomplete } from "@material-ui/lab";
 import axios from "axios";
 
@@ -110,7 +110,11 @@ class SetupPage extends React.Component {
                     alignContent="center"
                     className={classes.first_element_margin}
                 >
-                    <Paper className={classes.root}>
+                    <Paper
+                        sx={{ width: 1 }}
+                        className={classes.root}
+                        elevation={1}
+                    >
                         <Typography
                             className={classes.text}
                             color="textPrimary"
@@ -168,7 +172,7 @@ class SetupPage extends React.Component {
                                     <Button
                                         className={classes.newEvaluationButton}
                                         variant="contained"
-                                        color="secondary"
+                                        color="error"
                                         onClick={async () => {
                                             this.setState({ loading: true });
                                             axios
@@ -185,7 +189,7 @@ class SetupPage extends React.Component {
                                         }}
                                     >
                                         {this.state.loading ? (
-                                            <CircularProgress />
+                                            <CircularProgress color="secondary" />
                                         ) : (
                                             "Dieses Turnier verwenden"
                                         )}

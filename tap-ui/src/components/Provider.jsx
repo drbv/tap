@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import ls from "local-storage";
 import { withLocalize } from "react-localize-redux";
 
-import { getCollection } from "../Database";
+import { getCollection, getBaseCollection } from "../Database";
 
 export const Context = React.createContext();
 
@@ -17,11 +17,38 @@ class Provider extends Component {
             loadUser: (id, key) => this.loadUser(id, key),
             logout: () => this.logout(),
             appointment: null,
+            competitionId: null,
         };
         this.subs = [];
     }
 
     async componentDidMount() {
+        getBaseCollection("current_competition").then(async (collection) => {
+            const sub = await collection
+                .findOne()
+                .$.subscribe((currentCompetition) => {
+                    console.log("reload currentCompetition");
+                    console.dir(currentCompetition);
+                    const competitionId = currentCompetition
+                        ? currentCompetition.competition_id
+                        : null;
+                    if (
+                        this.state.competitionId &&
+                        this.state.competitionId != competitionId
+                    ) {
+                        //clear page and reload subscriptions
+                        //TODO: find more elegant solution
+                        window.location.reload();
+                    }
+                    this.setState({
+                        competitionId: currentCompetition
+                            ? currentCompetition.competition_id
+                            : null,
+                    });
+                });
+            this.subs.push(sub);
+        });
+
         this.checkAuth();
     }
 
@@ -56,7 +83,10 @@ class Provider extends Component {
     }
 
     async loadUser(id, key) {
-        let currentUser = await getCollection("user").then((collection) =>
+        let currentUser = await getCollection(
+            "user",
+            this.props.competitionId
+        ).then((collection) =>
             collection
                 .findOne({
                     selector: { id: id, key: key },

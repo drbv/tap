@@ -39,7 +39,7 @@ const activeSyncs = new Map()
 let dbBasePromise: any = null
 const activeBaseSyncs = new Map()
 
-export async function getCollection(collection: string) {
+export async function getCollection(collection: string, competitionId: string) {
     const clientDB = await getClientDb()
     const rxCollection: any = clientDB[collection]
 
@@ -52,7 +52,7 @@ export async function getCollection(collection: string) {
 
     // sync local collection with server
     var repState = rxCollection.syncCouchDB({
-        remote: "http://localhost:5001/db/1220200/" + collection,
+        remote: "http://localhost:5001/db/" + competitionId + "/" + collection,
         waitForLeadership: false,
         options: {
             live: true,

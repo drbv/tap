@@ -45,19 +45,21 @@ class Scoringrule extends Component {
     }
 
     async componentDidMount() {
-        Database.getCollection("scoring_rule").then((collection) => {
-            const sub = collection.find().$.subscribe((Scoringrule) => {
-                if (!Scoringrule) {
-                    return;
-                }
-                console.log("reload Scoringrule-list ");
-                console.dir(Scoringrule);
-                this.setState({
-                    Scoringrule,
+        Database.getCollection("scoring_rule", this.props.competitionId).then(
+            (collection) => {
+                const sub = collection.find().$.subscribe((Scoringrule) => {
+                    if (!Scoringrule) {
+                        return;
+                    }
+                    console.log("reload Scoringrule-list ");
+                    console.dir(Scoringrule);
+                    this.setState({
+                        Scoringrule,
+                    });
                 });
-            });
-            this.subs.push(sub);
-        });
+                this.subs.push(sub);
+            }
+        );
     }
 
     componentWillUnmount() {
