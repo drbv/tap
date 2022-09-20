@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import withRouter from "../../components/withRouter";
 import { Translate, withLocalize } from "react-localize-redux";
 
 import MUIDataTable from "mui-datatables";
@@ -11,7 +11,7 @@ import {
     IconButton,
 } from "@material-ui/core";
 import withStyles from "@material-ui/core/es/styles/withStyles";
-import { Edit, Delete, PeopleAlt } from "@material-ui/icons";
+import { Edit, Delete, PeopleAlt } from "@mui/icons-material";
 import { getCollection } from "../../Database";
 import RoundSetDialog from "./RoundSetDialog";
 import RoundDialog from "./RoundDialog";

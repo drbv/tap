@@ -10,7 +10,7 @@ import {
 import { Component } from "react";
 import * as Database from "../../Database";
 import PhaseDialog from "./PhaseDialog";
-import { Edit, Delete } from "@material-ui/icons";
+import { Edit, Delete } from "@mui/icons-material";
 import withStyles from "@material-ui/core/es/styles/withStyles";
 
 const styles = (theme) => ({
@@ -73,9 +73,9 @@ class Phase extends Component {
                 <Paper className={classes.newPhaseField}>
                     <Button
                         className={classes.newPhaseButton}
-                        color='inherit'
-                        variant='outlined'
-                        color='primary'
+                        color="inherit"
+                        variant="outlined"
+                        color="primary"
                         onClick={() => {
                             this.setState({ newPhaseOpen: true });
                         }}
@@ -121,7 +121,7 @@ class Phase extends Component {
                                         if (tableMeta.rowData != null) {
                                             return (
                                                 <div>
-                                                    <Tooltip title='Bearbeiten'>
+                                                    <Tooltip title="Bearbeiten">
                                                         <span>
                                                             <IconButton
                                                                 onClick={() => {
@@ -145,7 +145,7 @@ class Phase extends Component {
                                                             </IconButton>
                                                         </span>
                                                     </Tooltip>
-                                                    <Tooltip title='Entfernen'>
+                                                    <Tooltip title="Entfernen">
                                                         <span>
                                                             <IconButton
                                                                 onClick={() => {
