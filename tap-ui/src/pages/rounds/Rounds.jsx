@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { Translate, withLocalize } from "react-localize-redux";
+import withRouter from "../../components/withRouter";
+import {withLocalize } from "react-localize-redux";
 
 import MUIDataTable from "mui-datatables";
 import {

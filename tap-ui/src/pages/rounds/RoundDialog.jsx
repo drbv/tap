@@ -31,7 +31,7 @@ import {
     Tooltip,
 } from "@material-ui/core";
 
-import { BlurOn, Delete, Add } from "@material-ui/icons";
+import { BlurOn, Delete, Add } from "@mui/icons-material";
 import { Divider } from "@material-ui/core";
 
 const styles = (theme) => ({

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import MUIDataTable from "mui-datatables";
+import withRouter from "../../components/withRouter";
 import {
     LinearProgress,
     Paper,
@@ -9,10 +8,7 @@ import {
     IconButton,
     Typography,
 } from "@material-ui/core";
-import { TipsAndUpdates } from "@mui/icons-material";
 import withStyles from "@material-ui/core/es/styles/withStyles";
-import withProps from "../../components/HOC";
-import { getCollection, closeCollection } from "../../Database";
 
 const styles = (theme) => ({
     root: {

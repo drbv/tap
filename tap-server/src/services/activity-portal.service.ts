@@ -1,27 +1,22 @@
 import config from 'config'
-import Papa, { NODE_STREAM_INPUT, ParseResult } from 'papaparse'
-import { UrlConfig } from '../interfaces/url-config.interface'
-import { Constants } from '../models/constants.model'
-import { Database } from '../database'
-import { StartDataBwData } from '../../../shared/models/start-data-bw-data.model'
-import { StartDataRrData } from '../../../shared/models/start-data-rr-data.model'
-import { RxDatabaseBase } from 'rxdb/dist/types/rx-database'
-import { CollectionsOfDatabase, RxDatabase, RxDatabaseGenerated } from 'rxdb'
-import { StartDataWrTlData } from '../../../shared/models/start-data-wr-tl-data.model'
-import {
-    BwLicense,
-    License,
-    RrLicense,
-} from '../../../shared/interfaces/license.interface'
-import { Offical } from '../../../shared/interfaces/offical.interface'
-import { Team } from '../../../shared/interfaces/team.interface'
-import { TeamMember } from '../../../shared/interfaces/team-member.interface'
-import { FormationData } from '../../../shared/models/formation-data.model'
-import { DrbvAcroData } from '../../../shared/models/drbv-acro-data.model'
-import { StartDataAppointmentData } from '../../../shared/models/start-data-appointment-data.model'
-import { CompetitionData } from '../../../shared/models/competition-data.model'
+import Papa from 'papaparse'
+import {UrlConfig} from '../interfaces/url-config.interface'
+import {Constants} from '../models/constants.model'
+import {Database} from '../database'
+import {StartDataBwData} from '../../../shared/models/start-data-bw-data.model'
+import {StartDataRrData} from '../../../shared/models/start-data-rr-data.model'
+import {RxDatabaseBase} from 'rxdb/dist/types/rx-database'
+import {CollectionsOfDatabase, RxDatabase, RxDatabaseGenerated} from 'rxdb'
+import {StartDataWrTlData} from '../../../shared/models/start-data-wr-tl-data.model'
+import {BwLicense, License, RrLicense,} from '../../../shared/interfaces/license.interface'
+import {Offical} from '../../../shared/interfaces/offical.interface'
+import {Team} from '../../../shared/interfaces/team.interface'
+import {TeamMember} from '../../../shared/interfaces/team-member.interface'
+import {FormationData} from '../../../shared/models/formation-data.model'
+import {DrbvAcroData} from '../../../shared/models/drbv-acro-data.model'
+import {StartDataAppointmentData} from '../../../shared/models/start-data-appointment-data.model'
+import {CompetitionData} from '../../../shared/models/competition-data.model'
 import * as https from 'https'
-import { time } from 'console'
 
 export class ActivityPortalService {
     private db: RxDatabaseBase<any, any> &
@@ -43,23 +38,23 @@ export class ActivityPortalService {
                     case Constants.ACTIVITY_PORTAL_IMPORT_BW: {
                         const csvData = await this.fetchData<StartDataBwData>(urlConfig.url);
                         await this.importBwData(csvData);
-                        break
+                        break;
                     }
                     case Constants.ACTIVITY_PORTAL_IMPORT_RR: {
                         const csvData = await this.fetchData<StartDataRrData>(urlConfig.url);
-                        await this.importRrData(csvData)
-                        break
+                        await this.importRrData(csvData);
+                        break;
                     }
 
                     case Constants.ACTIVITY_PORTAL_IMPORT_F: {
                         const csvData = await this.fetchData<FormationData>(urlConfig.url);
-                        await this.importFormationData(csvData)
-                        break
+                        await this.importFormationData(csvData);
+                        break;
                     }
                     case Constants.ACTIVITY_PORTAL_IMPORT_WR_TL: {
                         const csvData = await this.fetchData<StartDataWrTlData>(urlConfig.url);
-                        await this.importWrTlData(csvData)
-                        break
+                        await this.importWrTlData(csvData);
+                        break;
                     }
                     case Constants.ACTIVITY_PORTAL_IMPORT_ACRO: {
                         const csvData = await this.fetchData<DrbvAcroData>(urlConfig.url);
@@ -67,8 +62,7 @@ export class ActivityPortalService {
                         break;
                     }
                     case Constants.ACTIVITY_PORTAL_IMPORT_APPOINTMENTS: {
-                        const csvData =
-                            await this.fetchData<StartDataAppointmentData>(urlConfig.url);
+                        const csvData = await this.fetchData<StartDataAppointmentData>(urlConfig.url);
                         await this.importAppointmentData(csvData);
                         break;
                     }
@@ -98,14 +92,16 @@ export class ActivityPortalService {
     }
 
     private async fetchData<T>(url: string): Promise<T[]> {
+
         const csvData = await new Promise<any>((resolve, reject) =>
             this.getData(url).then((res) => {
-                console.log(res)
-                resolve(res)
+                console.log(res);
+                resolve(res);
             })
         );
 
         return new Promise<T[]>((resolve, reject) => {
+
             const parseStream = Papa.parse<T>(csvData, {
                 header: true,
                 worker: false,
@@ -125,70 +121,60 @@ export class ActivityPortalService {
                     }
                     return header;
                 },
-            })
+            });
 
             resolve(parseStream.data);
-        })
+        });
     }
 
     private get(url: string, resolve: any, reject: any) {
         https.get(url, (res) => {
             // if any other status codes are returned, those needed to be added here
-            if (res.statusCode === 301 || res.statusCode === 302) {
+            if(res.statusCode === 301 || res.statusCode === 302) {
                 return this.get(res.headers.location, resolve, reject)
             }
 
-            res.setEncoding('latin1')
+            res.setEncoding('latin1');
 
-            let body: string = ''
+            let body: string = '';
             res.on('data', (chunk) => {
-                body += chunk
-            })
+                body+= chunk;
+            });
 
             res.on('end', () => {
                 try {
-                    resolve(body)
+                    resolve(body);
                 } catch (err) {
-                    reject(err)
+                    reject(err);
                 }
-            })
-        })
+            });
+        });
     }
 
     private async getData(url: string) {
-        return new Promise((resolve, reject) => this.get(url, resolve, reject))
+        return new Promise((resolve, reject) => this.get(url, resolve, reject));
     }
 
     private async importBwData(csvData: StartDataBwData[]) {
-        const teams: Map<number, Team> = new Map<number, Team>()
+        const teams: Map<number, Team> = new Map<number, Team>();
 
         for (const row of csvData) {
             // concat teams
             if (teams.has(row.Buchnr)) {
-                const team = teams.get(row.Buchnr)
+                const team = teams.get(row.Buchnr);
                 team.members.push({
-                    member_id:
-                        row.RFID !== null
-                            ? row.RFID.toString()
-                            : this.fixRfidIsNull(row).toString(),
-                } as TeamMember)
+                    member_id: row.RFID !== null ? row.RFID.toString() : this.fixRfidIsNull(row).toString(),
+                } as TeamMember);
             } else {
                 const team = {
-                    bookId: row.Buchnr.toString(),
+                    book_id: row.Buchnr.toString(),
                     club_id: row.Clubnr,
                     club_name_short: row.Clubname_kurz,
                     organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
                     sport: 'bw',
-                    members: [
-                        {
-                            member_id:
-                                row.RFID !== null
-                                    ? row.RFID.toString()
-                                    : this.fixRfidIsNull(row).toString(),
-                        },
-                    ],
-                } as Team
-                teams.set(row.Buchnr, team)
+                    members: [{member_id: row.RFID !== null ? row.RFID.toString() : this.fixRfidIsNull(row).toString(),}]
+                } as Team;
+                teams.set(row.Buchnr, team);
             }
 
             try {
@@ -197,7 +183,7 @@ export class ActivityPortalService {
                         row.RFID !== null
                             ? row.RFID.toString()
                             : this.fixRfidIsNull(row).toString(),
-                    bookId: row.Buchnr,
+                    book_id: row.Buchnr,
                     pre_name: row.Vorname,
                     family_name: row.Nachname,
                     birth_year: row.Geburtsjahr,
@@ -208,26 +194,26 @@ export class ActivityPortalService {
                     sport: 'bw',
                 })
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
         }
 
         for (const team of teams.values()) {
             try {
                 await this.db.teams.upsert({
-                    bookId: team.bookId,
+                    book_id: team.book_id,
                     club_id: team.club_id,
                     club_name_short: team.club_name_short,
                     organization: team.organization,
                     sport: team.sport,
                     members: team.members,
-                })
+                });
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
         }
 
-        console.log('updated imported bw-start-data')
+        console.log('updated imported bw-start-data');
     }
 
     private async importRrData(csvData: StartDataRrData[]) {
@@ -236,7 +222,7 @@ export class ActivityPortalService {
                 if (row.RFID1 != null && row.RFID2 != null ){
                     await this.db.athletes.upsert({
                         rfid: row.RFID1.toString(),
-                        bookId: row.Buchnr ? row.Buchnr : 0,
+                        book_id: row.Buchnr ? row.Buchnr : 0,
                         pre_name: row.Vorname1 ? row.Vorname1 : "",
                         family_name: row.Nachname1 ? row.Nachname1 : "",
                         sex: row.Anrede1 ? (row.Anrede1 === 'Herr' ? 'm' : 'w') : '?',
@@ -244,10 +230,10 @@ export class ActivityPortalService {
                         club_name_short: row.Clubname_kurz ? row.Clubname_kurz : "",
                         organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
                         sport: 'rr',
-                    })
+                    });
                     await this.db.athletes.upsert({
                         rfid: row.RFID2.toString(),
-                        bookId: row.Buchnr ? row.Buchnr : 0,
+                        book_id: row.Buchnr ? row.Buchnr : 0,
                         pre_name: row.Vorname2 ? row.Vorname2 : "",
                         family_name: row.Nachname2 ? row.Nachname2 : "",
                         sex: row.Anrede2 ? (row.Anrede2 === 'Herr' ? 'm' : 'w') : '?',
@@ -255,36 +241,38 @@ export class ActivityPortalService {
                         club_name_short: row.Clubname_kurz ? row.Clubname_kurz : "",
                         organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
                         sport: 'rr',
-                    })
+                    });
                     await this.db.teams.upsert({
-                        bookId: row.Buchnr ? row.Buchnr.toString() : "",
+                        book_id: row.Buchnr ? row.Buchnr.toString() : "",
                         club_id: row.Clubnr ? row.Clubnr : 0,
                         club_name_short: row.Clubname_kurz ? row.Clubname_kurz : "",
                         organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
                         sport: 'rr',
                         league: row.Startklasse ? row.Startklasse : "",
                         members: [
-                            { member_id: row.RFID1.toString() },
-                            { member_id: row.RFID2.toString() },
+                            {member_id: row.RFID1.toString()},
+                            {member_id: row.RFID2.toString()},
                         ],
-                    })
+                    });
                 }
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
         }
-        console.log('updated imported rr-start-data')
+        console.log('updated imported rr-start-data');
     }
 
     private async importWrTlData(csvData: StartDataWrTlData[]) {
-        const officials: Map<number, Offical> = new Map<number, Offical>()
+        const officials: Map<number, Offical> = new Map<number, Offical>();
 
         for (const row of csvData) {
             if (row && row.Lizenzn) {
                 if (officials.has(row.Lizenzn)) {
-                    const official = officials.get(row.Lizenzn)
-                    if (!official) {continue}
-                    this.parseLicense(row.Lizenz, official.licence)
+                    const official = officials.get(row.Lizenzn);
+                    if (!official) {
+                        continue;
+                    }
+                    this.parseLicense(row.Lizenz, official.licence);
                 } else {
                     const official = {
                         id: row.Lizenzn.toString(),
@@ -295,8 +283,8 @@ export class ActivityPortalService {
                         licence: this.parseLicense(row.Lizenz),
                         email: row.email,
                         organization: row.LRRVERB,
-                    } as Offical
-                    officials.set(row.Lizenzn, official)
+                    } as Offical;
+                    officials.set(row.Lizenzn, official);
                 }
             }
         }
@@ -313,20 +301,18 @@ export class ActivityPortalService {
                         licence: official.licence,
                         email: official.email ? official.email : "",
                         organization: official.organization ? official.organization : "",
-                    })
+                    });
                 }
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
         }
 
-        console.log('updated imported officials')
+        console.log('updated imported officials');
     }
 
     private fixRfidIsNull(row: StartDataBwData): number {
-        return row.Anrede === 'Herr'
-            ? 1000001 + row.Buchnr * 10 - 1000000
-            : 1000002 + row.Buchnr * 10 - 1000000
+        return row.Anrede === 'Herr' ? (1000001 + (row.Buchnr * 10) - 1000000) : (1000002 + (row.Buchnr * 10) - 1000000);
     }
 
     private parseLicense(value: string, license?: License): License {
@@ -338,33 +324,33 @@ export class ActivityPortalService {
                 } as BwLicense,
                 rr: {
                     wre: false,
-                    wra: false,
+                    wra: false
                 } as RrLicense,
-            } as License
+            } as License;
         }
 
         switch (value) {
             case 'TL': {
-                license.tl = true
-                break
+                license.tl = true;
+                break;
             }
             case 'WRE-BW': {
-                license.bw.wre = true
-                break
+                license.bw.wre = true;
+                break;
             }
             case 'WRE-RR': {
-                license.rr.wre = true
-                break
+                license.rr.wre = true;
+                break;
             }
             case 'WRA-RR': {
-                license.rr.wra = true
-                break
+                license.rr.wra = true;
+                break;
             }
             default:
-                break
+                break;
         }
 
-        return license
+        return license;
     }
 
     private async importFormationData(csvData: FormationData[]) {
@@ -378,96 +364,96 @@ export class ActivityPortalService {
                         organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',
                         sport: row.Startklasse.includes('_RR_') ? 'rr' : 'bw',
                         league: row.Startklasse,
-                    })
+                    });
                 }
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
         }
 
-        console.log('updated imported formations')
+        console.log('updated imported formations');
     }
 
     private async importAcroData(csvData: DrbvAcroData[]) {
         for (const row of csvData) {
             try {
-                const acroPoints: any[] = []
+                const acroPoints: any[] = [];
                 if (row.RR_A !== null) {
                     acroPoints.push({
                         key: 'rr_a',
                         value: Number(row.RR_A.replace(',', '.')),
-                    })
+                    });
                 }
                 if (row.RR_B !== null) {
                     acroPoints.push({
                         key: 'rr_b',
                         value: Number(row.RR_B.replace(',', '.')),
-                    })
+                    });
                 }
                 if (row.RR_C !== null) {
                     acroPoints.push({
                         key: 'rr_c',
                         value: Number(row.RR_C.replace(',', '.')),
-                    })
+                    });
                 }
                 if (row.RR_J !== null) {
                     acroPoints.push({
                         key: 'rr_j',
                         value: Number(row.RR_J.replace(',', '.')),
-                    })
+                    });
                 }
                 if (row.RR_S !== null) {
                     acroPoints.push({
                         key: 'rr_s',
                         value: Number(row.RR_S.replace(',', '.')),
-                    })
+                    });
                 }
                 if (row.F_RR_M !== null) {
                     acroPoints.push({
                         key: 'f_rr_m',
                         value: Number(row.F_RR_M.replace(',', '.')),
-                    })
+                    });
                 }
                 if (row.F_RR_J !== null) {
                     acroPoints.push({
                         key: 'f_rr_j',
                         value: Number(row.F_RR_J.replace(',', '.')),
-                    })
+                    });
                 }
                 if (row.F_RR_LF !== null) {
                     acroPoints.push({
                         key: 'f_rr_lf',
                         value: Number(row.F_RR_LF.replace(',', '.')),
-                    })
+                    });
                 }
                 if (row.F_RR_GF !== null) {
                     acroPoints.push({
                         key: 'f_rr_gf',
                         value: Number(row.F_RR_GF.replace(',', '.')),
-                    })
+                    });
                 }
                 if (row.F_RR_ST !== null) {
                     acroPoints.push({
                         key: 'f_rr_st',
                         value: Number(row.F_RR_ST.replace(',', '.')),
-                    })
+                    });
                 }
 
-                const acroGroups: any[] = []
+                const acroGroups: any[] = [];
                 if (row.Gruppen_ID_1 !== null) {
-                    acroGroups.push({ key: 'id_1', value: row.Gruppen_ID_1 })
+                    acroGroups.push({key: 'id_1', value: row.Gruppen_ID_1});
                 }
                 if (row.Gruppen_ID_2 !== null) {
-                    acroGroups.push({ key: 'id_2', value: row.Gruppen_ID_2 })
+                    acroGroups.push({key: 'id_2', value: row.Gruppen_ID_2});
                 }
                 if (row.Gruppen_ID_3 !== null) {
-                    acroGroups.push({ key: 'id_3', value: row.Gruppen_ID_3 })
+                    acroGroups.push({key: 'id_3', value: row.Gruppen_ID_3});
                 }
                 if (row.Gruppen_ID_4 !== null) {
-                    acroGroups.push({ key: 'id_4', value: row.Gruppen_ID_4 })
+                    acroGroups.push({key: 'id_4', value: row.Gruppen_ID_4});
                 }
                 if (row.Gruppen_ID_5 !== null) {
-                    acroGroups.push({ key: 'id_5', value: row.Gruppen_ID_5 })
+                    acroGroups.push({key: 'id_5', value: row.Gruppen_ID_5});
                 }
 
                 await this.db.acros.upsert({
@@ -478,13 +464,13 @@ export class ActivityPortalService {
                     points: acroPoints,
                     group: acroGroups,
                     notice: row.Bemerkung !== null ? row.Bemerkung : undefined,
-                })
+                });
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
         }
 
-        console.log('updated imported acros')
+        console.log('updated imported acros');
     }
 
     private async importAppointmentData(csvData: StartDataAppointmentData[]) {
@@ -539,12 +525,12 @@ export class ActivityPortalService {
                                 : undefined,
                     })
                 } catch (e) {
-                    console.error(e)
+                    console.error(e);
                 }
             }
         }
 
-        console.log('updated imported appointments')
+        console.log('updated imported appointments');
     }
 
     private async importActiveDb(
@@ -552,8 +538,8 @@ export class ActivityPortalService {
         csvData: CompetitionData[]
     ) {
         if (database == null) {
-            console.log('invalid collection')
-            return
+            console.log('invalid collection');
+            return;
         }
         for (const row of csvData) {
             if (!row.Startbuch) {
@@ -734,10 +720,10 @@ export class ActivityPortalService {
                     },
                 })
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
         }
 
-        console.log('updated imported appointments')
+        console.log('updated imported appointments');
     }
 }

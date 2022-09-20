@@ -1,5 +1,6 @@
 import React, { Component, lazy } from "react";
-import { Route, withRouter } from "react-router-dom";
+import { Route } from "react-router-dom";
+import withRouter from "../../components/withRouter";
 
 import { withStyles } from "@mui/styles";
 import { Tab, Typography, Paper } from "@mui/material";

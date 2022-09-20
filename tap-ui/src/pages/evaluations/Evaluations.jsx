@@ -1,3 +1,4 @@
+import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import MUIDataTable from "mui-datatables";
 import {
@@ -7,33 +8,36 @@ import {
     Tooltip,
     IconButton,
 } from "@material-ui/core";
-import { Component } from "react";
+import { Edit, Delete } from "@material-ui/icons";
 import * as Database from "../../Database";
-import PhaseDialog from "./PhaseDialog";
-import { Edit, Delete } from "@mui/icons-material";
+import EvaluationDialog from "./EvaluationDialog";
 import withStyles from "@material-ui/core/es/styles/withStyles";
 
 const styles = (theme) => ({
+    root: {
+        flexGrow: 1,
+        padding: 30,
+    },
     table: {
         margin: "11px",
         marginBottom: "80px",
     },
-    newPhaseField: {
+    newEvaluationField: {
         margin: "11px",
     },
-    newPhaseButton: {
+    newEvaluationButton: {
         margin: 10,
     },
 });
 
-class Phase extends Component {
+class Evaluations extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            newPhaseOpen: false,
-            phaseToEdit: null,
-            PhaseList: null,
+            newEvaluationOpen: false,
+            evaluationToEdit: null,
+            evaluations: null,
         };
 
         this.subs = [];
@@ -42,16 +46,18 @@ class Phase extends Component {
     async componentDidMount() {
         this.setState({ db: await Database.getClientDb() });
 
-        const sub = this.state.db.phase.find().$.subscribe((PhaseList) => {
-            if (!PhaseList) {
-                return;
-            }
-            console.log("reload Phase-list ");
-            console.dir(PhaseList);
-            this.setState({
-                PhaseList,
+        const sub = this.state.db.scoringrule
+            .find()
+            .$.subscribe((evaluations) => {
+                if (!evaluations) {
+                    return;
+                }
+                console.log("reload evaluations-list ");
+                console.dir(evaluations);
+                this.setState({
+                    evaluations,
+                });
             });
-        });
         this.subs.push(sub);
     }
 
@@ -60,53 +66,76 @@ class Phase extends Component {
         this.subs.forEach((sub) => sub.unsubscribe());
     }
 
-    async deletePhase(id) {
-        await this.state.db.phase.findOne({ selector: { id: id } }).remove();
+    async deleteEvaluation(id) {
+        await this.state.db.scoringrule
+            .findOne({
+                selector: {
+                    id: id,
+                },
+            })
+            .remove();
     }
 
     render() {
         const { classes } = this.props;
-        const { PhaseList, newPhaseOpen, phaseToEdit } = this.state;
+        const { evaluations, newEvaluationOpen, evaluationToEdit } = this.state;
 
         return (
             <div>
-                <Paper className={classes.newPhaseField}>
+                <Paper className={classes.newEvaluationField}>
                     <Button
-                        className={classes.newPhaseButton}
-                        color="inherit"
-                        variant="outlined"
-                        color="primary"
+                        className={classes.newEvaluationButton}
+                        color='inherit'
+                        variant='outlined'
+                        color='primary'
                         onClick={() => {
-                            this.setState({ newPhaseOpen: true });
+                            this.setState({ newEvaluationOpen: true });
                         }}
                     >
-                        Station hinzufügen
+                        Wertungsbogen erstellen
                     </Button>
                 </Paper>
-                <PhaseDialog
-                    open={newPhaseOpen}
-                    phaseToEdit={phaseToEdit}
+                <EvaluationDialog
+                    open={newEvaluationOpen}
+                    evaluationToEdit={evaluationToEdit}
                     handleClose={() =>
                         this.setState({
-                            newPhaseOpen: false,
-                            phaseToEdit: null,
+                            newEvaluationOpen: false,
+                            evaluationToEdit: null,
                         })
                     }
                 />
-                {PhaseList != null ? (
+                {evaluations != null ? (
                     <MUIDataTable
                         className={classes.table}
-                        data={PhaseList}
+                        data={evaluations}
                         columns={[
                             {
-                                name: "phase_id",
+                                name: "id",
                                 options: {
                                     filter: false,
                                 },
                             },
                             {
                                 name: "name",
-                                options: { filter: false, sort: true },
+                                options: {
+                                    filter: false,
+                                    sort: true,
+                                },
+                            },
+                            {
+                                name: "categories",
+                                options: {
+                                    display: "excluded",
+                                    filter: false,
+                                },
+                            },
+                            {
+                                name: "boni",
+                                options: {
+                                    display: "excluded",
+                                    filter: false,
+                                },
                             },
                             {
                                 name: "aktionen",
@@ -121,21 +150,25 @@ class Phase extends Component {
                                         if (tableMeta.rowData != null) {
                                             return (
                                                 <div>
-                                                    <Tooltip title="Bearbeiten">
+                                                    <Tooltip title='Bearbeiten'>
                                                         <span>
                                                             <IconButton
                                                                 onClick={() => {
                                                                     this.setState(
                                                                         {
-                                                                            newPhaseOpen:
-                                                                                !newPhaseOpen,
-                                                                            PhaseToEdit:
+                                                                            newEvaluationOpen:
+                                                                                !newEvaluationOpen,
+                                                                            evaluationToEdit:
                                                                                 {
-                                                                                    phase_id:
-                                                                                        tableMeta
-                                                                                            .rowData[0],
+                                                                                    id: tableMeta
+                                                                                        .rowData[0],
                                                                                     name: tableMeta
                                                                                         .rowData[1],
+                                                                                    categories:
+                                                                                        tableMeta
+                                                                                            .rowData[2],
+                                                                                    boni: tableMeta
+                                                                                        .rowData[3],
                                                                                 },
                                                                         }
                                                                     );
@@ -145,11 +178,11 @@ class Phase extends Component {
                                                             </IconButton>
                                                         </span>
                                                     </Tooltip>
-                                                    <Tooltip title="Entfernen">
+                                                    <Tooltip title='Entfernen'>
                                                         <span>
                                                             <IconButton
                                                                 onClick={() => {
-                                                                    this.deletePhase(
+                                                                    this.deleteEvaluation(
                                                                         tableMeta
                                                                             .rowData[0]
                                                                     );
@@ -174,7 +207,7 @@ class Phase extends Component {
                         }}
                     />
                 ) : (
-                    <LinearProgress />
+                    <div />
                 )}
             </div>
         );
@@ -182,12 +215,12 @@ class Phase extends Component {
 }
 
 // Specifies the default values for props:
-Phase.defaultProps = {
+Evaluations.defaultProps = {
     routes: {
         routes: [
             {
                 name: "default",
-                path: "/Phase",
+                path: "/evaluations",
                 exact: true,
                 component: <LinearProgress />,
                 admin: false,
@@ -198,4 +231,4 @@ Phase.defaultProps = {
     },
 };
 
-export default withStyles(styles, { withTheme: true })(Phase);
+export default withStyles(styles, { withTheme: true })(withRouter(Evaluations));

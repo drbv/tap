@@ -9,7 +9,7 @@ import {
     IconButton,
     Checkbox,
 } from "@material-ui/core";
-import { Edit, Delete } from "@material-ui/icons";
+import { Edit, Delete } from "@mui/icons-material";
 import * as Database from "../../Database";
 import ScoringruleDialog from "./ScoringruleDialog";
 import withStyles from "@material-ui/core/es/styles/withStyles";

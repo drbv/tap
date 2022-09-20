@@ -1,0 +1,7 @@
+export enum ObserverState {
+    INITIALIZED = 'INITIALIZED',
+    STARTED = 'STARTED',
+    ASSESSED = 'ASSESSED',
+    CONFIRMED = 'CONFIRMED',
+    FINISHED = 'FINISHED',
+}

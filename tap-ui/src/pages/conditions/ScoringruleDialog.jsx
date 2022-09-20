@@ -34,7 +34,7 @@ import {
     Checkbox,
     Grid,
 } from "@material-ui/core";
-import { Delete, Add } from "@material-ui/icons";
+import { Delete, Add } from "@mui/icons-material";
 import { Tooltip } from "@material-ui/core";
 
 const styles = (theme) => ({
