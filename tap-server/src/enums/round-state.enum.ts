@@ -1,8 +1,8 @@
-export enum StateId {
+export enum RoundState {
     INITIALIZED = 'INITIALIZED',
     CREATED = 'CREATED',
+    EDITED = 'EDITED',
     STARTED = 'STARTED',
     EVALUATED = 'EVALUATED',
-    WAITED = 'WAITED',
     FINISHED = 'FINISHED',
 }
