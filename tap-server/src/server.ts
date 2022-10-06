@@ -3,7 +3,7 @@ import {Database} from "./database";
 import {ActivityPortalService} from "./services/activity-portal.service";
 import config from "config";
 import {RoundService} from "./workflows/services/round.service";
-import { RxDocument } from "rxdb";
+import {RxDocument} from "rxdb";
 
 let server: any;
 const port: number = config.get("port");
@@ -93,8 +93,7 @@ initialize().then(async () => {
 
     console.log('start wf')
     const rs = new RoundService();
-    await rs.createWorkflow();
-    rs.startWorkflow();
+    rs.getCurrentState();
 
     /*
     let lastObj: any;

@@ -1,8 +1,7 @@
-import {RxDatabase} from "rxdb";
+import {Database} from "../../database";
 
 export class Context {
     value: number;
-    db: RxDatabase;
     message: string;
 
     lastObj: any;
@@ -11,7 +10,10 @@ export class Context {
         return Math.floor(Math.random() * 100);
     }
 
-    constructor(value: number) {
-        this.value = value;
+    constructor() {
+    }
+
+    public getDatabase() {
+        return Database.getCurrentCompetitionDB();
     }
 }

@@ -1,8 +1,9 @@
 export enum RoundState {
     INITIALIZED = 'INITIALIZED',
     CREATED = 'CREATED',
-    EDITED = 'EDITED',
+    DRAWN = 'DRAWN',
     STARTED = 'STARTED',
     EVALUATED = 'EVALUATED',
+    TRANSFERRED = 'TRANSFERRED',
     FINISHED = 'FINISHED',
 }
