@@ -1,13 +1,12 @@
 export enum HeatTransition {
-    BEGIN = 'BEGIN',
+    START = 'START',
     ASSESS = 'ASSESS',
+    SUBMIT = 'SUBMIT',
     CALCULATE = 'CALCULATE',
     REJECT = 'REJECT',
     CORRECT = 'CORRECT',
     EDIT = 'EDIT',
-    SUBMIT = 'SUBMIT',
-    RANK = 'RANK',
-    PUBLISH = 'PUBLISH',
-    NEXT = 'NEXT',
+    RELEASE_RESULT = 'RELEASE_RESULT',
+    NEXT_HEAT = 'NEXT_HEAT',
     FINISH = 'FINISH',
 }

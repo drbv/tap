@@ -16,11 +16,9 @@ export class RoundService {
         FINISHED: {name: RoundState.FINISHED},
     }
 
+    // TODO to be defined
     guards = {
         canMelt: (fsm: any, from: any, to: any) => fsm.data.temperature > 5,
-        canVaporize: (fsm: any, from: any, to: any) => fsm.data.temperature > 100,
-        canCondense: (fsm: any, from: any, to: any) => fsm.data.temperature < 100,
-        canFreeze: (fsm: any, from: any, to: any) => fsm.data.temperature >= 0
     }
 
     private transitions = {
@@ -34,72 +32,72 @@ export class RoundService {
         // Tanzrunde ändern
         EDIT: {
             name: RoundTransition.EDIT,
-            from: this.states.CREATED, // can be a single state
-            to: [this.states.CREATED], // or multiple targets
+            from: this.states.CREATED,
+            to: this.states.CREATED,
             action: () => this.onEdit(),
         },
         // Tanzrunde auslosen
         DRAW: {
             name: RoundTransition.DRAW,
-            from: this.states.CREATED, // can be a single state
-            to: [this.states.DRAWN], // or multiple targets
+            from: this.states.CREATED,
+            to: this.states.DRAWN,
             action: () => this.onDraw(),
         },
         // Auslosung ändern
         MODIFY: {
             name: RoundTransition.MODIFY,
-            from: this.states.DRAWN, // can be a single state
-            to: [this.states.DRAWN], // or multiple targets
+            from: this.states.DRAWN,
+            to: this.states.DRAWN,
             action: () => this.onModify(),
         },
         // Tanzrunde ändern
         CHANGE: {
             name: RoundTransition.CHANGE,
-            from: this.states.DRAWN, // can be a single state
-            to: [this.states.CREATED], // or multiple targets
+            from: this.states.DRAWN,
+            to: this.states.CREATED,
             action: () => this.onChange(),
         },
         // Tanzrunde starten
         START: {
             name: RoundTransition.START,
-            from: this.states.DRAWN, // can be a single state
-            to: [this.states.STARTED], // or multiple targets
+            from: this.states.DRAWN,
+            to: this.states.STARTED,
             action: () => this.onStart(),
         },
         // Tanzrunde oder Heat neustarten
         RESTART: {
             name: RoundTransition.RESTART,
-            from: this.states.STARTED, // can be a single state
-            to: [this.states.STARTED], // or multiple targets
+            from: this.states.STARTED,
+            to: this.states.STARTED,
             data: () => this.getRestartOption(),
             action: () => this.onRestart(),
         },
         // Tanzrunde auswerten
         EVALUATE: {
             name: RoundTransition.EVALUATE,
-            from: this.states.STARTED, // can be a single state
-            to: [this.states.EVALUATED], // or multiple targets
+            from: this.states.STARTED,
+            to: this.states.EVALUATED,
             action: () => this.onEvaluate(),
         },
         // Teams in die nächste Tanzrunde nehmen
         TRANSFER: {
             name: RoundTransition.TRANSFER,
-            from: this.states.STARTED, // can be a single state
-            to: [this.states.TRANSFERRED], // or multiple targets
+            from: this.states.STARTED,
+            to: this.states.TRANSFERRED,
             action: () => this.onTransfer(),
         },
         // Tanzrunde auslosen
         DRAW_NEXT: {
             name: RoundTransition.DRAW_NEXT,
-            from: this.states.TRANSFERRED, // can be a single state
-            to: [this.states.DRAWN], // or multiple targets
+            from: this.states.TRANSFERRED,
+            to: this.states.DRAWN,
             action: () => this.onDraw(),
         },
         // Tanzrunde beenden
         FINISH: {
             name: RoundTransition.FINISH,
-            from: this.states.EVALUATED, // can be a single state
-            to: [this.states.FINISHED], // or multiple targets
+            from: this.states.EVALUATED,
+            to: this.states.FINISHED,
             action: () => this.onFinish(),
         },
     }

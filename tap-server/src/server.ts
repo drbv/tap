@@ -4,6 +4,7 @@ import {ActivityPortalService} from "./services/activity-portal.service";
 import config from "config";
 import {RoundService} from "./workflows/services/round.service";
 import {RxDocument} from "rxdb";
+import {HeatService} from "./workflows/services/heat.service";
 
 let server: any;
 const port: number = config.get("port");
@@ -93,7 +94,13 @@ initialize().then(async () => {
 
     console.log('start wf')
     const rs = new RoundService();
-    rs.getCurrentState();
+    //rs.createRound();
+    const hs = new HeatService();
+    hs.changeData('observer')
+    hs.startHeat();
+    console.log('hs ', hs.getCurrentState().name)
+    hs.assess();
+    console.log('hs ', hs.getCurrentState().name)
 
     /*
     let lastObj: any;
