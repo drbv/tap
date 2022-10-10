@@ -1,8 +1,7 @@
-export enum HeatState {
+export enum JudgeState {
     INITIALIZED = 'INITIALIZED',
     STARTED = 'STARTED',
     ASSESSED = 'ASSESSED',
-    CALCULATED = 'CALCULATED',
-    RESULT_RELEASED = 'RESULT_RELEASED',
+    CORRECTED = 'CORRECTED',
     FINISHED = 'FINISHED',
 }

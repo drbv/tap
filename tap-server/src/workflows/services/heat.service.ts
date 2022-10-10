@@ -1,13 +1,18 @@
 import {FSM} from "ea-state-machine";
 import {HeatState} from "../../enums/heat-state.enum";
 import {HeatTransition} from "../../enums/heat-transition.enum";
+import {WorkflowBase} from "./workflow-base.service";
 
 
-export class HeatService {
+export class HeatService extends WorkflowBase {
 
-    private states = {
-        INITIALIZED: {name: HeatState.INITIALIZED},
-        STARTED: {name: HeatState.STARTED},
+    protected states = {
+        INITIALIZED: {name: HeatState.INITIALIZED, onExit: () => console.log('on exit')},
+        STARTED: {
+            name: HeatState.STARTED,
+            onEnter: () => console.log('on enter'),
+            onExit: () => console.log('on exit')
+        },
         ASSESSED: {name: HeatState.ASSESSED},
         CALCULATED: {name: HeatState.CALCULATED},
         RESULT_RELEASED: {name: HeatState.RESULT_RELEASED},
@@ -15,11 +20,11 @@ export class HeatService {
     }
 
     // TODO to be defined
-    guards = {
+    protected guards = {
         canMelt: (fsm: any, from: any, to: any) => fsm.data.temperature > 5,
     }
 
-    private transitions = {
+    protected transitions = {
         // Runde starten
         START: {
             name: HeatTransition.START,
@@ -39,18 +44,6 @@ export class HeatService {
             from: this.states.ASSESSED,
             to: this.states.CALCULATED,
             action: () => this.onCalculate(),
-        },
-        REJECT: {
-            name: HeatTransition.REJECT,
-            from: this.states.CALCULATED,
-            to: this.states.ASSESSED,
-            action: () => this.onReject(),
-        },
-        CORRECT: {
-            name: HeatTransition.CORRECT,
-            from: this.states.ASSESSED,
-            to: this.states.CALCULATED,
-            action: () => this.onCorrect(),
         },
         EDIT: {
             name: HeatTransition.EDIT,
@@ -74,24 +67,24 @@ export class HeatService {
             name: HeatTransition.FINISH,
             from: this.states.RESULT_RELEASED,
             to: this.states.FINISHED,
-            action: () => this.onNextHeat(),
+            action: () => this.onFinish(),
         },
     }
 
-    private environment = {role: 'default'};
+    protected environment = {role: 'default'};
 
-    private fsm = new FSM(
+    protected fsm = new FSM(
         this.states, // all states
         this.transitions, // transition defitions between states
         this.states.INITIALIZED, // optional: start state, if omitted, a transition to the first state needs to happen
         this.environment // optional: associated data with the state machine
     );
 
-
     private onStart() {
     }
 
     private onAssess(action: any) {
+        // TODO instantiate observer, judge and heat-timer workflow
         if (action.fsm.data.role === 'judge') {
             console.log('judge has spoken')
         }
@@ -102,21 +95,8 @@ export class HeatService {
             console.log('time has spoken')
         }
     }
-
-    private onSubmit() {
-
-    }
-
     private onCalculate() {
-
-    }
-
-    private onReject() {
-
-    }
-
-    private onCorrect() {
-
+        console.log('on calc')
     }
 
     private onEdit() {
@@ -139,10 +119,6 @@ export class HeatService {
         // TODO define restart option HEAT or ROUND
     }
 
-    public getCurrentState() {
-        return this.fsm.currentState;
-    }
-
     public changeData(role: string) {
         return this.fsm.changeData({role});
     }
@@ -152,6 +128,6 @@ export class HeatService {
     }
 
     public assess() {
-
+        this.fsm.transitionTo(this.states.ASSESSED);
     }
 }

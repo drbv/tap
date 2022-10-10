@@ -1,8 +1,7 @@
-export enum HeatState {
+export enum ObserverState {
     INITIALIZED = 'INITIALIZED',
     STARTED = 'STARTED',
     ASSESSED = 'ASSESSED',
-    CALCULATED = 'CALCULATED',
-    RESULT_RELEASED = 'RESULT_RELEASED',
+    CONFIRMED = 'CONFIRMED',
     FINISHED = 'FINISHED',
 }

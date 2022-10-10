@@ -2,11 +2,12 @@ import {RoundState} from "../../enums/round-state.enum";
 import {RoundTransition} from "../../enums/round-transition.enum";
 import {FSM} from "ea-state-machine";
 import {Context} from "../workflow/round-context.model";
+import {WorkflowBase} from "./workflow-base.service";
 
 
-export class RoundService {
+export class RoundService extends WorkflowBase {
 
-    private states = {
+    protected states = {
         INITIALIZED: {name: RoundState.INITIALIZED},
         CREATED: {name: RoundState.CREATED},
         DRAWN: {name: RoundState.DRAWN},
@@ -17,16 +18,16 @@ export class RoundService {
     }
 
     // TODO to be defined
-    guards = {
+    protected guards = {
         canMelt: (fsm: any, from: any, to: any) => fsm.data.temperature > 5,
     }
 
-    private transitions = {
+    protected transitions = {
         // Tanzrunde erstellen
         CREATE: {
             name: RoundTransition.CREATE,
             from: this.states.INITIALIZED, // can be a single state
-            to: [this.states.CREATED], // or multiple targets
+            to: this.states.CREATED, // or multiple targets
             action: () => this.onCreate(),
         },
         // Tanzrunde ändern
@@ -102,9 +103,9 @@ export class RoundService {
         },
     }
 
-    private environment = new Context();
+    protected environment = new Context();
 
-    private fsm = new FSM(
+    protected fsm = new FSM(
         this.states, // all states
         this.transitions, // transition defitions between states
         this.states.INITIALIZED, // optional: start state, if omitted, a transition to the first state needs to happen
@@ -132,7 +133,7 @@ export class RoundService {
     }
 
     private onStart() {
-
+        // TODO instantiate heat workflow
     }
 
     private onRestart() {
@@ -155,8 +156,7 @@ export class RoundService {
         // TODO define restart option HEAT or ROUND
     }
 
-    public getCurrentState() {
-        return this.fsm.currentState;
+    public changeData(data: any): void {
     }
 
     public createRound() {
@@ -174,4 +174,5 @@ export class RoundService {
         this.fsm.changeData({temperature: 10});
         this.fsm.transitionTo(this.states.DRAWN)
     }
+
 }
