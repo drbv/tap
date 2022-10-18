@@ -1,13 +1,6 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import withRouter from "../../components/withRouter";
-import {
-    LinearProgress,
-    Paper,
-    Button,
-    Tooltip,
-    IconButton,
-    Typography,
-} from "@material-ui/core";
+import {LinearProgress} from "@material-ui/core";
 import withStyles from "@material-ui/core/es/styles/withStyles";
 
 const styles = (theme) => ({

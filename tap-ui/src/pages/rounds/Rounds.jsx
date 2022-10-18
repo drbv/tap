@@ -1,18 +1,12 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import withRouter from "../../components/withRouter";
-import {withLocalize } from "react-localize-redux";
+import {withLocalize} from "react-localize-redux";
 
 import MUIDataTable from "mui-datatables";
-import {
-    LinearProgress,
-    Paper,
-    Button,
-    Tooltip,
-    IconButton,
-} from "@material-ui/core";
+import {Button, IconButton, LinearProgress, Paper, Tooltip,} from "@material-ui/core";
 import withStyles from "@material-ui/core/es/styles/withStyles";
-import { Edit, Delete, PeopleAlt } from "@material-ui/icons";
-import { getCollection } from "../../Database";
+import {Delete, Edit} from "@mui/icons-material";
+import {getCollection} from "../../Database";
 import RoundSetDialog from "./RoundSetDialog";
 import RoundDialog from "./RoundDialog";
 

@@ -1,20 +1,12 @@
-import React, { Component } from "react";
-import { Route } from "react-router-dom";
+import React, {Component} from "react";
 import withRouter from "../../components/withRouter";
 import MUIDataTable from "mui-datatables";
-import {
-    LinearProgress,
-    Paper,
-    Button,
-    Tooltip,
-    IconButton,
-} from "@material-ui/core";
+import {Button, IconButton, LinearProgress, Paper, Tooltip,} from "@material-ui/core";
 import withStyles from "@material-ui/core/es/styles/withStyles";
-import { Edit, Delete } from "@material-ui/icons";
-import { isRxDatabase, isRxCollection } from "rxdb";
+import {Delete, Edit} from "@mui/icons-material";
 
 import withProps from "../../components/HOC";
-import { getCollection } from "../../Database";
+import {getCollection} from "../../Database";
 import UserDialog from "./UserDialog";
 
 const styles = (theme) => ({

@@ -1,23 +1,11 @@
-import React, { Component } from "react";
-import { Route } from "react-router-dom";
+import React, {Component} from "react";
 import withRouter from "../../components/withRouter";
 import MUIDataTable from "mui-datatables";
-import {
-    LinearProgress,
-    Paper,
-    Button,
-    Tooltip,
-    IconButton,
-} from "@material-ui/core";
-import { Edit, Delete } from "@material-ui/icons";
+import {LinearProgress} from "@material-ui/core";
 import withStyles from "@material-ui/core/es/styles/withStyles";
-
-import { isRxDatabase, isRxCollection } from "rxdb";
-
 import withProps from "../../components/HOC";
-import { getCollection, closeCollection } from "../../Database";
-import CoupleDialog from "./AthleteDialog";
-import { Translate, withLocalize } from "react-localize-redux";
+import {getCollection} from "../../Database";
+import {withLocalize} from "react-localize-redux";
 import athleteTranslations from "../../translations/athletes.json";
 
 const styles = (theme) => ({

@@ -1,33 +1,21 @@
 //HOC and utils
 import React from "react";
 import PropTypes from "prop-types";
-import { Route, Router } from "react-router-dom";
 import withRouter from "./withRouter";
-import { withStyles } from "@material-ui/core";
 //components and libraries
 import {
+    Divider,
     Drawer,
     IconButton,
-    Divider,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    Avatar,
-    Typography,
     Tooltip,
+    withStyles
 } from "@material-ui/core";
 //icons
-import {
-    Info,
-    Help,
-    FilterDrama,
-    FormatListBulleted,
-    AccountCircle,
-    AttachMoney,
-    Language,
-    SettingsPower,
-} from "@mui/icons-material";
+import {Help, Info,} from "@mui/icons-material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import InfoDialog from "../tools/info_dialog/InfoDialog";
@@ -91,13 +79,6 @@ const styles = (theme) => ({
             duration: theme.transitions.duration.leavingScreen,
         }),
         marginLeft: -drawerWidth,
-    },
-    contentShift: {
-        transition: theme.transitions.create("margin", {
-            easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-        marginLeft: 0,
     },
     row: {
         display: "flex",
