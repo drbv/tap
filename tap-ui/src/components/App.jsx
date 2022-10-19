@@ -4,7 +4,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import classNames from "classnames";
 
 import { LinearProgress, CssBaseline, withStyles } from "@material-ui/core";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ls from "local-storage";
 
 import { Translate, withLocalize } from "react-localize-redux";
@@ -84,7 +84,7 @@ class App extends Component {
 
     getRoutes() {
         return (
-            <Switch>
+            <Routes>
                 {this.props.routes.map((route) => {
                     let routing = (
                         <Route
@@ -105,7 +105,7 @@ class App extends Component {
                         return routing;
                     }
                 })}
-            </Switch>
+            </Routes>
         );
     }
 

@@ -1,37 +1,29 @@
-import {
-    addPouchPlugin,
-    addRxPlugin,
-    createRxDatabase,
-    getRxStoragePouch,
-    RxDatabase,
-} from "rxdb"
-import { RxDBNoValidatePlugin } from "rxdb/plugins/no-validate"
-import { RxDBLeaderElectionPlugin } from "rxdb/plugins/leader-election"
-import { RxDBReplicationCouchDBPlugin } from "rxdb/plugins/replication-couchdb"
-import pouchdb_adapter_http from "pouchdb-adapter-http"
-import pouchdb_adapter_websql from "pouchdb-adapter-websql"
-import { AthleteSchema } from "../../shared/schemas/athlete.schema"
-import { TeamSchema } from "../../shared/schemas/team.schema"
-import { OfficialSchema } from "../../shared/schemas/official.schema"
-import { AcroSchema } from "../../shared/schemas/acro.schema"
-import { AppointmentSchema } from "shared/schemas/appointment.schema"
-import { PhaseSchema} from "shared/schemas/phase.schema"
-import {
-    CompetitionSchema
-} from "../../shared/schemas/competition.schema"
-import { RoundSchema } from "../../shared/schemas/round.schema"
-import { ScoringRuleSchema } from "../../shared/schemas/scoringRule.schema"
-import { UserSchema } from "../../shared/schemas/user.schema"
-import { RoundResultSchema } from "../../shared/schemas/roundResult.schema"
-import { CurrentCompetitionSchema } from "../../shared/schemas/currentCompetition.schema"
+import {addRxPlugin, createRxDatabase} from "rxdb";
+import {addPouchPlugin, getRxStoragePouch} from 'rxdb/plugins/pouchdb';
+import {RxDBReplicationCouchDBPlugin} from 'rxdb/plugins/replication-couchdb';
+import pouchdb_adapter_http from "pouchdb-adapter-http";
+import pouchdb_adapter_idb from "pouchdb-adapter-idb";
+import {RxDBLeaderElectionPlugin} from 'rxdb/plugins/leader-election';
+import {globalAgent} from "http";
+import {AthleteSchema} from "./shared/schemas/athlete.schema"
+import {TeamSchema} from "./shared/schemas/team.schema"
+import {OfficialSchema} from "./shared/schemas/official.schema"
+import {AcroSchema} from "./shared/schemas/acro.schema"
+import {AppointmentSchema} from "./shared/schemas/appointment.schema"
+import {PhaseSchema} from "./shared/schemas/phase.schema"
+import {CompetitionSchema} from "./shared/schemas/competition.schema"
+import {RoundSchema} from "./shared/schemas/round.schema"
+import {UserSchema} from "./shared/schemas/user.schema"
+import {RoundResultSchema} from "./shared/schemas/roundResult.schema"
+import {CurrentCompetitionSchema} from "./shared/schemas/currentCompetition.schema"
+import {ScoringRuleSchema} from "./shared/schemas/scoringRule.schema"
 
-addRxPlugin(RxDBReplicationCouchDBPlugin)
-addRxPlugin(RxDBNoValidatePlugin)
-addRxPlugin(RxDBLeaderElectionPlugin)
-addPouchPlugin(pouchdb_adapter_http)
-// addPouchPlugin(pouchdb_adapter_websql)
-addPouchPlugin(require('pouchdb-adapter-idb'));
-require('http').globalAgent.maxSockets = 50;
+addPouchPlugin(pouchdb_adapter_http);
+addRxPlugin(RxDBReplicationCouchDBPlugin);
+addPouchPlugin(pouchdb_adapter_idb);
+addRxPlugin(RxDBLeaderElectionPlugin);
+
+globalAgent.maxSockets = 50;
 
 let dbPromise: any = null
 const activeSyncs = new Map()
@@ -43,54 +35,64 @@ export async function getCollection(collection: string, competitionId: string) {
     const clientDB = await getClientDb()
     const rxCollection: any = clientDB[collection]
 
+    // TODO repState not yet defined
     // check if there is already a alive replicationState
-    if (((repState = activeSyncs.get(collection)), repState != null)) {
+    /*if (((repState = activeSyncs.get(collection)), repState != null)) {
         if (repState.alive) {
             return rxCollection
         }
-    }
+    }*/
 
     // sync local collection with server
-    var repState = rxCollection.syncCouchDB({
+    const repState = rxCollection.syncCouchDB({
         remote: "http://localhost:5001/db/" + competitionId + "/" + collection,
-        waitForLeadership: false,
-        options: {
+        waitForLeadership: true,              // (optional) [default=true] to save performance, the sync starts on leader-instance only
+        direction: {                          // direction (optional) to specify sync-directions
+            pull: true, // default=true
+            push: true  // default=true
+        },
+        options: {                             // sync-options (optional) from https://pouchdb.com/api.html#replication
             live: true,
-            retry: true,
+            retry: true
         },
     })
 
     // save repState to be able to close sync
-    activeSyncs.set(collection, repState)
+    activeSyncs.set(collection, repState);
 
-    return rxCollection
+    return rxCollection;
 }
 
 export async function getBaseCollection(collection: string) {
-    const clientDB = await getClientBaseDb()
-    const rxCollection: any = clientDB[collection]
+    const clientDB = await getClientBaseDb();
+    const rxCollection: any = clientDB[collection];
 
+    // TODO repState not yet defined
     // check if there is already a alive replicationState
-    if (((repState = activeBaseSyncs.get(collection)), repState != null)) {
+    /*if (((repState = activeBaseSyncs.get(collection)), repState != null)) {
         if (repState.alive) {
             return rxCollection
         }
-    }
+    }*/
 
     // sync local collection with server
-    var repState = rxCollection.syncCouchDB({
+    const repState = rxCollection.syncCouchDB({
         remote: "http://localhost:5001/basedb/" + collection,
-        waitForLeadership: false,
-        options: {
-            live: true,
-            retry: true,
+        waitForLeadership: true,              // (optional) [default=true] to save performance, the sync starts on leader-instance only
+        direction: {                          // direction (optional) to specify sync-directions
+            pull: true, // default=true
+            push: true  // default=true
         },
-    })
+        options: {                             // sync-options (optional) from https://pouchdb.com/api.html#replication
+            live: true,
+            retry: true
+        },
+    });
 
     // save repState to be able to close sync
-    activeBaseSyncs.set(collection, repState)
+    activeBaseSyncs.set(collection, repState);
 
-    return rxCollection
+    return rxCollection;
 }
 
 export async function closeCollection(collection: string) {
@@ -106,10 +108,10 @@ async function _create() {
         name: "./client-db",
         storage: getRxStoragePouch("idb"),
         ignoreDuplicate: true,
-    })
+    });
 
     await db.addCollections({
-        //new data        
+        // new data
         competition: {
             schema: CompetitionSchema,
         },
@@ -128,7 +130,7 @@ async function _create() {
         user: {
             schema: UserSchema,
         },
-    })
+    });
 
     await db.user.atomicUpsert({
         id: "DEFAULT_ADMIN",
@@ -137,7 +139,7 @@ async function _create() {
         key: "admindarfalles",
     })
 
-    return db
+    return db;
 }
 
 async function _createBase() {
@@ -166,9 +168,9 @@ async function _createBase() {
         appointments: {
             schema: AppointmentSchema,
         },
-    })
+    });
 
-    return db
+    return db;
 }
 
 export async function getClientDb() {

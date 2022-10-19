@@ -24,7 +24,7 @@ import {
     CircularProgress,
 } from "@material-ui/core";
 
-import { BlurOn } from "@material-ui/icons";
+import { BlurOn } from "@mui/icons-material";
 import { Tooltip } from "@material-ui/core";
 
 const styles = (theme) => ({

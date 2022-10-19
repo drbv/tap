@@ -23,8 +23,8 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
-import BubbleChartIcon from "@material-ui/icons/BubbleChart";
-import MenuIcon from "@material-ui/icons/Menu";
+import BubbleChartIcon from "@mui/icons-material/BubbleChart";
+import MenuIcon from "@mui/icons-material/Menu";
 
 import withProps from "./HOC";
 
@@ -70,11 +70,11 @@ class AppNavbar extends Component {
     render() {
         const { classes } = this.props;
         return (
-            <AppBar position='static' className={classes.appBar}>
+            <AppBar position="static" className={classes.appBar}>
                 <Toolbar>
                     <IconButton
-                        color='inherit'
-                        aria-label='Menu'
+                        color="inherit"
+                        aria-label="Menu"
                         onClick={() => this.props.handleDrawerToggle(true)}
                     >
                         <MenuIcon />
@@ -91,27 +91,27 @@ class AppNavbar extends Component {
                         )}
                     >
                         <IconButton
-                            edge='start'
-                            color='inherit'
-                            aria-label='menu'
+                            edge="start"
+                            color="inherit"
+                            aria-label="menu"
                         >
                             <BubbleChartIcon />
                         </IconButton>
-                        <Typography variant='h6' color='inherit'>
+                        <Typography variant="h6" color="inherit">
                             Wertungs-App
                         </Typography>
                     </div>
                     {this.props.user && (
                         <div>
-                            <Typography variant='body2' color='inherit'>
+                            <Typography variant="body2" color="inherit">
                                 {"Eingeloggt: "}
                             </Typography>
-                            <Typography variant='body2' color='inherit'>
+                            <Typography variant="body2" color="inherit">
                                 {this.props.user.name}
                             </Typography>
                             <Button
-                                variant='contained'
-                                color='secondary'
+                                variant="contained"
+                                color="secondary"
                                 onClick={this.props.logout}
                                 style={{ marginLeft: "10px" }}
                             >

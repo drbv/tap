@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
+import withRouter from "../../components/withRouter";
 import MUIDataTable from "mui-datatables";
 import {
     LinearProgress,
@@ -8,7 +8,7 @@ import {
     Tooltip,
     IconButton,
 } from "@material-ui/core";
-import { Edit, Delete } from "@material-ui/icons";
+import { Edit, Delete } from "@mui/icons-material";
 import withStyles from "@material-ui/core/es/styles/withStyles";
 import withProps from "../../components/HOC";
 import { getCollection } from "../../Database";

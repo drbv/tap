@@ -1,7 +1,7 @@
 //HOC and utils
 import React from "react";
 import { PropTypes } from "prop-types";
-import { withRouter } from "react-router-dom";
+import withRouter from "../../components/withRouter";
 import { Translate, withLocalize } from "react-localize-redux";
 import withStyles from "@material-ui/core/es/styles/withStyles";
 //translation
@@ -18,7 +18,7 @@ import {
     LinearProgress,
     CircularProgress,
 } from "@mui/material";
-import { Autocomplete } from "@material-ui/lab";
+import { Autocomplete } from "@mui/lab";
 import axios from "axios";
 
 import withProps from "../../components/HOC";

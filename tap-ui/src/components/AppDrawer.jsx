@@ -1,40 +1,29 @@
 //HOC and utils
-import React from "react"
-import PropTypes from "prop-types"
-import { Route, Router, withRouter } from "react-router-dom"
-import { withStyles } from "@material-ui/core"
+import React from "react";
+import PropTypes from "prop-types";
+import withRouter from "./withRouter";
 //components and libraries
 import {
+    Divider,
     Drawer,
     IconButton,
-    Divider,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    Avatar,
-    Typography,
     Tooltip,
-} from "@material-ui/core"
+    withStyles
+} from "@material-ui/core";
 //icons
-import {
-    Info,
-    Help,
-    FilterDrama,
-    FormatListBulleted,
-    AccountCircle,
-    AttachMoney,
-    Language,
-    SettingsPower,
-} from "@material-ui/icons"
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft"
-import ChevronRightIcon from "@material-ui/icons/ChevronRight"
-import InfoDialog from "../tools/info_dialog/InfoDialog"
-import logoURL from "../images/logo.png"
+import {Help, Info,} from "@mui/icons-material";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import InfoDialog from "../tools/info_dialog/InfoDialog";
+import logoURL from "../images/logo.png";
 
-import withProps from "./HOC"
+import withProps from "./HOC";
 
-const drawerWidth = 240
+const drawerWidth = 240;
 
 const styles = (theme) => ({
     root: {
@@ -91,13 +80,6 @@ const styles = (theme) => ({
         }),
         marginLeft: -drawerWidth,
     },
-    contentShift: {
-        transition: theme.transitions.create("margin", {
-            easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-        marginLeft: 0,
-    },
     row: {
         display: "flex",
         justifyContent: "center",
@@ -128,7 +110,7 @@ const styles = (theme) => ({
         textAlign: "center",
         "font-weight": "bold",
     },
-})
+});
 
 /**
  * This is the main menu drawer of the react app
@@ -139,23 +121,23 @@ const styles = (theme) => ({
  */
 class MainDrawer extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             helpOpen: false,
             infoOpen: false,
-        }
+        };
     }
 
     handleClose(type = "") {
         if (type == "help") {
-            this.setState({ helpOpen: !this.state.helpOpen })
+            this.setState({ helpOpen: !this.state.helpOpen });
         } else if (type == "info") {
-            this.setState({ infoOpen: !this.state.infoOpen })
+            this.setState({ infoOpen: !this.state.infoOpen });
         }
     }
 
     render() {
-        const { classes, theme } = this.props
+        const { classes, theme } = this.props;
         return (
             <div>
                 <Drawer
@@ -199,8 +181,8 @@ class MainDrawer extends React.Component {
                                         button
                                         key={route.name + new Date()}
                                         onClick={() => {
-                                            this.props.history.push(route.path)
-                                            this.props.handleDrawerToggle()
+                                            this.props.history.push(route.path);
+                                            this.props.handleDrawerToggle();
                                         }}
                                     >
                                         {route.icon && (
@@ -210,19 +192,19 @@ class MainDrawer extends React.Component {
                                         )}
                                         <ListItemText primary={route.name} />
                                     </ListItem>
-                                )
+                                );
                                 if (route.hide) {
-                                    return null
+                                    return null;
                                 } else if (
                                     route.admin &&
                                     this.props.user &&
                                     this.props.user.role == "admin"
                                 ) {
-                                    return item
+                                    return item;
                                 } else if (!route.admin) {
-                                    return item
+                                    return item;
                                 }
-                                return null
+                                return null;
                             })}
                     </List>
                     <Divider />
@@ -238,7 +220,7 @@ class MainDrawer extends React.Component {
                                 onClick={() => {
                                     this.setState({
                                         infoOpen: !this.state.infoOpen,
-                                    })
+                                    });
                                 }}
                             >
                                 {" "}
@@ -256,7 +238,7 @@ class MainDrawer extends React.Component {
                                 onClick={() => {
                                     this.setState({
                                         helpOpen: !this.state.helpOpen,
-                                    })
+                                    });
                                 }}
                             >
                                 {" "}
@@ -268,13 +250,13 @@ class MainDrawer extends React.Component {
                 {this.state.infoOpen && (
                     <InfoDialog
                         handleClose={() => {
-                            this.handleClose("info")
+                            this.handleClose("info");
                         }}
                         open={this.state.infoOpen}
                     />
                 )}
             </div>
-        )
+        );
     }
 }
 
@@ -295,8 +277,8 @@ MainDrawer.propTypes = {
         }
      */
     routes: PropTypes.array,
-}
+};
 
 export default withStyles(styles, { withTheme: true })(
     withRouter(withProps(MainDrawer))
-)
+);

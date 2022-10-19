@@ -2,7 +2,6 @@ import { Slider, Typography, Grid, Button, Divider } from "@mui/material";
 import withStyles from "@material-ui/core/es/styles/withStyles";
 
 import { Component } from "react";
-import ReactStopwatch from "react-stopwatch";
 import withProps from "../../components/HOC";
 import { getCollection } from "../../Database";
 import Stopwatch from "./StopWatch";

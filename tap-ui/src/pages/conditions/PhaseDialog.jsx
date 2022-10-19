@@ -30,7 +30,7 @@ import {
     CircularProgress,
     Checkbox,
 } from "@material-ui/core";
-import { Delete, Add } from "@material-ui/icons";
+import { Delete, Add } from "@mui/icons-material";
 import { Tooltip } from "@material-ui/core";
 
 const styles = (theme) => ({
@@ -97,18 +97,18 @@ class PhaseDialog extends React.Component {
                 <Dialog
                     open={this.props.open}
                     onClose={() => this.props.handleClose()}
-                    aria-labelledby='form-dialog-title'
-                    scroll='body'
+                    aria-labelledby="form-dialog-title"
+                    scroll="body"
                 >
-                    <DialogTitle id='form-dialog-title'>
+                    <DialogTitle id="form-dialog-title">
                         Station hinzufügen / bearbeiten
                     </DialogTitle>
                     <DialogContent dividers>
                         <div className={classes.inputContent}>
                             <TextField
-                                margin='dense'
-                                id='name'
-                                name='name'
+                                margin="dense"
+                                id="name"
+                                name="name"
                                 Title
                                 value={localPhase.name}
                                 required={true}
@@ -119,9 +119,9 @@ class PhaseDialog extends React.Component {
                                         localPhase: localPhaseCopy,
                                     });
                                 }}
-                                helperText='Name des Wertungsbogens'
-                                label='Name'
-                                type='text'
+                                helperText="Name des Wertungsbogens"
+                                label="Name"
+                                type="text"
                                 fullWidth
                                 className={classes.inputContent}
                             />
@@ -136,8 +136,8 @@ class PhaseDialog extends React.Component {
                             onClick={() => {
                                 this.props.handleClose();
                             }}
-                            color='secondary'
-                            variant='contained'
+                            color="secondary"
+                            variant="contained"
                         >
                             abbrechen
                         </Button>
@@ -147,8 +147,8 @@ class PhaseDialog extends React.Component {
                                 this.upsertPhase();
                                 this.props.handleClose();
                             }}
-                            color='primary'
-                            variant='contained'
+                            color="primary"
+                            variant="contained"
                         >
                             speichern
                         </Button>
