@@ -1,8 +1,0 @@
-export enum StateId {
-    INITIALIZED = 'INITIALIZED',
-    CREATED = 'CREATED',
-    STARTED = 'STARTED',
-    EVALUATED = 'EVALUATED',
-    WAITED = 'WAITED',
-    FINISHED = 'FINISHED',
-}
