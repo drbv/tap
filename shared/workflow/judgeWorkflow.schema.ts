@@ -26,11 +26,11 @@ export const JudgeWorkflow = {
         },
         teams: {
             type: "array",
-            $ref: TeamSchema,
+            items: { $ref: TeamSchema },
         },
         heat_results: {
             type: "array",
-            $ref: HeatResult,
+            items: { $ref: HeatResult },
         },
         scoring_rule: {
             $ref: ScoringRuleSchema,

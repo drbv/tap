@@ -28,23 +28,25 @@ export const HeatWorkflow = {
         },
         judges: {
             type: "array",
-            $ref: Judge,
+            items: { $ref: Judge },
         },
+        //TODO: create a schema for observers
         observers: {
             type: "array",
-            $ref: Judge,
+            items: { $ref: Judge },
         },
+        //TODO: create a schema for Timers
         timers: {
             type: "array",
-            $ref: Judge,
+            items: { $ref: Judge },
         },
         teams: {
             type: "array",
-            $ref: TeamSchema,
+            items: { $ref: TeamSchema },
         },
         heat_results: {
             type: "array",
-            $ref: HeatResult,
+            items: { $ref: HeatResult },
         },
         observer_results: {
             // TODO: Create object for observer Result
@@ -54,7 +56,7 @@ export const HeatWorkflow = {
         },
         final_results: {
             type: "array",
-            $ref: FinalResult,
+            items: { $ref: FinalResult },
         },
     },
     required: ["id", "type", "heat_id", "state"],

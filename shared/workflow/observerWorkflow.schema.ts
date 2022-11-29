@@ -1,6 +1,7 @@
 import { WorkflowState } from "../enums/workflowState.enum";
 import { ScoringRuleSchema } from "../schemas/scoringRule.schema";
 import { TeamSchema } from "../schemas/team.schema";
+import { HeatResult } from "./heatResult.schema";
 import { Judge } from "./judge.schema";
 import { RoundType } from "./roundType.schema";
 
@@ -30,22 +31,22 @@ export const ObserverWorkflow = {
         },
         teams: {
             type: "array",
-            $ref: TeamSchema,
+            items: { $ref: TeamSchema },
         },
         heat_results: {
             type: "array",
-            items: "TODO",
+            items: { $ref: HeatResult },
         },
         observer_results: {
             type: "array",
-            items: "TODO",
+            items: { $ref: HeatResult },
         },
         scoring_rule: {
             $ref: ScoringRuleSchema,
         },
         judges: {
             type: "array",
-            $ref: Judge,
+            items: { $ref: Judge },
         },
     },
     required: ["id", "judge_id", "heat_id", "state"],

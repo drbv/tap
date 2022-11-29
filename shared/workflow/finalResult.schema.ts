@@ -20,7 +20,9 @@ export const FinalResult = {
         },
         categories: {
             type: "array",
-            $ref: Category,
+            items: {
+                $ref: Category,
+            },
         },
         generalPenalties: {},
         disqualification: {

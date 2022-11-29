@@ -23,7 +23,9 @@ export const HeatResult = {
         },
         categories: {
             type: "array",
-            $ref: Category,
+            items: {
+                $ref: Category,
+            },
         },
     },
     required: ["id", "team_id", "judge_id", "heatType"],
