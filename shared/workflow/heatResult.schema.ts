@@ -1,3 +1,4 @@
+import { JsonSchema, RxJsonSchema } from "rxdb";
 import { Category } from "./category.schema";
 import { RoundType } from "./roundType.schema";
 
@@ -18,15 +19,11 @@ export const HeatResult = {
         judge_id: {
             type: "string",
         },
-        heatType: {
-            $ref: RoundType,
-        },
+        heat_type: RoundType,
         categories: {
             type: "array",
-            items: {
-                $ref: Category,
-            },
+            items: Category,
         },
     },
-    required: ["id", "team_id", "judge_id", "heatType"],
+    required: ["id", "team_id", "judge_id", "heat_type"],
 };

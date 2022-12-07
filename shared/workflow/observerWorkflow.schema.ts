@@ -1,3 +1,4 @@
+import { JsonSchema, RxJsonSchema } from "rxdb";
 import { WorkflowState } from "../enums/workflowState.enum";
 import { ScoringRuleSchema } from "../schemas/scoringRule.schema";
 import { TeamSchema } from "../schemas/team.schema";
@@ -6,10 +7,10 @@ import { Judge } from "./judge.schema";
 import { RoundType } from "./roundType.schema";
 
 export const ObserverWorkflow = {
-    title: "ObserverWorkflow",
+    // title: "ObserverWorkflow",
     description: "workflow object for observer",
-    version: 0,
-    primaryKey: "id",
+    // version: 0,
+    // primaryKey: "id",
     type: "object",
     properties: {
         id: {
@@ -24,30 +25,26 @@ export const ObserverWorkflow = {
         },
         state: {
             type: "string",
-            enum: WorkflowState,
+            enum: Object.values(WorkflowState),
         },
-        type: {
-            $ref: RoundType,
-        },
+        round_type: RoundType,
         teams: {
             type: "array",
-            items: { $ref: TeamSchema },
+            items: TeamSchema,
         },
         heat_results: {
             type: "array",
-            items: { $ref: HeatResult },
+            items: HeatResult,
         },
         observer_results: {
             type: "array",
-            items: { $ref: HeatResult },
+            items: HeatResult,
         },
-        scoring_rule: {
-            $ref: ScoringRuleSchema,
-        },
+        scoring_rule: ScoringRuleSchema,
         judges: {
             type: "array",
-            items: { $ref: Judge },
+            items: Judge,
         },
     },
-    required: ["id", "judge_id", "heat_id", "state"],
+    required: ["id", "judge_id", "heat_id", "state", "round_type"],
 };

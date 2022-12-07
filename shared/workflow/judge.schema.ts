@@ -1,3 +1,4 @@
+import { JsonSchema, RxJsonSchema } from "rxdb";
 import { JudgeRole } from "../enums/judgeRole";
 import { Qualification } from "../enums/qualification";
 
@@ -20,11 +21,11 @@ export const Judge = {
         },
         qualification: {
             type: "string",
-            enum: Qualification,
+            enum: Object.values(Qualification),
         },
         role: {
             type: "string",
-            enum: JudgeRole,
+            enum: Object.values(JudgeRole),
         },
     },
     required: ["id", "name", "club"],

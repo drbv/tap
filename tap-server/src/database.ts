@@ -1,24 +1,25 @@
-import {addRxPlugin, createRxDatabase, RxDatabase,} from 'rxdb'
-import {addPouchPlugin, getRxStoragePouch} from "rxdb/plugins/pouchdb";
+import { addRxPlugin, createRxDatabase, RxDatabase } from "rxdb";
+import { addPouchPlugin, getRxStoragePouch } from "rxdb/plugins/pouchdb";
 import pouchdb_adapter_leveldb from "pouchdb-adapter-leveldb";
-import {RxDBLeaderElectionPlugin} from 'rxdb/plugins/leader-election';
-import {RxDBServerCouchDBPlugin} from 'rxdb/plugins/server-couchdb';
-import leveldown from 'leveldown';
+import { RxDBLeaderElectionPlugin } from "rxdb/plugins/leader-election";
+import { RxDBServerCouchDBPlugin } from "rxdb/plugins/server-couchdb";
+import leveldown from "leveldown";
 import config from "config";
 
-import {AthleteSchema} from "../../shared/schemas/athlete.schema";
-import {OfficialSchema} from "../../shared/schemas/official.schema";
-import {TeamSchema} from "../../shared/schemas/team.schema";
-import {AcroSchema} from "../../shared/schemas/acro.schema";
-import {AppointmentSchema} from "../../shared/schemas/appointment.schema";
-import {CompetitionSchema} from "../../shared/schemas/competition.schema";
-import {CurrentCompetitionSchema} from "../../shared/schemas/currentCompetition.schema";
-import {RoundSchema} from "../../shared/schemas/round.schema";
-import {RoundResultSchema} from "../../shared/schemas/roundResult.schema";
-import {FinalResultSchema} from "../../shared/schemas/finalResult.schema";
-import {PhaseSchema} from "../../shared/schemas/phase.schema";
-import {UserSchema} from "../../shared/schemas/user.schema";
-import {ScoringRuleSchema} from "../../shared/schemas/scoringRule.schema";
+import { AthleteSchema } from "../../shared/schemas/athlete.schema";
+import { OfficialSchema } from "../../shared/schemas/official.schema";
+import { TeamSchema } from "../../shared/schemas/team.schema";
+import { AcroSchema } from "../../shared/schemas/acro.schema";
+import { AppointmentSchema } from "../../shared/schemas/appointment.schema";
+import { CompetitionSchema } from "../../shared/schemas/competition.schema";
+import { CurrentCompetitionSchema } from "../../shared/schemas/currentCompetition.schema";
+import { RoundSchema } from "../../shared/schemas/round.schema";
+import { RoundResultSchema } from "../../shared/schemas/roundResult.schema";
+import { FinalResultSchema } from "../../shared/schemas/finalResult.schema";
+import { PhaseSchema } from "../../shared/schemas/phase.schema";
+import { UserSchema } from "../../shared/schemas/user.schema";
+import { ScoringRuleSchema } from "../../shared/schemas/scoringRule.schema";
+import { HeatWorkflow } from "../../shared/workflow/heatWorkflow.schema";
 
 const scoringRuleCompetitionDefaults = require("../template/competitionDB/scoringRule.json");
 
@@ -124,7 +125,7 @@ export class Database {
 
     static async createCompetitionDB(name: string): Promise<RxDatabase> {
         const db: RxDatabase = await createRxDatabase({
-            name: 'data/' + 'c' + name,
+            name: "data/" + "c" + name,
             storage: getRxStoragePouch(leveldown),
             ignoreDuplicate: true,
         });
@@ -159,6 +160,9 @@ export class Database {
                 },
                 user: {
                     schema: UserSchema,
+                },
+                heat_workflow: {
+                    schema: HeatWorkflow,
                 },
             });
 
@@ -199,7 +203,7 @@ export class Database {
 
     static async createBaseDB(name: string): Promise<RxDatabase> {
         const db: RxDatabase = await createRxDatabase({
-            name: 'data/' + name,
+            name: "data/" + name,
             storage: getRxStoragePouch(leveldown),
             ignoreDuplicate: true,
         });

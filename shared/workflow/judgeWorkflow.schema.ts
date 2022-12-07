@@ -1,3 +1,4 @@
+import { JsonSchema, RxJsonSchema } from "rxdb";
 import { WorkflowState } from "../enums/workflowState.enum";
 import { ScoringRuleSchema } from "../schemas/scoringRule.schema";
 import { TeamSchema } from "../schemas/team.schema";
@@ -22,19 +23,17 @@ export const JudgeWorkflow = {
         },
         state: {
             type: "string",
-            enum: WorkflowState,
+            enum: Object.values(WorkflowState),
         },
         teams: {
             type: "array",
-            items: { $ref: TeamSchema },
+            items: TeamSchema,
         },
         heat_results: {
             type: "array",
-            items: { $ref: HeatResult },
+            items: HeatResult,
         },
-        scoring_rule: {
-            $ref: ScoringRuleSchema,
-        },
+        scoring_rule: ScoringRuleSchema,
     },
     required: ["id", "judge_id", "heat_id", "state"],
 };

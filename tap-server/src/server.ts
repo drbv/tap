@@ -1,10 +1,10 @@
 import express from "express";
-import {Database} from "./database";
-import {ActivityPortalService} from "./services/activity-portal.service";
+import { Database } from "./database";
+import { ActivityPortalService } from "./services/activity-portal.service";
 import config from "config";
-import {RoundService} from "./workflows/services/round.service";
-import {RxDocument} from "rxdb";
-import {HeatService} from "./workflows/services/heat.service";
+import { RoundService } from "./workflows/services/round.service";
+import { RxDocument } from "rxdb";
+import { HeatService } from "./workflows/services/heat.service";
 
 let server: any;
 const port: number = config.get("port");
@@ -23,7 +23,7 @@ async function initialize() {
 
     Database.getBaseDB().then(async (db) => {
         const { app } = await db.serverCouchDB({
-            path: 'data',
+            path: "data",
             port,
             cors: true,
             startServer: false,
@@ -87,20 +87,18 @@ async function initialize() {
     );
 }
 
-
 initialize().then(async () => {
-
     // console.log('get database')
 
-    console.log('start wf')
-    const rs = new RoundService();
-    //rs.createRound();
+    console.log("start wf");
+    // const rs = new RoundService();
+    // //rs.createRound();
     const hs = new HeatService();
-    hs.changeData('observer')
+    hs.changeData("observer");
     hs.startHeat();
-    console.log('hs ', hs.getCurrentState().name)
+    console.log("hs ", hs.getCurrentState().name);
     hs.assess();
-    console.log('hs ', hs.getCurrentState().name)
+    console.log("hs ", hs.getCurrentState().name);
 
     /*
     let lastObj: any;
@@ -126,5 +124,4 @@ initialize().then(async () => {
             }
         });
     });*/
-
 });

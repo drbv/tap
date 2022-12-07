@@ -1,3 +1,4 @@
+import { JsonSchema, RxJsonSchema } from "rxdb";
 import { DanceClass } from "../enums/danceClass";
 import { HeatLevel } from "../enums/heatLevel";
 import { HeatType } from "../enums/heatType";
@@ -15,16 +16,16 @@ export const RoundType = {
         },
         type: {
             type: "string",
-            enum: HeatType,
+            enum: Object.values(HeatType),
         },
         level: {
             type: "string",
-            enum: HeatLevel,
+            enum: Object.values(HeatLevel),
         },
         class: {
             type: "string",
-            enum: DanceClass,
+            enum: Object.values(DanceClass),
         },
     },
-    required: ["id", "judge_id", "heat_id", "state"],
+    required: ["id", "type", "level", "class"],
 };

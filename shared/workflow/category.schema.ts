@@ -1,3 +1,5 @@
+import { JsonSchema, RxJsonSchema } from "rxdb";
+
 export const Category = {
     title: "Category",
     description: "single category of a result",
