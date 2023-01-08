@@ -1,27 +1,28 @@
-import {JudgeState} from "../../enums/judge-state.enum";
-import {JudgeTransition} from "../../enums/judge-transition.enum";
-import {WorkflowBase} from "./workflow-base.service";
-import {FSM} from "ea-state-machine";
+import { JudgeState } from "../../enums/judge-state.enum";
+import { JudgeTransition } from "../../enums/judge-transition.enum";
+import { WorkflowBase } from "./workflow-base.service";
+import { FSM } from "ea-state-machine";
 
-
-export class HeatService extends WorkflowBase {
-
+export class JudgeService extends WorkflowBase {
     protected states = {
-        INITIALIZED: {name: JudgeState.INITIALIZED, onExit: () => console.log('on exit')},
+        INITIALIZED: {
+            name: JudgeState.INITIALIZED,
+            onExit: () => console.log("on exit"),
+        },
         STARTED: {
             name: JudgeState.STARTED,
-            onEnter: () => console.log('on enter'),
-            onExit: () => console.log('on exit')
+            onEnter: () => console.log("on enter"),
+            onExit: () => console.log("on exit"),
         },
-        ASSESSED: {name: JudgeState.ASSESSED},
-        CORRECTED: {name: JudgeState.CORRECTED},
-        FINISHED: {name: JudgeState.FINISHED},
-    }
+        ASSESSED: { name: JudgeState.ASSESSED },
+        CORRECTED: { name: JudgeState.CORRECTED },
+        FINISHED: { name: JudgeState.FINISHED },
+    };
 
     // TODO to be defined
     protected guards = {
         canMelt: (fsm: any, from: any, to: any) => fsm.data.temperature > 5,
-    }
+    };
 
     protected transitions = {
         // Runde starten
@@ -29,7 +30,13 @@ export class HeatService extends WorkflowBase {
             name: JudgeTransition.START,
             from: this.states.INITIALIZED,
             to: this.states.STARTED,
-            action: () => this.onStart(),
+            action: () =>
+                this
+                    .onStart
+                    // listener auf den State JudgeWorkflow
+                    // listener auf DTO-Schema || REST-CALL
+                    // Wenn State auf ASSESSED gesetzt wird -> Transition ASSESS
+                    (),
         },
         // Runde werten
         ASSESS: {
@@ -59,7 +66,7 @@ export class HeatService extends WorkflowBase {
             to: this.states.FINISHED,
             action: () => this.onConfirm(),
         },
-    }
+    };
 
     protected environment = {};
 
@@ -70,24 +77,15 @@ export class HeatService extends WorkflowBase {
         this.environment // optional: associated data with the state machine
     );
 
-    private onStart() {
-    }
+    private onStart() {}
 
-    private onAssess(action: any) {
-    }
+    private onAssess(action: any) {}
 
-    private onFinish() {
+    private onFinish() {}
 
-    }
+    private onCorrect() {}
 
-    private onCorrect() {
+    private onConfirm() {}
 
-    }
-
-    private onConfirm() {
-
-    }
-
-    public changeData(data: any) {
-    }
+    public changeData(data: any) {}
 }

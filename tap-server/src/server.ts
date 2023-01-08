@@ -6,6 +6,7 @@ import { RoundWorkflowService } from "./workflows/services/roundWorkflowService"
 import {RxDatabase, RxDocument} from "rxdb";
 import { HeatService } from "./workflows/services/heat.service";
 import {RoundService} from "./services/round.service";
+import { json } from "stream/consumers";
 
 let server: any;
 const port: number = config.get("port");
@@ -45,6 +46,15 @@ async function initialize() {
 
         mainApp.use("/basedb", app);
     });*/
+
+    mainApp.use("/startHeat", (req, res) => {
+        if (!req.query.id) {
+            res.status(400).send("Required query params missing");
+        }
+        let myWorkflow = new HeatService();
+        myWorkflow.startHeat(req.query.id as string);
+        res.status(200).send("heat was started");
+    });
 
     const activityPortalService = new ActivityPortalService();
 
@@ -116,12 +126,12 @@ initialize();
     console.log("start wf");
     // const rs = new RoundService();
     // //rs.createRound();
-    const hs = new HeatService();
-    hs.changeData("observer");
-    hs.startHeat();
-    console.log("hs ", hs.getCurrentState().name);
-    hs.assess();
-    console.log("hs ", hs.getCurrentState().name);
+    // const hs = new HeatService();
+    // hs.changeData("observer");
+    // hs.startHeat();
+    // console.log("hs ", hs.getCurrentState().name);
+    // hs.assess();
+    // console.log("hs ", hs.getCurrentState().name);
 
 
     let lastObj: any;
