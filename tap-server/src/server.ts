@@ -2,15 +2,29 @@ import express from "express";
 import { Database } from "./database";
 import { ActivityPortalService } from "./services/activity-portal.service";
 import config from "config";
-import { RoundService } from "./workflows/services/round.service";
-import { RxDocument } from "rxdb";
+import { RoundWorkflowService } from "./workflows/services/roundWorkflowService";
+import {RxDatabase, RxDocument} from "rxdb";
 import { HeatService } from "./workflows/services/heat.service";
+import {RoundService} from "./services/round.service";
 
 let server: any;
 const port: number = config.get("port");
 
+const roundService: RoundService = new RoundService();
+
 async function initialize() {
     const mainApp = express();
+
+    Database.getSampleDB().then(async (db:RxDatabase) => {
+        const { app } = await db.serverCouchDB({
+            path: "data",
+            port,
+            cors: true,
+            startServer: false,
+        });
+
+        mainApp.use("/sampledb", app);
+    })
 
     // Database.getAdminDB().then(async (db) => {
     //     const { app } = await db.server({
@@ -21,7 +35,7 @@ async function initialize() {
     //     mainApp.use("/admindb", app);
     // });
 
-    Database.getBaseDB().then(async (db) => {
+    /*Database.getBaseDB().then(async (db) => {
         const { app } = await db.serverCouchDB({
             path: "data",
             port,
@@ -30,7 +44,7 @@ async function initialize() {
         });
 
         mainApp.use("/basedb", app);
-    });
+    });*/
 
     const activityPortalService = new ActivityPortalService();
 
@@ -39,7 +53,7 @@ async function initialize() {
         res.send("importing...");
     });
 
-    mainApp.use("/activate", async (req, res) => {
+    /*mainApp.use("/activate", async (req, res) => {
         if (!req.query.id) {
             res.status(400).send("Required query params missing");
         }
@@ -81,13 +95,22 @@ async function initialize() {
             res.status(404);
         }
     });
+*/
+
+    mainApp.use("/sample", async (req, res) => {
+        console.log('creating round');
+        roundService.createRound();
+    });
 
     server = mainApp.listen(port, () =>
         console.log(`Server listening on port ${port}`)
     );
 }
 
-initialize().then(async () => {
+initialize();
+
+
+/*.then(async () => {
     // console.log('get database')
 
     console.log("start wf");
@@ -100,7 +123,7 @@ initialize().then(async () => {
     hs.assess();
     console.log("hs ", hs.getCurrentState().name);
 
-    /*
+
     let lastObj: any;
     await Database.getDb().then(async db => {
         console.log('subscribing...');
@@ -123,5 +146,5 @@ initialize().then(async () => {
                 rs.stateMachine.trigger(TransitionId.CREATE);
             }
         });
-    });*/
-});
+    });
+});*/

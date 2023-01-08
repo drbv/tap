@@ -17,6 +17,7 @@ import {UserSchema} from "./shared/schemas/user.schema"
 import {RoundResultSchema} from "./shared/schemas/roundResult.schema"
 import {CurrentCompetitionSchema} from "./shared/schemas/currentCompetition.schema"
 import {ScoringRuleSchema} from "./shared/schemas/scoringRule.schema"
+import leveldown from "leveldown";
 
 addPouchPlugin(pouchdb_adapter_http);
 addRxPlugin(RxDBReplicationCouchDBPlugin);
@@ -25,23 +26,42 @@ addRxPlugin(RxDBLeaderElectionPlugin);
 
 globalAgent.maxSockets = 50;
 
+let dbSamplePromise: any = null
+const activeSampleSyncs = new Map()
+
 let dbPromise: any = null
 const activeSyncs = new Map()
 
 let dbBasePromise: any = null
 const activeBaseSyncs = new Map()
 
+export async function getSampleCollection(collection: string) {
+    const sampleDB = await getClientSampleDb()
+    const rxCollection: any = sampleDB[collection]
+
+    // sync local collection with server
+    const repState = rxCollection.syncCouchDB({
+        remote: "http://localhost:5001/sampledb/" + collection,
+        waitForLeadership: true,              // (optional) [default=true] to save performance, the sync starts on leader-instance only
+        direction: {                          // direction (optional) to specify sync-directions
+            pull: true, // default=true
+            push: true  // default=true
+        },
+        options: {                             // sync-options (optional) from https://pouchdb.com/api.html#replication
+            live: true,
+            retry: true
+        },
+    })
+
+    // save repState to be able to close sync
+    activeSampleSyncs.set(collection, repState);
+
+    return rxCollection;
+}
+
 export async function getCollection(collection: string, competitionId: string) {
     const clientDB = await getClientDb()
     const rxCollection: any = clientDB[collection]
-
-    // TODO repState not yet defined
-    // check if there is already a alive replicationState
-    /*if (((repState = activeSyncs.get(collection)), repState != null)) {
-        if (repState.alive) {
-            return rxCollection
-        }
-    }*/
 
     // sync local collection with server
     const repState = rxCollection.syncCouchDB({
@@ -101,6 +121,55 @@ export async function closeCollection(collection: string) {
         await repState.cancel()
         activeSyncs.delete(collection)
     }
+}
+
+async function _createSample() {
+    const db = await createRxDatabase({
+        name: "data/sampledb",
+        storage: getRxStoragePouch(leveldown),
+        ignoreDuplicate: true,
+    });
+
+    try {
+        await db.addCollections({
+            sampleCollection:{
+                schema: {
+                    title: "Sample",
+                    description: "sample object",
+                    version: 0,
+                    primaryKey: "id",
+                    type: "object",
+                    properties: {
+                        id: {
+                            type: "string",
+                            final: true,
+                        },
+                        request: {
+                            type: "string",
+                        },
+                        response: {
+                            type: "string",
+                        },
+                        data: {
+                            type: "object",
+                            properties: {
+                                display: {
+                                    type: "string",
+                                },
+                                result: {
+                                    type: "number",
+                                },
+                            }
+                        }
+                    }
+                }
+            }
+        })
+    } catch (e) {
+        console.log("error: ", e);
+    }
+
+    return db;
 }
 
 async function _create() {
@@ -171,6 +240,11 @@ async function _createBase() {
     });
 
     return db;
+}
+
+export async function getClientSampleDb() {
+    if (!dbSamplePromise) dbSamplePromise = await _createSample()
+    return dbSamplePromise
 }
 
 export async function getClientDb() {

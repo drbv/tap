@@ -3,9 +3,17 @@ import {RoundTransition} from "../../enums/round-transition.enum";
 import {FSM} from "ea-state-machine";
 import {Context} from "../workflow/round-context.model";
 import {WorkflowBase} from "./workflow-base.service";
+import {Observable, Subscription} from "rxjs";
+import {RxChangeEvent} from "rxdb";
 
 
-export class RoundService extends WorkflowBase {
+export class RoundWorkflowService extends WorkflowBase {
+
+
+    constructor(environment: Context) {
+        super();
+        this.environment = environment;
+    }
 
     protected states = {
         INITIALIZED: {name: RoundState.INITIALIZED},
@@ -103,17 +111,20 @@ export class RoundService extends WorkflowBase {
         },
     }
 
-    protected environment = new Context();
+    protected environment;
 
     protected fsm = new FSM(
         this.states, // all states
-        this.transitions, // transition defitions between states
+        this.transitions, // transition definitions between states
         this.states.INITIALIZED, // optional: start state, if omitted, a transition to the first state needs to happen
         this.environment // optional: associated data with the state machine
     );
+    private observable: Observable<RxChangeEvent<any>>;
 
     private onCreate() {
         console.log('on create');
+
+        console.log('env: ', this.environment.message);
     }
 
     private onEdit() {
@@ -164,6 +175,7 @@ export class RoundService extends WorkflowBase {
             return;
         }
         this.fsm.transitionTo(this.states.CREATED);
+        this.drawRound();
     }
 
     public drawRound() {
@@ -172,7 +184,23 @@ export class RoundService extends WorkflowBase {
         }
 
         this.fsm.changeData({temperature: 10});
-        this.fsm.transitionTo(this.states.DRAWN)
+        this.fsm.transitionTo(this.states.DRAWN);
+    }
+
+    public startRound() {
+        if (!this.fsm.canTransitionTo(this.states.STARTED)) {
+            return;
+        }
+
+        this.fsm.transitionTo(this.states.STARTED);
+    }
+
+    public evaluateRound() {
+        if (!this.fsm.canTransitionTo(this.states.STARTED)) {
+            return;
+        }
+
+        this.fsm.transitionTo(this.states.STARTED);
     }
 
 }

@@ -14,6 +14,6 @@ export class Context {
     }
 
     public getDatabase() {
-        return Database.getCurrentCompetitionDB();
+        return Database.getSampleDB();
     }
 }

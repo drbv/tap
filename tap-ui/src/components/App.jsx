@@ -3,7 +3,7 @@ import { PropTypes } from "prop-types";
 import { renderToStaticMarkup } from "react-dom/server";
 import classNames from "classnames";
 
-import { LinearProgress, CssBaseline, withStyles } from "@material-ui/core";
+import {LinearProgress, CssBaseline, withStyles, Grid, TextField, Button} from "@material-ui/core";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import ls from "local-storage";
 
@@ -14,7 +14,8 @@ import withProps from "./HOC";
 import AppNavbar from "./AppNavbar";
 import MainDrawer from "./AppDrawer";
 
-import { getBaseCollection, getCollection } from "../Database";
+import {getBaseCollection, getCollection, getSampleCollection} from "../Database";
+import * as uuid from "uuid";
 
 const LoginPage = lazy(() => import("../pages/login/LoginPage"));
 const SetupPage = lazy(() => import("../pages/setup/SetupPage"));
@@ -46,14 +47,16 @@ class App extends Component {
         this.state = {
             open: true,
             competitionId: null,
+            samples: null,
+            value: "",
         };
 
         this.subs = [];
 
         this.props.initialize({
             languages: [
-                { name: "Deutsch", code: "de" },
-                { name: "English", code: "en" },
+                {name: "Deutsch", code: "de"},
+                {name: "English", code: "en"},
             ],
             translation: globalTranslations,
             options: {
@@ -64,8 +67,22 @@ class App extends Component {
         });
     }
 
-    componentDidMount() {
+    async componentDidMount(){
         this.setState({ open: !this.props.smallScreen });
+
+        let collection = await getSampleCollection(
+            "sample",
+        );
+        let sub = await collection.find().$.subscribe((samples) => {
+            if (!samples) {
+                return;
+            }
+            console.log("reload Athletes-list ");
+            console.dir(samples);
+            this.setState({
+                samples,
+            });
+        });
     }
 
     componentWillUnmount() {
@@ -111,9 +128,65 @@ class App extends Component {
 
     render() {
         const { classes } = this.props;
+        const { samples } = this.state;
 
         return (
-            <Router>
+            <div>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="sampleValue"
+                        name="Passwort"
+                        style={{ width: "300px" }}
+                        value={this.state.value}
+                        onChange={(e) => {
+                            this.setState({
+                                value: e.target.value,
+                            });
+                        }}
+                    />
+                    <Button
+                        id="send"
+                        variant="contained"
+                        color="secondary"
+                        onClick={async () => {
+                            let sampleCollection = await getSampleCollection()
+                            sampleCollection.upsert(
+                                {
+                                    data:{
+                                        result: this.state.value,
+                                    }
+                                }
+                            )
+                        }}
+                        style={{ marginTop: "10px" }}
+                    >
+                        Send
+                    </Button>
+                    <Button
+                        id = "start"
+                        variant="contained"
+                        color="secondary"
+                        onClick={async () => {
+                            let sampleCollection = await getSampleCollection()
+                            sampleCollection.upsert(
+                                {
+                                    id: uuid.v4(),
+                                    request: "start",
+                                }
+                            )
+                        }}
+                    style={{ marginTop: "10px" }}
+                >
+                    Start
+                </Button>
+                {samples && samples.map((sample) => {return (
+                    <div>
+                        {sample.toString()}
+                    </div>
+                )})}
+            </div>
+            /*<Router>
                 <div className="App">
                     <CssBaseline />
                     {this.props.isLoggedIn && this.props.competitionId && (
@@ -152,7 +225,7 @@ class App extends Component {
                         )}
                     </Suspense>
                 </div>
-            </Router>
+            </Router>*/
         );
     }
 }

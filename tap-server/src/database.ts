@@ -33,6 +33,59 @@ export class Database {
     private static db: RxDatabase;
     private static app: any = null;
 
+    public static async getSampleDB(): Promise<any> {
+        if (this.db) {
+            return this.db;
+        } else {
+            this.db = await createRxDatabase({
+                name: "data/sampledb",
+                storage: getRxStoragePouch(leveldown),
+                ignoreDuplicate: true,
+            });
+
+            try {
+                await this.db.addCollections({
+                    sampleCollection:{
+                        schema: {
+                            title: "Sample",
+                            description: "sample object",
+                            version: 0,
+                            primaryKey: "id",
+                            type: "object",
+                            properties: {
+                                id: {
+                                    type: "string",
+                                    final: true,
+                                },
+                                request: {
+                                    type: "string",
+                                },
+                                response: {
+                                    type: "string",
+                                },
+                                data: {
+                                    type: "object",
+                                    properties: {
+                                        display: {
+                                            type: "string",
+                                        },
+                                        result: {
+                                            type: "number",
+                                        },
+                                    }
+                                }
+                            }
+                        }
+                    }
+                })
+            } catch (e) {
+                console.log("error: ", e);
+            }
+        }
+
+        return this.db;
+    }
+
     public static async getCompetitionDatabaseApp(): Promise<any> {
         if (this.db) {
             const port: number = config.get("port");
