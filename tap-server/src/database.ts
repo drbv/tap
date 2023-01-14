@@ -1,4 +1,4 @@
-import { addRxPlugin, createRxDatabase, RxDatabase } from "rxdb";
+import {addRxPlugin, CollectionsOfDatabase, createRxDatabase, RxDatabase} from "rxdb";
 import { addPouchPlugin, getRxStoragePouch } from "rxdb/plugins/pouchdb";
 import pouchdb_adapter_leveldb from "pouchdb-adapter-leveldb";
 import { RxDBLeaderElectionPlugin } from "rxdb/plugins/leader-election";
@@ -20,6 +20,7 @@ import { PhaseSchema } from "../../shared/schemas/phase.schema";
 import { UserSchema } from "../../shared/schemas/user.schema";
 import { ScoringRuleSchema } from "../../shared/schemas/scoringRule.schema";
 import { HeatWorkflow } from "../../shared/workflow/heatWorkflow.schema";
+import {RxDatabaseBase} from "rxdb/dist/types/rx-database";
 
 const scoringRuleCompetitionDefaults = require("../template/competitionDB/scoringRule.json");
 
@@ -110,7 +111,9 @@ export class Database {
             return this.db;
         } catch (e) {
             console.log(e);
-            return null;
+            return new Promise((resolve, reject) => {
+                reject();
+            });
         }
     }
 
@@ -124,7 +127,9 @@ export class Database {
         }
 
         // TODO: resolve Promise
-        return null;
+        return new Promise((resolve, reject) => {
+            reject();
+        });
     }
 
     public static async getCompetitionDB(name: string): Promise<RxDatabase> {
