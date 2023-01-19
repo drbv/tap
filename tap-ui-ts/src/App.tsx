@@ -1,98 +1,54 @@
-import React, {Component} from "react";
-import {Button, TextField} from "@mui/material";
-import './App.css';
-import {getClientSampleDb} from "./Database";
-import {RxDatabase} from "rxdb";
-import * as uuid from "uuid";
+import React from "react";
+import logo from "./logo.svg";
+import "./App.css";
+import {
+  Box,
+  Card,
+  Chip,
+  Divider,
+  Grid,
+  Paper,
+  Stack,
+  Switch,
+} from "@mui/material";
+import { getCollection } from "./Database";
+import { RxDocument, RxDocumentBase, RxQuery } from "rxdb";
 
-interface StateData {
-    value: string;
-    samples: any;
-}
+type AppProps = {};
 
-class App extends Component<any, StateData> {
-    constructor(props: StateData) {
-        super(props);
-        this.state = {
-            value: '',
-            samples: [],
-        };
-    }
+class App extends React.Component<AppProps> {
+  private subs: RxQuery[];
 
-    async componentDidMount() {
-        const db: RxDatabase = await getClientSampleDb();
-        db.sampleCollection.find().exec().then((samples: any) => {
-            this.setState({samples});
-        });
-    }
+  constructor(props: AppProps) {
+    super(props);
 
-    render() {
-        return (
-            <div className="App">
-                <div>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        id="sampleValue"
-                        name="Passwort"
-                        style={{width: "300px"}}
-                        value={this.state?.value}
-                        onChange={(e) => {
-                            this.setState({
-                                value: e.target.value,
-                            });
-                        }}
-                    />
-                    <Button
-                        id="send"
-                        variant="contained"
-                        color="secondary"
-                        onClick={async () => {
-                            const sampleDB = await getClientSampleDb()
-                            await sampleDB.sampleCollection.upsert(
-                                {
-                                    id: uuid.v4(),
-                                    data: {
-                                        result: this.state?.value,
-                                    }
-                                }
-                            )
-                        }}
-                        style={{marginTop: "10px"}}
-                    >
-                        Send
-                    </Button>
-                    <Button
-                        id="start"
-                        variant="contained"
-                        color="secondary"
-                        onClick={async () => {
-                            const sampleCollection = await getClientSampleDb()
-                            await sampleCollection.upsert(
-                                {
-                                    id: uuid.v4(),
-                                    request: "start",
-                                }
-                            )
-                        }}
-                        style={{marginTop: "10px"}}
-                    >
-                        Start
-                    </Button>
-                    {this.state.samples && this.state.samples.map((sample: any) => {
-                        return (
-                            <div>
-                                {sample?.data?.result.toString()}
-                            </div>
-                        )
-                    })}
-                </div>
-                <p>
-                    Hallo Lukas.
-                </p>
-            </div>
-        );
-    }
+    // initializes subscription array
+    this.subs = [];
+  }
+
+  async componentDidMount() {
+    const workflowCollection = await getCollection("sampledb", "judgeWorkflow");
+    const workflowSubscription = workflowCollection
+      .find()
+      .$.subscribe((workflowObjects: RxDocumentBase<any>) =>
+        this.setState({ workflowObjects })
+      );
+    this.subs.push(workflowSubscription);
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <Box sx={{ mx: "auto", padding: "20px" }}>
+          <Card sx={{ mx: "auto", padding: "5px" }}>
+            Head
+            <Divider />
+            Bottom
+          </Card>
+        </Box>
+      </div>
+    );
+  }
 }
 
 export default App;

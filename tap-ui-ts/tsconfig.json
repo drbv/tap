@@ -3,6 +3,7 @@
     "target": "es6",
     "lib": [
       "dom",
+      "es6",
       "dom.iterable",
       "esnext"
     ],
@@ -21,6 +22,7 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src",
+    "../../shared"
   ]
 }

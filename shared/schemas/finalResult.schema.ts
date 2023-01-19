@@ -1,91 +1,30 @@
-export const FinalResultSchema = {
-    title: "final result data",
-    description: "Database schema for storing result information",
-    version: 0,
-    primaryKey: "resultId",
-    type: "object",
-    properties: {
-        resultId: {
-            type: "string",
-            final: true,
-        },
-        bookId: {
-            type: "string",
-        },
-        roundId: {
-            type: "string",
-        },
-        resultParts: {
-            type: "array",
-            items: {
-                type: "object",
-                properties: {
-                    judgeId: {
-                        type: "string",
-                    },
-                    categories: {
-                        type: "array",
-                        items: {
-                            type: "object",
-                            properties: {
-                                name: {
-                                    type: "string",
-                                },
-                                value: {
-                                    type: "number",
-                                },
-                            },
-                        },
-                    },
-                    deduction: {
-                        type: "array",
-                        items: {
-                            type: "object",
-                            properties: {
-                                name: {
-                                    type: "string",
-                                },
-                                value: {
-                                    type: "number",
-                                },
-                                amount: {
-                                    type: "number",
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        acroPoints: {
-            type: "number",
-        },
-        basicPoints: {
-            type: "number",
-        },
-        finalPoints: {
-            type: "number",
-        },
-        roundDeductions: {
-            type: "array",
-            items: {
-                type: "object",
-                properties: {
-                    name: {
-                        type: "string",
-                    },
-                    value: {
-                        type: "number",
-                    },
-                    amount: {
-                        type: "number",
-                    },
-                },
-            },
-        },
-        state: {
-            type: "string",
-        },
+import { JsonSchema, RxJsonSchema } from "rxdb";
+import { Category } from "./category.schema";
+import { RoundType } from "./roundType.schema";
+
+export const FinalResult = {
+  title: "FinalResult",
+  description: "object for storing information collected from heatResults",
+  version: 0,
+  primaryKey: "id",
+  type: "object",
+  properties: {
+    id: {
+      type: "string",
+      final: true,
     },
-    required: ["bookId"],
+    team_id: {
+      type: "string",
+    },
+    heatType: RoundType,
+    categories: {
+      type: "array",
+      items: Category,
+    },
+    generalPenalties: {},
+    disqualification: {
+      type: "boolean",
+    },
+  },
+  required: ["id", "team_id", "heatType"],
 };
