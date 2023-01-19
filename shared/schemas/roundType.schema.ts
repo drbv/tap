@@ -1,7 +1,7 @@
 import { JsonSchema, RxJsonSchema } from "rxdb";
-import { DanceClass } from "../enums/danceClass";
-import { HeatLevel } from "../enums/heatLevel";
-import { HeatType } from "../enums/heatType";
+import DanceClass from "../enums/danceClass";
+import HeatLevel from "../enums/heatLevel";
+import HeatType from "../enums/heatType";
 
 export const RoundType = {
   title: "RoundType",

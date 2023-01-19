@@ -1,6 +1,6 @@
 import { JsonSchema, RxJsonSchema } from "rxdb";
 import JudgeRole from "../enums/judgeRole";
-import { Qualification } from "../enums/qualification";
+import Qualification from "../enums/qualification";
 
 export const Judge = {
   title: "Judge",

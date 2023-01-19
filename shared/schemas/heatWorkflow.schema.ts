@@ -1,5 +1,5 @@
 import { JsonSchema, RxJsonSchema } from "rxdb";
-import { WorkflowState } from "../enums/workflowState.enum";
+import WorkflowState from "../enums/workflowState.enum";
 import { ScoringRuleSchema } from "./scoringRule.schema";
 import { TeamSchema } from "./team.schema";
 import { FinalResult } from "./finalResult.schema";
