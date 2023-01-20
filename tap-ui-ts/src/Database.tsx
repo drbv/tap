@@ -1,51 +1,36 @@
 import {
   addRxPlugin,
   createRxDatabase,
-  RxCouchDBReplicationState,
+  RxCollectionBase,
   RxDatabase,
 } from "rxdb";
-import { getRxStorageDexie } from "rxdb/plugins/dexie";
-import { RxDBReplicationCouchDBPlugin } from "rxdb/plugins/replication-couchdb";
-import { RxDBLeaderElectionPlugin } from "rxdb/plugins/leader-election";
-import { JudgeWorkflow } from "./shared/schemas/judgeWorkflow.schema";
 
-addRxPlugin(RxDBReplicationCouchDBPlugin);
-addRxPlugin(RxDBLeaderElectionPlugin);
+import { getRxStorageDexie } from "rxdb/plugins/dexie";
+import { RxDBReplicationCouchDBNewPlugin } from "rxdb/plugins/replication-couchdb-new";
+
+addRxPlugin(RxDBReplicationCouchDBNewPlugin);
 
 let dbPromise: RxDatabase<any>;
-const activeSyncs: Map<
-  { database: string; collection: string },
-  RxCouchDBReplicationState
-> = new Map();
+const activeSyncs: Map<{ database: string; collection: string }, any> =
+  new Map();
 
 /**
  * @description This function returns a RxCollection that is synchronized with a server database
  * @param collection name of the collection that is synchronized and returned
  * @param database name of the database the collection is synchronized to
  */
-export async function getCollection(
-  database: string = "sampledb",
-  collection: string
-) {
-  const clientDB = await getClientDb();
-  const rxCollection: any = clientDB[collection];
-
-  activeSyncs.get({ database, collection });
+export async function getCollection(database: string, collection: string) {
+  const clientDB: RxDatabase = await getClientDb();
+  const rxCollection: RxCollectionBase<any> = clientDB[collection];
 
   // sync local collection with server
-  const repState = rxCollection.syncCouchDB({
-    remote: "http://localhost:5001/db/" + database + "/" + collection,
-    waitForLeadership: true, // (optional) [default=true] to save performance, the sync starts on leader-instance only
-    direction: {
-      // direction (optional) to specify sync-directions
-      pull: true, // default=true
-      push: true, // default=true
-    },
-    options: {
-      // sync-options (optional) from https://pouchdb.com/api.html#replication
-      live: true,
-      retry: true,
-    },
+  const repState = await rxCollection.syncCouchDBNew({
+    url: "http://localhost:5001/sampledb/",
+    live: true,
+  });
+
+  repState.active$.subscribe((status) => {
+    console.log("Sync is active: " + status);
   });
 
   // save repState to be able to close sync
@@ -74,15 +59,32 @@ export async function closeCollection(
  */
 async function _create() {
   const db = await createRxDatabase({
-    name: "./client-db",
+    name: "clientdb",
     storage: getRxStorageDexie(),
     ignoreDuplicate: true,
   });
 
   await db.addCollections({
-    // new data
-    judgeWorkflow: {
-      schema: JudgeWorkflow,
+    exchange: {
+      schema: {
+        title: "exchange",
+        description: "exchange object",
+        version: 0,
+        primaryKey: "id",
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            final: true,
+          },
+          request: {
+            type: "string",
+          },
+          response: {
+            type: "string",
+          },
+        },
+      },
     },
   });
   return db;

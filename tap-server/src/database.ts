@@ -20,18 +20,18 @@ import { CompetitionSchema } from "../../shared/schemas/competition.schema";
 import { CurrentCompetitionSchema } from "../../shared/schemas/currentCompetition.schema";
 import { RoundSchema } from "../../shared/schemas/round.schema";
 import { RoundResultSchema } from "../../shared/schemas/roundResult.schema";
-import { FinalResultSchema } from "../../shared/schemas/finalResult.schema";
+import { FinalResult } from "../../shared/schemas/finalResult.schema";
 import { PhaseSchema } from "../../shared/schemas/phase.schema";
 import { UserSchema } from "../../shared/schemas/user.schema";
 import { ScoringRuleSchema } from "../../shared/schemas/scoringRule.schema";
 import { HeatWorkflow } from "../../shared/schemas/heatWorkflow.schema";
-import { RxDatabaseBase } from "rxdb/dist/types/rx-database";
+import { getRxStorageDexie } from "rxdb/plugins/dexie";
 
-const scoringRuleCompetitionDefaults = require("../template/competitionDB/scoringRule.json");
+// @ts-ignore
+import * as MemoryAdapter from "pouchdb-adapter-memory";
 
-addPouchPlugin(pouchdb_adapter_leveldb); // leveldown adapters need the leveldb plugin to work
-addRxPlugin(RxDBLeaderElectionPlugin);
 addRxPlugin(RxDBServerCouchDBPlugin);
+addPouchPlugin(MemoryAdapter);
 
 export class Database {
   private static dbList = new Map<string, RxDatabase>();
@@ -45,48 +45,45 @@ export class Database {
     } else {
       this.db = await createRxDatabase({
         name: "data/sampledb",
-        storage: getRxStoragePouch(leveldown),
+        storage: getRxStoragePouch("memory"),
         ignoreDuplicate: true,
       });
 
-      try {
-        await this.db.addCollections({
-          sampleCollection: {
-            schema: {
-              title: "Sample",
-              description: "sample object",
-              version: 0,
-              primaryKey: "id",
-              type: "object",
-              properties: {
-                id: {
-                  type: "string",
-                  final: true,
-                },
-                request: {
-                  type: "string",
-                },
-                response: {
-                  type: "string",
-                },
-                data: {
-                  type: "object",
-                  properties: {
-                    display: {
-                      type: "string",
-                    },
-                    result: {
-                      type: "number",
-                    },
-                  },
-                },
+      await this.db.addCollections({
+        exchange: {
+          schema: {
+            title: "exchange",
+            description: "exchange object",
+            version: 0,
+            primaryKey: "id",
+            type: "object",
+            properties: {
+              id: {
+                type: "string",
+                final: true,
+              },
+              request: {
+                type: "string",
+              },
+              response: {
+                type: "string",
               },
             },
           },
-        });
-      } catch (e) {
-        console.log("error: ", e);
-      }
+        },
+      });
+
+      await this.db.exchange.upsert({
+        id: "singleexchange",
+        request: "",
+        response: "Free to edit",
+      });
+
+      await this.db.exchange.$.subscribe((e) => {
+        console.log("new server event: " + e.operation);
+      });
+
+      console.log("exchange object created");
     }
 
     return this.db;
@@ -213,7 +210,7 @@ export class Database {
           schema: RoundResultSchema,
         },
         round_result: {
-          schema: FinalResultSchema,
+          schema: FinalResult,
         },
         round: {
           schema: RoundSchema,
@@ -230,7 +227,7 @@ export class Database {
       });
 
       // load predefined Scoringrule-Objects
-      await db.scoring_rule.bulkInsert(scoringRuleCompetitionDefaults);
+      // await db.scoring_rule.bulkInsert(scoringRuleCompetitionDefaults);
     } catch (e) {
       console.log("error: ", e);
     }

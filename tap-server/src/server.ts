@@ -1,126 +1,58 @@
 import express from "express";
-import { Database } from "./database";
-import { ActivityPortalService } from "./services/activity-portal.service";
+import {Database} from "./database";
 import config from "config";
-import { RoundWorkflowService } from "./workflows/services/roundWorkflowService";
-import {RxDatabase, RxDocument} from "rxdb";
-import { HeatService } from "./workflows/services/heat.service";
 import {RoundService} from "./services/round.service";
-import { json } from "stream/consumers";
 
-let server: any;
+// let websocketState: any;
+// let server: any;
 const port: number = config.get("port");
 
 const roundService: RoundService = new RoundService();
 
 async function initialize() {
-    const mainApp = express();
+  const db = await Database.getSampleDB();
+  const sampleServer = await db.serverCouchDB({
+    path: "/sampledb",
+    port: 5001,
+    cors: true,
+    startServer: true,
+    pouchdbExpressOptions: {
+      inMemoryConfig: true,
+      logPath: "./tap-server/tmp/log.txt",
+    },
+  });
+  /*
+                                                                                              mainApp.use("/startHeat", (req, res) => {
+                                                                                                        if (!req.query.id) {
+                                                                                                          res.status(400).send("Required query params missing");
+                                                                                                        }
+                                                                                                        const myWorkflow = new HeatService();
+                                                                                                        myWorkflow.startHeat(req.query.id as string);
+                                                                                                        res.status(200).send("heat was started");
+                                                                                                      });
 
-    Database.getSampleDB().then(async (db:RxDatabase) => {
-        const { app } = await db.serverCouchDB({
-            path: "data",
-            port,
-            cors: true,
-            startServer: false,
-        });
+                                                                                                      const activityPortalService = new ActivityPortalService();
 
-        mainApp.use("/sampledb", app);
-    })
+                                                                                                      mainApp.use("/import", (req, res) => {
+                                                                                                        activityPortalService.fetchDataFromPortal().then();
+                                                                                                        res.send("importing...");
+                                                                                                      });
 
-    // Database.getAdminDB().then(async (db) => {
-    //     const { app } = await db.server({
-    //         startServer: false,
-    //         cors: true,
-    //     });
+                                                                                                      mainApp.use("/sample", async (req, res) => {
+                                                                                                        console.log("creating round");
+                                                                                                        roundService.createRound();
+                                                                                                      });
 
-    //     mainApp.use("/admindb", app);
-    // });
-
-    /*Database.getBaseDB().then(async (db) => {
-        const { app } = await db.serverCouchDB({
-            path: "data",
-            port,
-            cors: true,
-            startServer: false,
-        });
-
-        mainApp.use("/basedb", app);
-    });*/
-
-    mainApp.use("/startHeat", (req, res) => {
-        if (!req.query.id) {
-            res.status(400).send("Required query params missing");
-        }
-        let myWorkflow = new HeatService();
-        myWorkflow.startHeat(req.query.id as string);
-        res.status(200).send("heat was started");
-    });
-
-    const activityPortalService = new ActivityPortalService();
-
-    mainApp.use("/import", (req, res) => {
-        activityPortalService.fetchDataFromPortal().then();
-        res.send("importing...");
-    });
-
-    /*mainApp.use("/activate", async (req, res) => {
-        if (!req.query.id) {
-            res.status(400).send("Required query params missing");
-        }
-
-        const id = req.query.id as string;
-
-        if (id != null) {
-            await activityPortalService.fetchAppointmentDataFromPortal(id);
-
-            if (Database.currentCompetition !== "") {
-                Database.getCompetitionDatabaseApp().then((app) => {
-                    // set currentCompetition object
-                    Database.getBaseDB().then(async (baseDB) =>
-                        baseDB.current_competition
-                            .findOne()
-                            .exec()
-                            .then(async (document: RxDocument) => {
-                                if (document == null) {
-                                    await baseDB.current_competition.insert({
-                                        id: "CURRENT",
-                                        competition_id: id,
-                                    });
-                                } else {
-                                    await document.atomicPatch({
-                                        competition_id: id,
-                                    });
-                                }
-                            })
-                    );
-                    // TODO: load appointment and set "isActive" field
-
-                    mainApp.use("/db/" + Database.currentCompetition, app);
-                    // res.redirect('/db/' + Database.currentCompetition)
-
-                    res.send("Database " + id + " activated.");
-                });
-            }
-        } else {
-            res.status(404);
-        }
-    });
-*/
-
-    mainApp.use("/sample", async (req, res) => {
-        console.log('creating round');
-        roundService.createRound();
-    });
-
-    server = mainApp.listen(port, () =>
-        console.log(`Server listening on port ${port}`)
-    );
+                                                                                                      server = mainApp.listen(port, () =>
+                                                                                                        console.log(`Server listening on port ${port}`)
+                                                                                                      );
+                                                                                                       */
 }
 
 initialize();
 
-
-/*.then(async () => {
+/*
+.then(async () => {
     // console.log('get database')
 
     console.log("start wf");
@@ -157,4 +89,5 @@ initialize();
             }
         });
     });
-});*/
+});
+*/
