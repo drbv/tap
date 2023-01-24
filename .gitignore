@@ -4,8 +4,5 @@
 /.idea/
 /dist/*
 
-# RxDb-files
-*-rxdb-*
-pouch__all_dbs__
-_replicator
-_users
+# db-files
+/data
