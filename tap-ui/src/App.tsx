@@ -48,7 +48,8 @@ class App extends Component<any, StateData> {
                         variant="contained"
                         color="secondary"
                         onClick={async () => {
-                            const sampleDB = await getClientSampleDb()
+                            console.log('start clicked');
+                            const sampleDB = await getClientSampleDb();
                             await sampleDB.sampleCollection.upsert(
                                 {
                                     id: uuid.v4(),
@@ -56,7 +57,7 @@ class App extends Component<any, StateData> {
                                         result: this.state?.value,
                                     }
                                 }
-                            )
+                            );
                         }}
                         style={{marginTop: "10px"}}
                     >
@@ -66,15 +67,6 @@ class App extends Component<any, StateData> {
                         id="start"
                         variant="contained"
                         color="secondary"
-                        onClick={async () => {
-                            const sampleCollection = await getClientSampleDb()
-                            await sampleCollection.upsert(
-                                {
-                                    id: uuid.v4(),
-                                    request: "start",
-                                }
-                            )
-                        }}
                         style={{marginTop: "10px"}}
                     >
                         Start
