@@ -16,6 +16,7 @@
     "@types/react-dom": "^18.0.10",
     "dexie": "^4.0.0-alpha.4",
     "dexie-react-hooks": "^1.1.1",
+    "dexie-syncable": "^4.0.1-beta.13",
     "leveldown": "^6.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

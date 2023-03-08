@@ -1,4 +1,5 @@
 import Dexie, {Table} from "dexie"
+import 'dexie-syncable';
 
 let dbPromise: DexieDatabase;
 
