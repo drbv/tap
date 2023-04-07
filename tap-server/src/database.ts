@@ -22,20 +22,11 @@ export class Database {
     private static db: PouchDB.Database;
     private static app: any = null;
 
-    public static async getSampleDB(): Promise<any> {
+    public static getSampleDB(): PouchDB.Database {
         if (this.db) {
             return this.db;
         } else {
-            this.db = new PouchDB.default("sampledb-client");
-            this.db.put({
-                _id: "singleexchange",
-                request: "",
-                response: "Free to edit",
-            });
-
-            this.db.replicate.to("localhost:2345/sample", {}, () => {
-                alert("replication completed");
-            });
+            this.db = new PouchDB.default("./db/sampledb");
         }
 
         return this.db;

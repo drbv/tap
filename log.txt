@@ -1,0 +1,13 @@
+[Fri, 07 Apr 2023 11:04:30 GMT] [info] [<0.000.0>] ::1 - - GET / 200
+[Fri, 07 Apr 2023 11:06:07 GMT] [info] [<0.000.0>] ::1 - - GET / 200
+[Fri, 07 Apr 2023 11:07:57 GMT] [info] [<0.000.0>] ::1 - - GET /sampledb2 404
+[Fri, 07 Apr 2023 11:08:02 GMT] [info] [<0.000.0>] ::1 - - GET /sampledb 404
+[Fri, 07 Apr 2023 11:11:28 GMT] [info] [<0.000.0>] ::1 - - GET /sampledb 404
+[Fri, 07 Apr 2023 11:11:30 GMT] [info] [<0.000.0>] ::1 - - GET /sampledb 404
+[Fri, 07 Apr 2023 11:11:38 GMT] [info] [<0.000.0>] ::1 - - GET /sampledb 404
+[Fri, 07 Apr 2023 11:17:03 GMT] [info] [<0.000.0>] ::1 - - GET / 200
+[Fri, 07 Apr 2023 11:18:39 GMT] [info] [<0.000.0>] ::1 - - GET /sampledb 404
+[Fri, 07 Apr 2023 11:19:29 GMT] [info] [<0.000.0>] ::1 - - GET / 200
+[Fri, 07 Apr 2023 11:19:30 GMT] [info] [<0.000.0>] ::1 - - GET / 304
+[Fri, 07 Apr 2023 11:23:46 GMT] [info] [<0.000.0>] ::1 - - GET / 304
+[Fri, 07 Apr 2023 11:23:47 GMT] [info] [<0.000.0>] ::1 - - GET / 304
