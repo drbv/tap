@@ -201,7 +201,7 @@ export class ActivityPortalService {
         for (const team of teams.values()) {
             try {
                 await this.db.teams.upsert({
-                    book_id: team.book_id,
+                    bookId: team.book_id,
                     club_id: team.club_id,
                     club_name_short: team.club_name_short,
                     organization: team.organization,
@@ -243,7 +243,7 @@ export class ActivityPortalService {
                         sport: 'rr',
                     });
                     await this.db.teams.upsert({
-                        book_id: row.Buchnr ? row.Buchnr.toString() : "",
+                        bookId: row.Buchnr ? row.Buchnr.toString() : "",
                         club_id: row.Clubnr ? row.Clubnr : 0,
                         club_name_short: row.Clubname_kurz ? row.Clubname_kurz : "",
                         organization: row.LRRVERB !== null ? row.LRRVERB : 'WRRC',

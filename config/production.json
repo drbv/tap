@@ -1,5 +1,5 @@
 {
-    "port": 5001,
+    "port": 5005,
     "version": "VERSIONNUMBER",
     "urls": [
         "https://drbv.de/cms/images/Download/TurnierProgramm/BW-Start-Daten.txt",

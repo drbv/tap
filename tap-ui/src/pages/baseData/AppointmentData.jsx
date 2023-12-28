@@ -219,7 +219,7 @@ class AppointmentData extends Component {
                                                         });
                                                         axios
                                                             .get(
-                                                                "http://localhost:5001/activate?id=" +
+                                                                "http://localhost:5005/activate?id=" +
                                                                     tableMeta
                                                                         .rowData[0]
                                                             )

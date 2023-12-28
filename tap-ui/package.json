@@ -20,7 +20,7 @@
         "@types/react": "^18.0.20",
         "@types/react-dom": "^18.0.6",
         "axios": "^0.27.2",
-        "caniuse-lite": "^1.0.30001406",
+        "caniuse-lite": "^1.0.30001572",
         "classnames": "^2.3.2",
         "fontsource-roboto": "^3.0.3",
         "local-storage": "^2.0.0",
@@ -42,10 +42,10 @@
         "typescript": "^4.4.4"
     },
     "scripts": {
-        "start": "node_modules/.bin/react-scripts start",
-        "build": "node_modules/.bin/react-scripts build",
-        "test": "node_modules/.bin/react-scripts test",
-        "eject": "node_modules/.bin/react-scripts eject"
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject"
     },
     "eslintConfig": {
         "extends": "react-app"

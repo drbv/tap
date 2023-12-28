@@ -6,18 +6,18 @@ import pouchdb_adapter_idb from "pouchdb-adapter-idb";
 import {RxDBLeaderElectionPlugin} from 'rxdb/plugins/leader-election';
 import {globalAgent} from "http";
 
-import {AthleteSchema} from "shared/schemas/athlete.schema"
-import {TeamSchema} from "shared/schemas/team.schema"
-import {OfficialSchema} from "shared/schemas/official.schema"
-import {AcroSchema} from "shared/schemas/acro.schema"
-import {AppointmentSchema} from "shared/schemas/appointment.schema"
-import {PhaseSchema} from "shared/schemas/phase.schema"
-import {CompetitionSchema} from "shared/schemas/competition.schema"
-import {RoundSchema} from "shared/schemas/round.schema"
-import {ScoringRuleSchema} from "shared/schemas/scoring-rule.schema"
-import {UserSchema} from "shared/schemas/user.schema"
-import {RoundResultSchema} from "shared/schemas/roundResult.schema"
-import {CurrentCompetitionSchema} from "shared/schemas/currentCompetition.schema"
+import {AthleteSchema} from "./shared/schemas/athlete.schema"
+import {TeamSchema} from "./shared/schemas/team.schema"
+import {OfficialSchema} from "./shared/schemas/official.schema"
+import {AcroSchema} from "./shared/schemas/acro.schema"
+import {AppointmentSchema} from "./shared/schemas/appointment.schema"
+import {PhaseSchema} from "./shared/schemas/phase.schema"
+import {CompetitionSchema} from "./shared/schemas/competition.schema"
+import {RoundSchema} from "./shared/schemas/round.schema"
+import {ScoringRuleSchema} from "./shared/schemas/scoring-rule.schema"
+import {UserSchema} from "./shared/schemas/user.schema"
+import {RoundResultSchema} from "./shared/schemas/roundResult.schema"
+import {CurrentCompetitionSchema} from "./shared/schemas/currentCompetition.schema"
 
 addPouchPlugin(pouchdb_adapter_http);
 addRxPlugin(RxDBReplicationCouchDBPlugin);
@@ -46,7 +46,7 @@ export async function getCollection(collection: string, competitionId: string) {
 
     // sync local collection with server
     const repState = rxCollection.syncCouchDB({
-        remote: "http://localhost:5001/db/" + competitionId + "/" + collection,
+        remote: "http://localhost:5005/db/" + competitionId + "/" + collection,
         waitForLeadership: true,              // (optional) [default=true] to save performance, the sync starts on leader-instance only
         direction: {                          // direction (optional) to specify sync-directions
             pull: true, // default=true
@@ -78,7 +78,7 @@ export async function getBaseCollection(collection: string) {
 
     // sync local collection with server
     const repState = rxCollection.syncCouchDB({
-        remote: "http://localhost:5001/basedb/" + collection,
+        remote: "http://localhost:5005/basedb/" + collection,
         waitForLeadership: true,              // (optional) [default=true] to save performance, the sync starts on leader-instance only
         direction: {                          // direction (optional) to specify sync-directions
             pull: true, // default=true

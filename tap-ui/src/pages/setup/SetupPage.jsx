@@ -177,7 +177,7 @@ class SetupPage extends React.Component {
                                             this.setState({ loading: true });
                                             axios
                                                 .get(
-                                                    "http://localhost:5001/activate?id=" +
+                                                    "http://localhost:5005/activate?id=" +
                                                         selectedAppointment.appointment_id
                                                 )
                                                 .then((response) => {
